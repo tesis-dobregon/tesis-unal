@@ -1,0 +1,28 @@
+@startuml
+actor User as ApplicationUser
+participant APIGateway
+participant DevicesMicroservice
+database Database
+queue MQTTBroker
+participant PhysicalDevice
+
+ApplicationUser -> APIGateway: Query Data (DeviceId)
+APIGateway -> DevicesMicroservice: Query Data (DeviceId)
+activate DevicesMicroservice
+DevicesMicroservice -> Database: Search Device (DeviceId)
+Database --> DevicesMicroservice: Device Exists or Device Not Found
+DevicesMicroservice -> Database: Get Device Data (DeviceId)
+Database --> DevicesMicroservice: Return Device Data
+DevicesMicroservice --> APIGateway: Return Device Data
+deactivate DevicesMicroservice
+APIGateway --> ApplicationUser: Return Device Data
+
+DevicesMicroservice -> MQTTBroker: Subscribe Device Data Topic
+PhysicalDevice -> MQTTBroker: Publish Device Collected Data (DeviceId)
+MQTTBroker -> DevicesMicroservice: Publish Device Collected Data (DeviceId)
+activate DevicesMicroservice
+DevicesMicroservice -> Database: Store Device Data (DeviceId)
+Database --> DevicesMicroservice: Device Data Stored
+DevicesMicroservice --> MQTTBroker: Publish Device Data Acknowledgement
+deactivate DevicesMicroservice
+@enduml

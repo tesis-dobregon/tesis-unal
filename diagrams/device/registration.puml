@@ -1,0 +1,26 @@
+@startuml
+actor User as ApplicationUser
+participant APIGateway
+participant DevicesMicroservice
+database Database
+queue MQTTBroker
+participant PhysicalDevice
+
+ApplicationUser -> APIGateway: Register Device Request
+APIGateway -> DevicesMicroservice: Register Device Request
+activate DevicesMicroservice
+DevicesMicroservice -> Database: Validate Request and Generate Device ID
+Database --> DevicesMicroservice: Device ID Generated or Validation Error
+DevicesMicroservice --> APIGateway: Success or Error Response
+APIGateway --> ApplicationUser: Success or Error Response
+deactivate DevicesMicroservice
+
+DevicesMicroservice -> MQTTBroker: Subscribe Device Registration Topic
+PhysicalDevice -> MQTTBroker: Publish Device Registration Topic
+MQTTBroker -> DevicesMicroservice: Publish Device Registration Data
+activate DevicesMicroservice
+DevicesMicroservice -> Database: Validate and Store Device Data
+Database --> DevicesMicroservice: Device Data Stored or Validation Error
+DevicesMicroservice --> MQTTBroker: Publish Device Registration Acknowledgement
+deactivate DevicesMicroservice
+@enduml
