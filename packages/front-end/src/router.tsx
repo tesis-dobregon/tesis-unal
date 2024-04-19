@@ -5,6 +5,7 @@ import SignIn from "./pages/SignIn/SignIn";
 import NotFound from "./pages/NotFound/NotFound";
 import Sensors from "./pages/Sensors/Sensors";
 import Alerts from "./pages/Alerts/Alerts";
+import LoginPage from "./components/Login/login";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: "/alertas",
         element: <Alerts />,
+      }, 
+      {
+        path: "/login",
+        element: <LoginPage />,
       },
       { path: "*", element: <NotFound /> },
     ],
