@@ -1,4 +1,4 @@
-import { Button, Container, FormControl, Grid, InputBase, InputLabel, MenuItem, NativeSelect, TextField, Typography, styled } from "@mui/material"
+import { Button, Container, FormControl, Grid, InputBase, NativeSelect, Typography, styled } from "@mui/material"
 import './add-sensor.scss';
 import { SensorTypeList } from "../../types/sensors/sensorTypeFixture";
 import { FrequencyList } from "../../types/sensors/frequencyFixture";

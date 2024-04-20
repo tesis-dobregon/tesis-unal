@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import { ListSensorsComponent } from "../../components/Sensors/list-sensors";
 import refreshImg from '../../assets/images/REFRESH.svg';
 import { SensorsList } from "../../types/sensors/SensorsFixture";

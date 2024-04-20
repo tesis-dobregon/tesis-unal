@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemButton, ListItemText, MenuItem, TextField, Typography } from "@mui/material"
+import { List, ListItemButton, ListItemText} from "@mui/material"
 import { sensor } from "../../types/sensors/sensor";
 import './list-sensors.scss'
 interface props{
