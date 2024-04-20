@@ -1,7 +1,66 @@
-import { Typography } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { Box, Link } from "@mui/material";
+import { useState } from "react";
+import {
+  DrawerComponent,
+  AddSensorComponent,
+  ListSensorsComponent,
+  RefreshButton,
+} from "../../components";
+import { SensorsList } from "../../types/sensors/SensorsFixture";
 
 const Sensors = () => {
-  return <Typography variant="h1">Sensores</Typography>;
+  const [showDrawer, setShowDrawer] = useState(false);
+  const handleAdd = () => {
+    setShowDrawer(!showDrawer);
+  };
+  return (
+    <Box
+      sx={{
+        px: "4rem",
+        py: "2rem",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+          rowGap: "3rem",
+          justifyContent: "space-between",
+        }}
+      >
+        <RefreshButton
+          onClick={() => {
+            console.log("Refreshing...");
+          }}
+        ></RefreshButton>
+
+        <Link onClick={handleAdd} sx={{ cursor: "pointer" }}>
+          <AddIcon color="action" fontSize="large">
+            {" "}
+          </AddIcon>
+        </Link>
+      </Box>
+      <Box
+        sx={{
+          width: "100%",
+        }}
+      >
+        <ListSensorsComponent sensors={SensorsList}></ListSensorsComponent>
+      </Box>
+      <DrawerComponent
+        children={<AddSensorComponent></AddSensorComponent>}
+        toogleDrawer={handleAdd}
+        isOpen={showDrawer}
+      ></DrawerComponent>
+    </Box>
+  );
 };
 
 export default Sensors;

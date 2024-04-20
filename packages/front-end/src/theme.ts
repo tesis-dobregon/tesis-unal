@@ -17,9 +17,19 @@ export const themeOptions: ThemeOptions = {
     MuiButton: {
       styleOverrides: {
         root: {
-          backgroundColor: "black",
-          "&:hover": {
+          "&.MuiButton-containedPrimary": {
             backgroundColor: "black",
+            color: "white",
+            "&:hover": {
+              backgroundColor: "black",
+              color: "white",
+            },
+          },
+          "&.MuiButton-outlinedPrimary": {
+            color: "black",
+            "&:hover": {
+              color: "black",
+            },
           },
         },
       },

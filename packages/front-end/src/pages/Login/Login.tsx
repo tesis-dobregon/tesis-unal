@@ -67,7 +67,12 @@ const LoginPage: React.FC<unknown> = () => {
                   <Link to={""}>¿Olvidó la contraseña?</Link>
                 </Box>
                 <Grid item xs={12}>
-                  <Button type="submit" color="primary" fullWidth>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                    fullWidth
+                  >
                     Ingresar
                   </Button>
                 </Grid>

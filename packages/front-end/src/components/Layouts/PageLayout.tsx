@@ -1,9 +1,7 @@
 import { Outlet } from "react-router-dom";
-import Header from "../Header/Header";
+import { Header } from "../Header/Header";
 
-interface PageLayoutProps {}
-
-const PageLayout = () => {
+export const PageLayout = () => {
   return (
     <>
       <Header />
@@ -11,5 +9,3 @@ const PageLayout = () => {
     </>
   );
 };
-
-export default PageLayout;
