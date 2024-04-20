@@ -1,17 +1,16 @@
-import { sensor, sensorType } from "./sensor";
+import { SensorType } from "./sensor";
 
-export const SensorTypeList: sensorType[] = [
-    {
-        name: "tipo 1",
-        id: 0
-    },
-    {
-        name: "tipo 1",
-        id: 1
-    },
-    {
-        name: "tipo 1",
-        id: 2
-    }
-
-]
+export const SensorTypeList: SensorType[] = [
+  {
+    name: "tipo 1",
+    id: 0,
+  },
+  {
+    name: "tipo 1",
+    id: 1,
+  },
+  {
+    name: "tipo 1",
+    id: 2,
+  },
+];

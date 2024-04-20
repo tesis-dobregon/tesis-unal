@@ -1,17 +1,17 @@
-export interface sensor {
-    name:string;
-    sensorType: sensorType;
-    identifier: string;
-    frequency: frequency
+export interface Sensor {
+  name: string;
+  sensorType: SensorType;
+  identifier: string;
+  frequency: Frequency;
 }
 
-export interface sensorType {
-    name: string;
-    id: number;
+export interface SensorType {
+  name: string;
+  id: number;
 }
 
-export interface frequency{
-    id: number;
-    name: string;
-    minutes: number;
+export interface Frequency {
+  id: number;
+  name: string;
+  minutes: number;
 }
