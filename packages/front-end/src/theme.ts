@@ -13,6 +13,18 @@ export const themeOptions: ThemeOptions = {
   typography: {
     fontFamily: "Inter",
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "black",
+          "&:hover": {
+            backgroundColor: "black",
+          },
+        },
+      },
+    },
+  },
 };
 
 const theme = createTheme(themeOptions);
