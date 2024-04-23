@@ -71,12 +71,11 @@ export const AddSensorComponent: React.FunctionComponent<unknown> = () =>
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <NativeSelect
-                    value={SensorTypeList[0].name}
                     input={<BootstrapInput />}
+                    defaultValue={SensorTypeList[0].id}
                   >
-                    <option aria-label="None" value="" />
                     {SensorTypeList.map((item) => (
-                      <option key={item.id} value={item.name}>
+                      <option value={item.id}>
                         {item.name}
                       </option>
                     ))}
@@ -94,12 +93,12 @@ export const AddSensorComponent: React.FunctionComponent<unknown> = () =>
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <NativeSelect
-                    value={FrequencyList[0].id}
                     input={<BootstrapInput />}
+                    defaultValue={FrequencyList[0].id}
                   >
-                    <option aria-label="None" value="" />
+              
                     {FrequencyList.map((item) => (
-                      <option key={item.id} value={item.id}>
+                      <option value={item.id}>
                         {item.minutes} minutes
                       </option>
                     ))}
