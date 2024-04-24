@@ -54,7 +54,7 @@ export const Header = () => {
           </Stack>
 
           <Box>
-            <Tooltip title="Open settings">
+            <Tooltip title="Opciones de usuario">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Profile" />
               </IconButton>
