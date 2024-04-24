@@ -51,7 +51,6 @@ const LoginPage: React.FC<unknown> = () => {
                   <Button type="submit" color="primary" variant="contained" fullWidth disabled={isLoggingIn}>
                     {isLoggingIn ? "Ingresando..." : "Ingresar"}
                   </Button>
-                  {actionData && actionData.error ? <p style={{ color: "red" }}>{actionData.error}</p> : null}
                 </Grid>
               </Grid>
             </Form>

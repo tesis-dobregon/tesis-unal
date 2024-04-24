@@ -45,6 +45,14 @@ const router = createBrowserRouter([
     loader: loginLoader,
     element: <LoginPage />,
   },
+  {
+    path: "/logout",
+    async action() {
+      // We signout in a "resource route" that we can hit from a fetcher.Form
+      await fakeAuthProvider.signout();
+      return redirect("/");
+    },
+  },
 ]);
 
 export default router;
