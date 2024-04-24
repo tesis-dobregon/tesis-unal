@@ -34,6 +34,42 @@ export const themeOptions: ThemeOptions = {
         },
       },
     },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "currentColor", // Keep the same color as when the input is not focused
+            },
+          },
+          "& .MuiInputLabel-root": {
+            color: "currentColor", // Keep the label color the same as the text color
+          },
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "currentColor", // Keep the label color the same when focused
+          },
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "currentColor", // Keep the same color as when the input is not focused
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "currentColor",
+          "&.Mui-focused": {
+            color: "currentColor",
+          },
+        },
+      },
+    },
   },
 };
 

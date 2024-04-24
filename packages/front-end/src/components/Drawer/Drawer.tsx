@@ -2,6 +2,7 @@ import React from "react";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { Box } from "@mui/material";
 
 interface DrawerComponentProps {
   children: React.ReactNode;
@@ -15,21 +16,22 @@ export const DrawerComponent: React.FC<DrawerComponentProps> = ({
   isOpen = false,
 }) => {
   return (
-    <div className="">
-      <Drawer
-        anchor="right"
-        open={isOpen}
-        onClose={() => {}}
-        sx={{ "& .MuiDrawer-paper": { zIndex: -1 }, marginTop: "5rem" }}
+    <Drawer
+      anchor="right"
+      open={isOpen}
+      onClose={() => {}}
+      sx={{ "& .MuiDrawer-paper": { zIndex: -1 }, marginTop: "5rem" }}
+      PaperProps={{
+        sx: { width: "35%" },
+      }}
+    >
+      <IconButton
+        onClick={() => toogleDrawer()}
+        sx={{ position: "absolute", right: 0, top: 0 }}
       >
-        <IconButton
-          onClick={() => toogleDrawer()}
-          sx={{ position: "absolute", right: 0, top: 0 }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <div style={{ width: "300px" }}>{children}</div>
-      </Drawer>
-    </div>
+        <CloseIcon />
+      </IconButton>
+      <Box>{children}</Box>
+    </Drawer>
   );
 };

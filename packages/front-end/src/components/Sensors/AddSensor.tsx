@@ -4,46 +4,14 @@ import {
   Container,
   FormControl,
   Grid,
-  InputBase,
-  NativeSelect,
   Typography,
-  styled,
+  TextField,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { SensorTypeList } from "../../types/sensors/sensorTypeFixture";
 import { FrequencyList } from "../../types/sensors/frequencyFixture";
-
-const BootstrapInput = styled(InputBase)(({ theme }) => ({
-  "label + &": {
-    marginTop: theme.spacing(3),
-  },
-  "& .MuiInputBase-input": {
-    borderRadius: 4,
-    position: "relative",
-    backgroundColor: theme.palette.background.paper,
-    border: "1px solid #ced4da",
-    fontSize: 16,
-    padding: "10px 26px 10px 12px",
-    transition: theme.transitions.create(["border-color", "box-shadow"]),
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(","),
-    "&:focus": {
-      borderRadius: 4,
-      borderColor: "#80bdff",
-      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-    },
-  },
-}));
 
 export const AddSensorComponent: React.FunctionComponent<unknown> = () =>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -62,47 +30,54 @@ export const AddSensorComponent: React.FunctionComponent<unknown> = () =>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <BootstrapInput
+                  <TextField
+                    label="Nombre del Sensor"
+                    id="sensor-name"
+                    fullWidth
                     placeholder="Nombre del sensor"
-                    id="sensorName"
                   />
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <NativeSelect
-                    input={<BootstrapInput />}
-                    defaultValue={SensorTypeList[0].id}
+                  <InputLabel id="sensor-type">Tipo de Sensor</InputLabel>
+                  <Select
+                    labelId="sensor-type"
+                    id="sensor-type"
+                    value={SensorTypeList[0].id}
+                    label="Tipo de Sensor"
+                    onChange={() => console.log("on change tipo de sensor")}
                   >
                     {SensorTypeList.map((item) => (
-                      <option value={item.id}>
-                        {item.name}
-                      </option>
+                      <MenuItem value={item.id}>{item.name}</MenuItem>
                     ))}
-                  </NativeSelect>
+                  </Select>
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <BootstrapInput
-                    placeholder="Identificador"
-                    id="Identificador"
+                  <TextField
+                    label="Identificador del Sensor"
+                    id="sensor-id"
+                    fullWidth
+                    placeholder="Identificador del sensor"
                   />
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <NativeSelect
-                    input={<BootstrapInput />}
-                    defaultValue={FrequencyList[0].id}
+                  <InputLabel id="sensor-type">Tipo de Sensor</InputLabel>
+                  <Select
+                    labelId="sensor-type"
+                    id="sensor-type"
+                    value={FrequencyList[0].id}
+                    label="Tipo de Sensor"
+                    onChange={() => console.log("on change tipo de sensor")}
                   >
-              
                     {FrequencyList.map((item) => (
-                      <option value={item.id}>
-                        {item.minutes} minutes
-                      </option>
+                      <MenuItem value={item.id}>{item.minutes}</MenuItem>
                     ))}
-                  </NativeSelect>
+                  </Select>
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
