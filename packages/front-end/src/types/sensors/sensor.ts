@@ -3,6 +3,8 @@ export interface Sensor {
   sensorType: SensorType;
   identifier: string;
   frequency: Frequency;
+  lastUpdate?: Date;
+  state: State
 }
 
 export interface SensorType {
@@ -14,4 +16,9 @@ export interface Frequency {
   id: number;
   name: string;
   minutes: number;
+}
+
+export interface State{
+  id: number;
+  name: string;
 }
