@@ -136,9 +136,9 @@ export const TableComponent: React.FunctionComponent<TableComponentProps> = ({
   const renderRow = (_data: any, index: number) => {
     return (
       <TableRow key={index}>
-        {header.map((property) => {
+        {header.map((property, idx) => {
           return (
-            <TableCell component="th" scope="row">
+            <TableCell key={idx} component="th" scope="row">
               {property.renderAction(_data)}
             </TableCell>
           );
@@ -152,9 +152,9 @@ export const TableComponent: React.FunctionComponent<TableComponentProps> = ({
         <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
           <TableHead>
             <TableRow>
-              {header.map((headerProperty) => {
+              {header.map((headerProperty, idx) => {
                 return (
-                  <TableCell sx={sxMap.tableCell} align="left">
+                  <TableCell key={idx} sx={sxMap.tableCell} align="left">
                     {headerProperty.showName && headerProperty.name}
                   </TableCell>
                 );

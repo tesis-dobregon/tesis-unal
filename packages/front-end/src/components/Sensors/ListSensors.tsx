@@ -13,6 +13,13 @@ import { SensorsList } from "../../types/sensors/SensorsFixture";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CircleIcon from "@mui/icons-material/Circle";
 import { HeaderProperty } from "../../types/sensors/table/table";
+import { ButtonSubMenuComponent } from "../ButtonSubMenu/ButtonSubMenu";
+import { MenuItemIcon } from "../../types/icons/menuIcons";
+import { useContext } from "react";
+import {
+  SensorContext,
+  SensorActions,
+} from "../../types/sensors/providers";
 
 interface ListSensorsComponentProps {
   sensors: Sensor[];
@@ -21,6 +28,7 @@ interface ListSensorsComponentProps {
 export const ListSensorsComponent: React.FunctionComponent<
   ListSensorsComponentProps
 > = ({ sensors = [] }) => {
+  const sensorsContext = useContext(SensorContext);
   /**
    * TODO
    * Handle sensors with state
@@ -102,9 +110,47 @@ export const ListSensorsComponent: React.FunctionComponent<
       showName: false,
       renderAction: (data: any) => {
         return (
-          <IconButton aria-label="more">
-            <SvgIcon component={MoreHorizIcon}> </SvgIcon>
-          </IconButton>
+          <ButtonSubMenuComponent
+            clickableElement={
+              <IconButton aria-label="more">
+                <SvgIcon component={MoreHorizIcon}></SvgIcon>
+              </IconButton>
+            }
+            menuOptions={[
+              {
+                name: "Editar",
+                onClick: () => {
+                  sensorsContext?.setSensor({
+                    sensorToEdit: data as Sensor,
+                    drawerMode: { showDrawer: true },
+                    action: SensorActions.EDIT,
+                  });
+                },
+                icon: MenuItemIcon.edit,
+              },
+              {
+                name: "Eliminar",
+                onClick: () => {
+                  sensorsContext?.setSensor({
+                    sensorToEdit: data as Sensor,
+                    drawerMode: { showDrawer: false },
+                    action: SensorActions.DELETE,
+                  });
+                },
+                icon: MenuItemIcon.delete,
+              },
+              {
+                name: "Ver",
+                onClick: () => {
+                  sensorsContext?.setSensor({
+                    drawerMode: { showDrawer: true },
+                    action: SensorActions.VIEW,
+                  });
+                },
+                icon: MenuItemIcon.viewData,
+              },
+            ]}
+          ></ButtonSubMenuComponent>
         );
       },
     },
