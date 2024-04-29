@@ -6,6 +6,7 @@ import Sensors from "./pages/Sensors/Sensors";
 import Alerts from "./pages/Alerts/Alerts";
 import LoginPage, { loginAction, loginLoader } from "./pages/Login/Login";
 import { fakeAuthProvider } from "./providers";
+import { SensorsPage } from "./pages/Sensors";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/sensores",
-        element: <Sensors />,
+        element: <SensorsPage />,
       },
       {
         path: "/alertas",

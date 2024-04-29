@@ -1,13 +1,19 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Link } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import {
   DrawerComponent,
-  AddSensorComponent,
+  SensorEditor,
   ListSensorsComponent,
   RefreshButton,
 } from "../../components";
 import { SensorsList } from "../../types/sensors/SensorsFixture";
+import { ModalComponent } from "../../components/Modal/Modal";
+import {
+  SensorContext,
+  SensorPage,
+  SensorActions as SensorActions,
+} from "../../types/sensors/providers";
 
 const sxMap = {
   container: {
@@ -31,24 +37,70 @@ const sxMap = {
   },
 };
 
-const Sensors = () => {
-  const [showDrawer, setShowDrawer] = useState(false);
-  const handleAdd = () => {
-    setShowDrawer(!showDrawer);
+const Sensors: React.FunctionComponent = () => {
+  const sensorContext = useContext(SensorContext);
+
+  const handleCloseDrawer = () => {
+    sensorContext?.setSensor({
+      drawerMode: {
+        showDrawer: false,
+      },
+      sensorToEdit: undefined,
+    });
   };
+
+  const handleOpenAddSensorDrawer = () => {
+    sensorContext?.setSensor({
+      drawerMode: {
+        showDrawer: true,
+      },
+      action: SensorActions.ADD,
+    });
+  };
+
+  const handleOpenModal = (action?: SensorActions) => {
+    sensorContext?.setSensor({
+      ...(sensorContext?.sensorPage as SensorPage),
+      action: action,
+    });
+  };
+
+  const getDrawerComponent = useCallback(
+    (action?: SensorActions) => {
+      switch (action) {
+        case SensorActions.ADD:
+          return <SensorEditor isEdit={false}></SensorEditor>;
+        case SensorActions.EDIT:
+          return (
+            <SensorEditor
+              isEdit={true}
+              sensorToEdit={sensorContext?.sensorPage?.sensorToEdit}
+            ></SensorEditor>
+          );
+        case SensorActions.VIEW:
+          return <h1>TODO: Show Sensor data</h1>;
+        default:
+          return <></>;
+      }
+    },
+    [sensorContext]
+  );
+
+  useEffect(() => {
+    console.log("sensorContext: ", sensorContext);
+  }, [sensorContext]);
+
   return (
     <Box sx={sxMap.container}>
       <Box sx={sxMap.row}>
         <RefreshButton
           onClick={() => {
-            console.log("Refreshing...");
+            console.log("Refreshing sensors...");
           }}
         ></RefreshButton>
 
-        <Link onClick={handleAdd} sx={sxMap.list}>
-          <AddIcon color="action" fontSize="large">
-            {" "}
-          </AddIcon>
+        <Link onClick={handleOpenAddSensorDrawer} sx={sxMap.list}>
+          <AddIcon color="action" fontSize="large"></AddIcon>
         </Link>
       </Box>
       <Box
@@ -59,10 +111,18 @@ const Sensors = () => {
         <ListSensorsComponent sensors={SensorsList}></ListSensorsComponent>
       </Box>
       <DrawerComponent
-        children={<AddSensorComponent></AddSensorComponent>}
-        toogleDrawer={handleAdd}
-        isOpen={showDrawer}
+        children={getDrawerComponent(sensorContext?.sensorPage?.action)}
+        onCloseDrawer={handleCloseDrawer}
+        isOpen={Boolean(sensorContext?.sensorPage?.drawerMode.showDrawer)}
       ></DrawerComponent>
+      <ModalComponent
+        message="Está seguro que desea eliminar el sensor?"
+        isOpen={sensorContext?.sensorPage?.action == SensorActions.DELETE}
+        handleModalOpen={handleOpenModal}
+        title="Eliminar Sensor"
+        firstButtonText="Aceptar"
+        secondButtontext="Cancelar"
+      ></ModalComponent>
     </Box>
   );
 };
