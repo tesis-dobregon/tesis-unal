@@ -9,17 +9,13 @@ import {
 } from "@mui/material";
 import { Sensor } from "../../types/sensors/sensor";
 import { TableComponent } from "../Table/Table";
-import { SensorsList } from "../../types/sensors/SensorsFixture";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CircleIcon from "@mui/icons-material/Circle";
 import { HeaderProperty } from "../../types/sensors/table/table";
 import { ButtonSubMenuComponent } from "../ButtonSubMenu/ButtonSubMenu";
 import { MenuItemIcon } from "../../types/icons/menuIcons";
 import { useContext } from "react";
-import {
-  SensorContext,
-  SensorActions,
-} from "../../types/sensors/providers";
+import { SensorContext, SensorActions } from "../../types/sensors/providers";
 
 interface ListSensorsComponentProps {
   sensors: Sensor[];
@@ -126,7 +122,7 @@ export const ListSensorsComponent: React.FunctionComponent<
                     action: SensorActions.EDIT,
                   });
                 },
-                icon: MenuItemIcon.edit,
+                icon: MenuItemIcon.EDIT,
               },
               {
                 name: "Eliminar",
@@ -137,7 +133,7 @@ export const ListSensorsComponent: React.FunctionComponent<
                     action: SensorActions.DELETE,
                   });
                 },
-                icon: MenuItemIcon.delete,
+                icon: MenuItemIcon.DELETE,
               },
               {
                 name: "Ver",
@@ -147,7 +143,7 @@ export const ListSensorsComponent: React.FunctionComponent<
                     action: SensorActions.VIEW,
                   });
                 },
-                icon: MenuItemIcon.viewData,
+                icon: MenuItemIcon.VIEW_DATA,
               },
             ]}
           ></ButtonSubMenuComponent>
@@ -180,10 +176,7 @@ export const ListSensorsComponent: React.FunctionComponent<
         </List>
       </Box>
 
-      <TableComponent
-        data={SensorsList}
-        header={headerProperties}
-      ></TableComponent>
+      <TableComponent data={sensors} header={headerProperties}></TableComponent>
     </Box>
   );
 };
