@@ -12,7 +12,7 @@ import { TableComponent } from "../Table/Table";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CircleIcon from "@mui/icons-material/Circle";
 import { HeaderProperty } from "../../types/sensors/table/table";
-import { ButtonSubMenuComponent } from "../ButtonSubMenu/ButtonSubMenu";
+import { ButtonSubMenu } from "../ButtonSubMenu";
 import { MenuItemIcon } from "../../types/icons/menuIcons";
 import { useContext } from "react";
 import { SensorContext, SensorActions } from "../../types/sensors/providers";
@@ -106,7 +106,7 @@ export const ListSensorsComponent: React.FunctionComponent<
       showName: false,
       renderAction: (data: any) => {
         return (
-          <ButtonSubMenuComponent
+          <ButtonSubMenu
             clickableElement={
               <IconButton aria-label="more">
                 <SvgIcon component={MoreHorizIcon}></SvgIcon>
@@ -146,7 +146,7 @@ export const ListSensorsComponent: React.FunctionComponent<
                 icon: MenuItemIcon.VIEW_DATA,
               },
             ]}
-          ></ButtonSubMenuComponent>
+          ></ButtonSubMenu>
         );
       },
     },
