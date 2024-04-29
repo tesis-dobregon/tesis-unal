@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IconsMap, MenuItemIcon } from "../../types/icons/menuIcons";
+import { MenuItemIcon } from "../../types/icons/menuIcons";
 
 interface MenuOption {
   name: string;
