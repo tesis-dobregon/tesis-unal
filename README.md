@@ -1,7 +1,9 @@
-# smart-city-unal
-Repositorio con el código para el proyecto de tesis.
+# Tesis de Maestría Universidad Nacional
 
-# Scripts 
+Este repositorio contiene el código fuente y los diagramas del proyecto de trabajo de grado para la maestría de ingeniería de sistemas y computación de la Universidad Nacional de Colombia.
+
+# Scripts
+
 - Ejecutar `npm run serve:frontend` para inicializar la aplicacion en localhost:4200.
 - Ejecutar `npm run test:frontend` para correr las pruebas unitarias de la aplicacion web.
 - Ejecutar `npm run build:frontend` para construir la aplicacion web en la carpeta dist/packages/front-end.
