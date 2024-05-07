@@ -1,11 +1,7 @@
   import { Sensor } from "../../../types/sensors/sensor";
   import { useContext } from "react";
   import { SensorContext, SensorActions } from "../../../types/sensors/providers";
-  
-  interface ListSensorsComponentProps {
-    sensors: Sensor[];
-  }
-  
+
   export const useListSensors= () => {
     const sensorsContext = useContext(SensorContext);
   
