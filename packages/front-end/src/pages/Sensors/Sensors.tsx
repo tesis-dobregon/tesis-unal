@@ -1,19 +1,14 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Link } from "@mui/material";
-import { useCallback, useContext, useEffect } from "react";
 import {
   DrawerComponent,
-  SensorEditor,
   ListSensorsComponent,
   RefreshButton,
 } from "../../components";
 import { SensorsList } from "../../types/sensors/SensorsFixture";
 import { ModalComponent } from "../../components/Modal/Modal";
-import {
-  SensorContext,
-  SensorPage,
-  SensorActions as SensorActions,
-} from "../../types/sensors/providers";
+import { SensorActions as SensorActions } from "../../types/sensors/providers";
+import { useSensors } from "./useSensors";
 
 const sxMap = {
   container: {
@@ -38,57 +33,13 @@ const sxMap = {
 };
 
 const Sensors: React.FunctionComponent = () => {
-  const sensorContext = useContext(SensorContext);
-
-  const handleCloseDrawer = () => {
-    sensorContext?.setSensor({
-      drawerMode: {
-        showDrawer: false,
-      },
-      sensorToEdit: undefined,
-    });
-  };
-
-  const handleOpenAddSensorDrawer = () => {
-    sensorContext?.setSensor({
-      drawerMode: {
-        showDrawer: true,
-      },
-      action: SensorActions.ADD,
-    });
-  };
-
-  const handleOpenModal = (action?: SensorActions) => {
-    sensorContext?.setSensor({
-      ...(sensorContext?.sensorPage as SensorPage),
-      action: action,
-    });
-  };
-
-  const getDrawerComponent = useCallback(
-    (action?: SensorActions) => {
-      switch (action) {
-        case SensorActions.ADD:
-          return <SensorEditor isEdit={false}></SensorEditor>;
-        case SensorActions.EDIT:
-          return (
-            <SensorEditor
-              isEdit={true}
-              sensorToEdit={sensorContext?.sensorPage?.sensorToEdit}
-            ></SensorEditor>
-          );
-        case SensorActions.VIEW:
-          return <h1>TODO: Show Sensor data</h1>;
-        default:
-          return <></>;
-      }
-    },
-    [sensorContext]
-  );
-
-  useEffect(() => {
-    console.log("sensorContext: ", sensorContext);
-  }, [sensorContext]);
+  const {
+    handleCloseDrawer,
+    handleOpenAddSensorDrawer,
+    handleOpenModal,
+    getDrawerComponent,
+    sensorContext,
+  } = useSensors();
 
   return (
     <Box sx={sxMap.container}>

@@ -10,19 +10,30 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { SensorTypeList } from "../../types/sensors/sensorTypeFixture";
-import { FrequencyList } from "../../types/sensors/frequencyFixture";
-import { Sensor } from "../../types/sensors/sensor";
+import { SensorTypeList } from "../../../types/sensors/sensorTypeFixture";
+import { FrequencyList } from "../../../types/sensors/frequencyFixture";
+import { Sensor } from "../../../types/sensors/sensor";
+import { useSensorEditor } from "./useSensorsEditor";
 
 interface AddSensorProps {
   isEdit: boolean;
   sensorToEdit?: Sensor;
 }
 
-export const SensorEditor: React.FunctionComponent<AddSensorProps> = ({
+export const SensorEditorComponent: React.FunctionComponent<AddSensorProps> = ({
   isEdit,
   sensorToEdit,
 }) => {
+  const {
+    name,
+    handleNameChange,
+    selectedSensorType,
+    handleSensorTypeChange,
+    identifier,
+    handleIdentifierChange,
+    selectedFrequency,
+    handleFrequencyChange,
+  } = useSensorEditor(isEdit, sensorToEdit);
   return (
     <Box
       sx={{
@@ -42,7 +53,8 @@ export const SensorEditor: React.FunctionComponent<AddSensorProps> = ({
                   id="sensor-name"
                   fullWidth
                   placeholder="Nombre del sensor"
-                  value={(isEdit && sensorToEdit?.name) || ""}
+                  value={name}
+                  onChange={handleNameChange}
                 />
               </FormControl>
             </Grid>
@@ -52,10 +64,9 @@ export const SensorEditor: React.FunctionComponent<AddSensorProps> = ({
                 <Select
                   labelId="sensor-type"
                   id="sensor-type"
-                  defaultValue={SensorTypeList[0].id}
-                  value={sensorToEdit?.sensorType.id}
+                  value={selectedSensorType}
                   label="Tipo de Sensor"
-                  onChange={() => console.log("on change tipo de sensor")}
+                  onChange={handleSensorTypeChange}
                 >
                   {SensorTypeList.map((item) => (
                     <MenuItem key={item.id} value={item.id}>
@@ -70,10 +81,11 @@ export const SensorEditor: React.FunctionComponent<AddSensorProps> = ({
                 <TextField
                   label="Identificador del Sensor"
                   id="sensor-id"
-                  value={(isEdit && sensorToEdit?.identifier) || ""}
+                  value={identifier}
                   disabled={isEdit}
                   fullWidth
                   placeholder="Identificador del sensor"
+                  onChange={handleIdentifierChange}
                 />
               </FormControl>
             </Grid>
@@ -85,12 +97,9 @@ export const SensorEditor: React.FunctionComponent<AddSensorProps> = ({
                 <Select
                   labelId="frequency-type"
                   id="frequency-type"
-                  value={
-                    (isEdit && sensorToEdit?.frequency.id) ||
-                    FrequencyList[0].id
-                  }
+                  value={selectedFrequency}
                   label="Frecuencia de medición"
-                  onChange={() => console.log("on change tipo de frecuencia")}
+                  onChange={handleFrequencyChange}
                 >
                   {FrequencyList.map((item) => (
                     <MenuItem key={item.id} value={item.id}>
