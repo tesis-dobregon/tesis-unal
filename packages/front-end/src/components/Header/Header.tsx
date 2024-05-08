@@ -1,5 +1,4 @@
 /// <reference types="vite-plugin-svgr/client" />
-
 import { useState } from "react";
 import {
   AppBar,
@@ -38,8 +37,11 @@ export const Header = () => {
           <Stack direction="row" spacing={8}>
             <SvgIcon
               sx={{
-                height: "50px",
                 width: "50px",
+                margin: 0,
+                position: "absolute",
+                top: "50%",
+                transform: "translateY(-50%)",
               }}
             >
               <Logo />
