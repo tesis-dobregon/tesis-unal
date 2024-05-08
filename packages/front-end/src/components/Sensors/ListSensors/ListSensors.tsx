@@ -7,15 +7,16 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import { Sensor } from "../../types/sensors/sensor";
-import { TableComponent } from "../Table/Table";
+import { Sensor } from "../../../types/sensors/sensor";
+import { TableComponent } from "../../Table/Table";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CircleIcon from "@mui/icons-material/Circle";
-import { HeaderProperty } from "../../types/sensors/table/table";
-import { ButtonSubMenu } from "../ButtonSubMenu";
-import { MenuItemIcon } from "../../types/icons/menuIcons";
+import { HeaderProperty } from "../../../types/sensors/table/table";
+import { ButtonSubMenuComponent } from "../../ButtonSubMenu/ButtonSubMenu";
+import { MenuItemIcon } from "../../../types/icons/menuIcons";
 import { useContext } from "react";
-import { SensorContext, SensorActions } from "../../types/sensors/providers";
+import { SensorContext } from "../../../types/sensors/providers";
+import { useListSensors } from "./useListSensors";
 
 interface ListSensorsComponentProps {
   sensors: Sensor[];
@@ -24,6 +25,7 @@ interface ListSensorsComponentProps {
 export const ListSensorsComponent: React.FunctionComponent<
   ListSensorsComponentProps
 > = ({ sensors = [] }) => {
+  const { handleEdit, handleDelete, handleView } = useListSensors();
   const sensorsContext = useContext(SensorContext);
   /**
    * TODO
@@ -104,70 +106,23 @@ export const ListSensorsComponent: React.FunctionComponent<
       name: "Actions",
       accesor: "",
       showName: false,
-      renderAction: (data: any) => {
-        return (
-          <ButtonSubMenu
-            clickableElement={
-              <IconButton aria-label="more">
-                <SvgIcon component={MoreHorizIcon}></SvgIcon>
-              </IconButton>
-            }
-            menuOptions={[
-              {
-                name: "Editar",
-                onClick: () => {
-                  sensorsContext?.setSensor({
-                    sensorToEdit: data as Sensor,
-                    drawerMode: { showDrawer: true },
-                    action: SensorActions.EDIT,
-                  });
-                },
-                icon: MenuItemIcon.EDIT,
-              },
-              {
-                name: "Eliminar",
-                onClick: () => {
-                  sensorsContext?.setSensor({
-                    sensorToEdit: data as Sensor,
-                    drawerMode: { showDrawer: false },
-                    action: SensorActions.DELETE,
-                  });
-                },
-                icon: MenuItemIcon.DELETE,
-              },
-              {
-                name: "Ver",
-                onClick: () => {
-                  sensorsContext?.setSensor({
-                    drawerMode: { showDrawer: true },
-                    action: SensorActions.VIEW,
-                  });
-                },
-                icon: MenuItemIcon.VIEW_DATA,
-              },
-            ]}
-          ></ButtonSubMenu>
-        );
-      },
+      renderAction: (data: any) => <></>
     },
   ];
+  
   return (
     <Box>
       <Box>
         <List>
           <ListItem key={0}>
-            <SvgIcon component={CircleIcon} color="success">
-              {" "}
-            </SvgIcon>
+            <SvgIcon component={CircleIcon} color="success" />
             <ListItemText
               primary="Activo"
               secondary={"Representa un sensor en funcionamiento"}
             />
           </ListItem>
           <ListItem key={1}>
-            <SvgIcon component={CircleIcon} color="error">
-              {" "}
-            </SvgIcon>
+            <SvgIcon component={CircleIcon} color="error" />
             <ListItemText
               primary="Inactivo"
               secondary={"Representa un sensor apagado"}
@@ -176,7 +131,41 @@ export const ListSensorsComponent: React.FunctionComponent<
         </List>
       </Box>
 
-      <TableComponent data={sensors} header={headerProperties}></TableComponent>
+      <TableComponent
+        data={sensors}
+        header={headerProperties.map(property => ({
+          ...property,
+          renderAction:
+            property.name === "Actions"
+              ? (data: Sensor) => (
+                  <ButtonSubMenuComponent
+                    clickableElement={
+                      <IconButton aria-label="more">
+                        <SvgIcon component={MoreHorizIcon} />
+                      </IconButton>
+                    }
+                    menuOptions={[
+                      {
+                        name: "Editar",
+                        onClick: () => handleEdit(data),
+                        icon: MenuItemIcon.EDIT,
+                      },
+                      {
+                        name: "Eliminar",
+                        onClick: () => handleDelete(data),
+                        icon: MenuItemIcon.DELETE,
+                      },
+                      {
+                        name: "Ver",
+                        onClick: () => handleView(),
+                        icon: MenuItemIcon.VIEW_DATA,
+                      },
+                    ]}
+                  />
+                )
+              : property.renderAction
+        }))}
+      />
     </Box>
   );
 };
