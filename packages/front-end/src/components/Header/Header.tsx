@@ -38,9 +38,8 @@ export const Header = () => {
           <Stack direction="row" spacing={8}>
             <SvgIcon
               sx={{
-                height: "100%",
-                width: "100%",
-                color: "white",
+                height: "50px",
+                width: "50px",
               }}
             >
               <Logo />
