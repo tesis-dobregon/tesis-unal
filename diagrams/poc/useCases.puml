@@ -1,0 +1,36 @@
+@startuml
+left to right direction
+actor Admin as A
+actor Sensors as S
+actor System as Sy
+
+rectangle "Smart City UNAL" {
+    A -- (Login)
+    A -- (Logout)
+    A -- (View Profile)
+    A -- (Update Profile)
+    A -- (View City Data)
+    A --> (Edit City Data)
+    A -- (Sensor Management)
+    A -- (Alert Management)
+    A -- (View Sensor Data)
+    A -- (View AQI per Contaminant)
+    A -- (View Contaminant AQI Data)
+    A -- (View Contaminant AQI Definition)
+    A -- (View Contaminant AQI Thresholds)
+    S -- (Produce Sensor Data)
+    Sy -- (Send Email Alert)
+    A -- (Receive Alert)
+    'Sensor Management
+    (Sensor Management) <.. (Add Sensor) : <<extends>>
+    (Sensor Management) <.. (Edit Sensor) : <<extends>>
+    (Sensor Management) <.. (Delete Sensor) : <<extends>>
+    (Sensor Management) <.. (View Sensors) : <<extends>>
+    'Alert Management
+    (Alert Management) <.. (Create Alert) : <<extends>>
+    (Alert Management) <.. (Edit Alert) : <<extends>>
+    (Alert Management) <.. (Delete Alert) : <<extends>>
+    (Alert Management) <.. (View Alerts) : <<extends>>
+}
+
+@endumls

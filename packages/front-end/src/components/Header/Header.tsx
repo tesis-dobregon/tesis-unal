@@ -1,3 +1,4 @@
+/// <reference types="vite-plugin-svgr/client" />
 import { useState } from "react";
 import {
   AppBar,
@@ -13,10 +14,11 @@ import {
   Menu,
   MenuItem,
   Stack,
+  SvgIcon,
   Toolbar,
   Tooltip,
-  Typography,
 } from "@mui/material";
+import Logo from "../../assets/logo-header.svg?react";
 import { Link, useFetcher } from "react-router-dom";
 
 export const Header = () => {
@@ -33,7 +35,17 @@ export const Header = () => {
       <Container maxWidth="xl">
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Stack direction="row" spacing={8}>
-            <Typography variant="h2">Smart city Unal</Typography>
+            <SvgIcon
+              sx={{
+                width: "50px",
+                margin: 0,
+                position: "absolute",
+                top: "50%",
+                transform: "translateY(-50%)",
+              }}
+            >
+              <Logo />
+            </SvgIcon>
             <List component={Stack} direction="row">
               <ListItem>
                 <ListItemButton component={Link} to="/">

@@ -1,0 +1,79 @@
+@startuml
+
+package "Cloud Computing" {
+    [Application Servers]
+    [API Gateway]
+    [Centralized Data Storage]
+    [Broker]
+
+    [Microservice A]
+    [Data Storage A]
+    [Microservice B]
+    [Load Balancer]
+}
+
+package "Edge/Fog Computing" {
+    [Edge/Fog Gateways]
+    
+    [Fog Broker]
+    [Microservice C]
+    [Data Storage C]
+    [Microservice D]
+    [Data Storage D]  
+}
+
+package "Edge Tier" {
+    [IoT Devices/Sensors]
+}
+
+cloud "Internet" {
+}
+
+'Microservices and database per service
+[Microservice A] --> [Data Storage A] : Store
+[Microservice B] --> [Centralized Data Storage] : Store
+[Microservice C] --> [Data Storage C] : Store
+[Microservice D] --> [Data Storage D] : Store
+
+[Application Servers] --> [API Gateway] : REST API
+
+'Gateway communication
+[API Gateway] --> [Load Balancer] : Manage traffic
+[Edge/Fog Gateways] --> [Microservice C]
+[Edge/Fog Gateways] --> [Microservice D]
+[Edge/Fog Gateways] --> [IoT Devices/Sensors]
+'Edge tier to cloud and fog
+[IoT Devices/Sensors] --> [Edge/Fog Gateways] : Data
+[IoT Devices/Sensors] --> [API Gateway]
+
+'Load Balancer to Microservices
+[Load Balancer] --> [Microservice A]
+[Load Balancer] --> [Microservice B]
+
+'Microservices communication
+[Microservice A] --> [Broker]
+[Microservice B] --> [Broker]
+[Microservice A] --> [Microservice B]
+[Microservice C] --> [Fog Broker]
+[Microservice D] --> [Fog Broker]
+
+'Fog / Cloud communication
+[Fog Broker] -> [Broker] : Data
+[Broker] --> [Fog Broker] : Data
+[Edge/Fog Gateways] --> [Broker] : Data
+[Broker] --> [Microservice C]
+[Broker] --> [Microservice D]
+[Edge/Fog Gateways] --> [API Gateway] : Data
+[Microservice C] --> [API Gateway] : Data
+
+'LAN Outgoing
+[Edge/Fog Gateways] --> [LAN] : Outgoing Data
+[IoT Devices/Sensors] --> [LAN] : Outgoing Data
+
+'WAN Outgoing
+[Edge/Fog Gateways] --> [WAN] : Outgoing Data
+[IoT Devices/Sensors] --> [WAN] : Outgoing Data
+
+[WAN] --> Internet : Outgoing Data
+
+@enduml
