@@ -1,33 +1,16 @@
 import { Box, Menu, MenuItem, SvgIcon } from "@mui/material";
 import React from "react";
-import { useState } from "react";
-import { IconsMap, MenuItemIcon } from "../../types/icons/menuIcons";
-
-interface MenuOption {
-  name: string;
-  onClick: () => void;
-  icon?: MenuItemIcon;
-}
-interface ButtonSubMenuComponentProps {
-  clickableElement: React.ReactElement;
-  menuOptions: MenuOption[];
-}
+import { IconsMap } from "../../types/icons/menuIcons";
+import {
+  useButtonSubMenu,
+  ButtonSubMenuComponentProps,
+} from "./useButtonSubMenu";
 
 export const ButtonSubMenuComponent: React.FunctionComponent<
   ButtonSubMenuComponentProps
 > = ({ clickableElement, menuOptions }) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const menuItemActions = (menuOption: MenuOption) => {
-    menuOption.onClick();
-    handleClose();
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const { anchorEl, handleClick, handleClose, handleMenuOptionsClick } =
+    useButtonSubMenu();
 
   return (
     <Box>
@@ -50,7 +33,7 @@ export const ButtonSubMenuComponent: React.FunctionComponent<
             <MenuItem
               key={index}
               onClick={() => {
-                menuItemActions(option);
+                handleMenuOptionsClick(option);
               }}
             >
               {option.icon && (
