@@ -106,10 +106,10 @@ export const ListSensorsComponent: React.FunctionComponent<
       name: "Actions",
       accesor: "",
       showName: false,
-      renderAction: (data: any) => <></>
+      renderAction: (data: any) => <></>,
     },
   ];
-  
+
   return (
     <Box>
       <Box>
@@ -133,7 +133,7 @@ export const ListSensorsComponent: React.FunctionComponent<
 
       <TableComponent
         data={sensors}
-        header={headerProperties.map(property => ({
+        header={headerProperties.map((property) => ({
           ...property,
           renderAction:
             property.name === "Actions"
@@ -163,7 +163,7 @@ export const ListSensorsComponent: React.FunctionComponent<
                     ]}
                   />
                 )
-              : property.renderAction
+              : property.renderAction,
         }))}
       />
     </Box>

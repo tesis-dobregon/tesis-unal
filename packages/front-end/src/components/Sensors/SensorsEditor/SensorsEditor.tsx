@@ -32,7 +32,7 @@ export const SensorEditorComponent: React.FunctionComponent<AddSensorProps> = ({
     identifier,
     handleIdentifierChange,
     selectedFrequency,
-    handleFrequencyChange
+    handleFrequencyChange,
   } = useSensorEditor(isEdit, sensorToEdit);
   return (
     <Box
@@ -120,5 +120,3 @@ export const SensorEditorComponent: React.FunctionComponent<AddSensorProps> = ({
     </Box>
   );
 };
-
-

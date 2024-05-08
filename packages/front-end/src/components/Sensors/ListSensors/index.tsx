@@ -1,1 +1,1 @@
-export { ListSensorsComponent as ListSensors} from "./ListSensors"
+export { ListSensorsComponent as ListSensors } from "./ListSensors";

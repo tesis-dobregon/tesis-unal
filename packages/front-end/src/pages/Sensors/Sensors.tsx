@@ -7,9 +7,7 @@ import {
 } from "../../components";
 import { SensorsList } from "../../types/sensors/SensorsFixture";
 import { ModalComponent } from "../../components/Modal/Modal";
-import {
-  SensorActions as SensorActions,
-} from "../../types/sensors/providers";
+import { SensorActions as SensorActions } from "../../types/sensors/providers";
 import { useSensors } from "./useSensors";
 const sxMap = {
   container: {
@@ -34,7 +32,13 @@ const sxMap = {
 };
 
 const Sensors: React.FunctionComponent = () => {
-  const { handleCloseDrawer, handleOpenAddSensorDrawer, handleOpenModal, getDrawerComponent, sensorContext  } = useSensors();
+  const {
+    handleCloseDrawer,
+    handleOpenAddSensorDrawer,
+    handleOpenModal,
+    getDrawerComponent,
+    sensorContext,
+  } = useSensors();
 
   return (
     <Box sx={sxMap.container}>

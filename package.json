@@ -4,6 +4,7 @@
   "description": "Repositorio con el código para el proyecto de tesis.",
   "main": "index.js",
   "scripts": {
+    "format": "nx format:write",
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
     "serve:frontend": "nx serve front-end",

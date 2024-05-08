@@ -1,1 +1,1 @@
-export { SensorEditorComponent as SensorEditor} from "./SensorsEditor"
+export { SensorEditorComponent as SensorEditor } from "./SensorsEditor";
