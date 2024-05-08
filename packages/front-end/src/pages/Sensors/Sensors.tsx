@@ -9,6 +9,7 @@ import { SensorsList } from "../../types/sensors/SensorsFixture";
 import { ModalComponent } from "../../components/Modal/Modal";
 import { SensorActions as SensorActions } from "../../types/sensors/providers";
 import { useSensors } from "./useSensors";
+
 const sxMap = {
   container: {
     display: "flex",
