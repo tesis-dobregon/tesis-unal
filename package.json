@@ -12,7 +12,10 @@
     "test:frontend": "nx test front-end",
     "build:frontend": "nx build front-end",
     "prepare": "husky install",
-    "dev:backend": "nx run backend:dev"
+    "dev:backend": "nx run backend:dev",
+    "build:backend": "nx build backend",
+    "deploy:backend": "./deploy/backend/deploy.sh",
+    "destroy:backend": "./deploy/backend/destroy.sh"
   },
   "keywords": [],
   "author": "",

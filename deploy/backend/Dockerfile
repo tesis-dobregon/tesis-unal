@@ -10,7 +10,7 @@ RUN npm ci --silent
 COPY . .
 
 # Build
-RUN npm run build
+RUN npm run build:backend
 
 # -------------------
 FROM node:16-alpine
@@ -21,7 +21,7 @@ WORKDIR /app
 COPY . .
 
 # Copy built files
-COPY --from=build /tmp/app/dist .
+COPY --from=build /tmp/app/dist/packages/backend .
 
 # Build and cleanup
 ENV NODE_ENV=production

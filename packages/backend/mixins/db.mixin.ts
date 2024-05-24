@@ -1,4 +1,4 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import type { Context, Service, ServiceSchema } from 'moleculer';
 import type { DbAdapter, MoleculerDB } from 'moleculer-db';
 import DbService from 'moleculer-db';
