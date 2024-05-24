@@ -1,8 +1,8 @@
-import React from "react";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import { Box } from "@mui/material";
+import React from 'react';
+import Drawer from '@mui/material/Drawer';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import { Box } from '@mui/material';
 
 interface DrawerComponentProps {
   children: React.ReactNode;
@@ -12,6 +12,7 @@ interface DrawerComponentProps {
 
 export const DrawerComponent: React.FC<DrawerComponentProps> = ({
   children,
+  // eslint-disable-next-line
   onCloseDrawer = () => {},
   isOpen = false,
 }) => {
@@ -19,14 +20,14 @@ export const DrawerComponent: React.FC<DrawerComponentProps> = ({
     <Drawer
       anchor="right"
       open={isOpen}
-      sx={{ "& .MuiDrawer-paper": { zIndex: -1 }, marginTop: "5rem" }}
+      sx={{ '& .MuiDrawer-paper': { zIndex: -1 }, marginTop: '5rem' }}
       PaperProps={{
-        sx: { width: "35%" },
+        sx: { width: '35%' },
       }}
     >
       <IconButton
         onClick={() => onCloseDrawer()}
-        sx={{ position: "absolute", right: 0, top: 0 }}
+        sx={{ position: 'absolute', right: 0, top: 0 }}
       >
         <CloseIcon />
       </IconButton>

@@ -1,87 +1,95 @@
-import type { Context, Service, ServiceSchema, ServiceSettingSchema } from "moleculer";
+import type {
+  Context,
+  Service,
+  ServiceSchema,
+  ServiceSettingSchema,
+} from 'moleculer';
 
 export interface ActionHelloParams {
-	name: string;
+  name: string;
 }
 
 interface GreeterSettings extends ServiceSettingSchema {
-	defaultName: string;
+  defaultName: string;
 }
 
 interface GreeterMethods {
-	uppercase(str: string): string;
+  uppercase(str: string): string;
 }
 
 interface GreeterLocalVars {
-	myVar: string;
+  myVar: string;
 }
 
 type GreeterThis = Service<GreeterSettings> & GreeterMethods & GreeterLocalVars;
 
 const GreeterService: ServiceSchema<GreeterSettings> = {
-	name: "greeter",
+  name: 'greeter',
 
-	/**
-	 * Settings
-	 */
-	settings: {
-		defaultName: "Moleculer",
-	},
+  /**
+   * Settings
+   */
+  settings: {
+    defaultName: 'Moleculer',
+  },
 
-	/**
-	 * Dependencies
-	 */
-	dependencies: [],
+  /**
+   * Dependencies
+   */
+  dependencies: [],
 
-	/**
-	 * Actions
-	 */
-	actions: {
-		hello: {
-			rest: {
-				method: "GET",
-				path: "/hello",
-			},
-			handler(this: GreeterThis /* , ctx: Context */): string {
-				return `Hello ${this.settings.defaultName}`;
-			},
-		},
+  /**
+   * Actions
+   */
+  actions: {
+    hello: {
+      rest: {
+        method: 'GET',
+        path: '/hello',
+      },
+      handler(this: GreeterThis /* , ctx: Context */): string {
+        return `Hello ${this.settings.defaultName}`;
+      },
+    },
 
-		welcome: {
-			rest: "GET /welcome/:name",
-			params: {
-				name: "string",
-			},
-			handler(this: GreeterThis, ctx: Context<ActionHelloParams>): string {
-				return `Welcome, ${ctx.params.name}`;
-			},
-		},
-	},
+    welcome: {
+      rest: 'GET /welcome/:name',
+      params: {
+        name: 'string',
+      },
+      handler(this: GreeterThis, ctx: Context<ActionHelloParams>): string {
+        return `Welcome, ${ctx.params.name}`;
+      },
+    },
+  },
 
-	/**
-	 * Events
-	 */
-	events: {},
+  /**
+   * Events
+   */
+  events: {},
 
-	/**
-	 * Methods
-	 */
-	methods: {},
+  /**
+   * Methods
+   */
+  methods: {},
 
-	/**
-	 * Service created lifecycle event handler
-	 */
-	created() {},
+  /**
+   * Service created lifecycle event handler
+   */
+  // eslint-disable-next-line
+  created() {},
 
-	/**
-	 * Service started lifecycle event handler
-	 */
-	async started() {},
+  /**
+   * Service started lifecycle event handler
+   */
+  // eslint-disable-next-line
+  async started() {},
 
-	/**
-	 * Service stopped lifecycle event handler
-	 */
-	async stopped() {},
+  /**
+   * Service stopped lifecycle event handler
+   */
+  // eslint-disable-next-line
+  async stopped() {},
 };
 
 export default GreeterService;
