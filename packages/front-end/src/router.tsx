@@ -1,12 +1,12 @@
-import { createBrowserRouter, redirect } from "react-router-dom";
-import { PageLayout } from "./components";
-import Home from "./pages/Home/Home";
-import NotFound from "./pages/NotFound/NotFound";
-import Sensors from "./pages/Sensors/Sensors";
-import Alerts from "./pages/Alerts/Alerts";
-import LoginPage, { loginAction, loginLoader } from "./pages/Login/Login";
-import { fakeAuthProvider } from "./providers";
-import { SensorsPage } from "./pages/Sensors";
+import { createBrowserRouter, redirect } from 'react-router-dom';
+import { PageLayout } from './components';
+import Home from './pages/Home/Home';
+import NotFound from './pages/NotFound/NotFound';
+import Sensors from './pages/Sensors/Sensors';
+import Alerts from './pages/Alerts/Alerts';
+import LoginPage, { loginAction, loginLoader } from './pages/Login/Login';
+import { fakeAuthProvider } from './providers';
+import { SensorsPage } from './pages/Sensors';
 
 const router = createBrowserRouter([
   {
@@ -16,9 +16,9 @@ const router = createBrowserRouter([
       // them to `/login` with a `from` parameter that allows login to redirect back
       // to this page upon successful authentication
       if (!fakeAuthProvider.isAuthenticated) {
-        let params = new URLSearchParams();
-        params.set("from", new URL(request.url).pathname);
-        return redirect("/login?" + params.toString());
+        const params = new URLSearchParams();
+        params.set('from', new URL(request.url).pathname);
+        return redirect('/login?' + params.toString());
       }
 
       // Our root route always provides the user, if logged in
@@ -26,32 +26,32 @@ const router = createBrowserRouter([
     },
     children: [
       {
-        path: "/",
+        path: '/',
         element: <Home />,
       },
       {
-        path: "/sensores",
+        path: '/sensores',
         element: <SensorsPage />,
       },
       {
-        path: "/alertas",
+        path: '/alertas',
         element: <Alerts />,
       },
-      { path: "*", element: <NotFound /> },
+      { path: '*', element: <NotFound /> },
     ],
   },
   {
-    path: "/login",
+    path: '/login',
     action: loginAction,
     loader: loginLoader,
     element: <LoginPage />,
   },
   {
-    path: "/logout",
+    path: '/logout',
     async action() {
       // We signout in a "resource route" that we can hit from a fetcher.Form
       await fakeAuthProvider.signout();
-      return redirect("/");
+      return redirect('/');
     },
   },
 ]);

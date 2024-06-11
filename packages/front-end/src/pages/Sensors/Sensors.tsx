@@ -1,34 +1,34 @@
-import AddIcon from "@mui/icons-material/Add";
-import { Box, Link } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
+import { Box, Link } from '@mui/material';
 import {
   DrawerComponent,
   ListSensorsComponent,
   RefreshButton,
-} from "../../components";
-import { SensorsList } from "../../types/sensors/SensorsFixture";
-import { ModalComponent } from "../../components/Modal/Modal";
-import { SensorActions as SensorActions } from "../../types/sensors/providers";
-import { useSensors } from "./useSensors";
+} from '../../components';
+import { SensorsList } from '../../types/sensors/SensorsFixture';
+import { ModalComponent } from '../../components/Modal/Modal';
+import { SensorActions } from '../../types/sensors/providers';
+import { useSensors } from './useSensors';
 
 const sxMap = {
   container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    height: "100%",
-    width: "100%",
-    px: "4rem",
-    py: "2rem",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    height: '100%',
+    width: '100%',
+    px: '4rem',
+    py: '2rem',
   },
   row: {
-    display: "flex",
-    flexDirection: "row",
-    width: "100%",
-    rowGap: "3rem",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    rowGap: '3rem',
+    justifyContent: 'space-between',
   },
   list: {
-    cursor: "pointer",
+    cursor: 'pointer',
   },
 };
 
@@ -46,7 +46,7 @@ const Sensors: React.FunctionComponent = () => {
       <Box sx={sxMap.row}>
         <RefreshButton
           onClick={() => {
-            console.log("Refreshing sensors...");
+            console.log('Refreshing sensors...');
           }}
         ></RefreshButton>
 
@@ -56,7 +56,7 @@ const Sensors: React.FunctionComponent = () => {
       </Box>
       <Box
         sx={{
-          width: "100%",
+          width: '100%',
         }}
       >
         <ListSensorsComponent sensors={SensorsList}></ListSensorsComponent>
