@@ -36,11 +36,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress
-  #annotations:
-  #  kubernetes.io/ingress.class: nginx
 spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - smart-city-unal.com
+      secretName: self-signed-tls
   rules:
-    - host: smart-city-unal-backend.127.0.0.1.nip.io
+    - host: smart-city-unal.com
     - http:
         paths:
           - path: /

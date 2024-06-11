@@ -14,8 +14,8 @@
     "prepare": "husky install",
     "dev:backend": "nx run backend:dev",
     "build:backend": "nx build backend",
-    "deploy:backend": "./deploy/backend/deploy.sh",
-    "destroy:backend": "./deploy/backend/destroy.sh"
+    "deploy:backend": "./deploy/backend/scripts/deploy.sh",
+    "destroy:backend": "./deploy/backend/scripts/destroy.sh"
   },
   "keywords": [],
   "author": "",

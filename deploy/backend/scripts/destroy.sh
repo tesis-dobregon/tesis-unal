@@ -18,3 +18,6 @@ kubectl get all
 
 # Delete ingress
 kubectl delete ingress --all
+
+# Delete secrets
+kubectl delete secrets --all
