@@ -74,9 +74,9 @@ spec:
     spec:
       containers:
         - name: api
-          # image:smart-city-unal-backend
-          image: us.gcr.io/smart-city-unal/smart-city-unal:0.2.0
-          imagePullPolicy:
+          # Placeholder for image latest. It should really use the tagged image (date)
+          image: us.gcr.io/smart-city-unal/smart-city-unal:latest
+          imagePullPolicy: 'Always'
           resources:
             requests:
               memory: '512Mi'
@@ -93,40 +93,40 @@ spec:
 
 ---
 #########################################################
-# Greeter service
+# Greeter service - Commented because it is not used
 #########################################################
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: greeter
-spec:
-  selector:
-    matchLabels:
-      app: greeter
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: greeter
-    spec:
-      containers:
-        - name: greeter
-          # image:smart-city-unal-backend
-          image: us.gcr.io/smart-city-unal/smart-city-unal:0.2.0
-          imagePullPolicy:
-          resources:
-            requests:
-              memory: '512Mi'
-              cpu: '250m'
-            limits:
-              memory: '1Gi'
-              cpu: '500m'
-          envFrom:
-            - configMapRef:
-                name: common-env
-          env:
-            - name: SERVICES
-              value: greeter
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: greeter
+# spec:
+#   selector:
+#     matchLabels:
+#       app: greeter
+#   replicas: 1
+#   template:
+#     metadata:
+#       labels:
+#         app: greeter
+#     spec:
+#       containers:
+#         - name: greeter
+#           # Placeholder for image latest. It should really use the tagged image (date)
+#           image: us.gcr.io/smart-city-unal/smart-city-unal:latest
+#           imagePullPolicy: Always
+#           resources:
+#             requests:
+#               memory: '512Mi'
+#               cpu: '250m'
+#             limits:
+#               memory: '1Gi'
+#               cpu: '500m'
+#           envFrom:
+#             - configMapRef:
+#                 name: common-env
+#           env:
+#             - name: SERVICES
+#               value: greeter
 
 ---
 #########################################################
@@ -148,9 +148,9 @@ spec:
     spec:
       containers:
         - name: products
-          # image:smart-city-unal-backend
-          image: us.gcr.io/smart-city-unal/smart-city-unal:0.2.0
-          imagePullPolicy:
+          # Placeholder for image latest. It should really use the tagged image (date)
+          image: us.gcr.io/smart-city-unal/smart-city-unal:latest
+          imagePullPolicy: 'Always'
           resources:
             requests:
               memory: '512Mi'
@@ -164,6 +164,43 @@ spec:
           env:
             - name: SERVICES
               value: products
+
+---
+#########################################################
+# Users service
+#########################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users
+spec:
+  selector:
+    matchLabels:
+      app: users
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+        - name: users
+          # Placeholder for image latest. It should really use the tagged image (date)
+          image: us.gcr.io/smart-city-unal/smart-city-unal:latest
+          imagePullPolicy: 'Always'
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+          envFrom:
+            - configMapRef:
+                name: common-env
+          env:
+            - name: SERVICES
+              value: users
 
 ---
 #########################################################

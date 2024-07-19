@@ -1,0 +1,3 @@
+{"username":"john3","password":"$2a$10$n9XDhcswo6UgS2PhHa7h0u/iLl2AmblBlzkdgoD/qIOtHmOOl8EGW","email":"john3@example.com","bio":"","image":null,"createdAt":{"$$date":1721350161120},"_id":"1rpdhAhgjARAkUNn"}
+{"username":"john2","password":"$2a$10$9J90DZpp7Z15BiCkJdcN9uzJyvuaK3cAdSdWMYAuM3JzgCAevmjei","email":"john2@example.com","bio":"","image":null,"createdAt":{"$$date":1721349409220},"_id":"j2fNKvrjiUY50nix"}
+{"username":"john","password":"$2a$10$LmX5cUhF121i4rtLmZ0hGezIa/sYonkcZ.41EL3CbpG9ggzPp41L.","email":"john@example.com","bio":"","image":null,"createdAt":{"$$date":1721348343120},"_id":"uKPR6i2cFZRjpft4"}

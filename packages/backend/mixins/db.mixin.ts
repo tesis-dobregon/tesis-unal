@@ -15,9 +15,7 @@ type DbServiceSchema = Partial<ServiceSchema> &
 
 export type DbServiceThis = Service & DbServiceMethods;
 
-export default function createDbServiceMixin(
-  collection: string
-): DbServiceSchema {
+export function createDbServiceMixin(collection: string): DbServiceSchema {
   const cacheCleanEventName = `cache.clean.${collection}`;
 
   const schema: DbServiceSchema = {
