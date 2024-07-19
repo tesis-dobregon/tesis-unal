@@ -96,7 +96,7 @@ curl -X POST http://0.0.0.0:3000/api/users -H "Content-Type: application/json" -
     "email": "john2@example.com",
     "bio": "",
     "image": "",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImoyZk5LdnJqaVVZNTBuaXgiLCJ1c2VybmFtZSI6ImpvaG4yIiwiZXhwIjoxNzI2NTMzNDA5LCJpYXQiOjE3MjEzNDk0MDl9.agAXQflkrmzoRnCeHiL5_ArKCnDUHuYin24S6I-pc_8"
+    "token": "<token>"
   }
 }
 ```
@@ -202,15 +202,14 @@ curl -X POST http://0.0.0.0:3000/api/users/login -H "Content-Type: application/j
 
 ```json
 {
-  user: {
-    username: 'john',
-    password: '$2a$10$LmX5cUhF121i4rtLmZ0hGezIa/sYonkcZ.41EL3CbpG9ggzPp41L.',
-    email: 'john@example.com',
-    bio: '',
-    image: '',
-    createdAt: 2024-07-19T00:19:03.120Z,
-    _id: 'uKPR6i2cFZRjpft4',
-    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVLUFI2aTJjRlpSanBmdDQiLCJ1c2VybmFtZSI6ImpvaG4iLCJleHAiOjE3MjY1MzQ0MDUsImlhdCI6MTcyMTM1MDQwNX0.N7T8q0hqW7gB4MVmK5wnNP_KYRWJBUlkYy6FuPXVXpQ'
+  "user": {
+    "username": "john",
+    "email": "john@example.com",
+    "bio": "",
+    "image": "",
+    "createdAt": "2024-07-19T00:19:03.120Z",
+    "_id": "uKPR6i2cFZRjpft4",
+    "token": "<token>"
   }
 }
 ```

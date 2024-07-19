@@ -222,7 +222,7 @@ const UserService: ServiceSchema<UsersSettings> = {
         }
       }
 
-      return { user };
+      return { user: { ...user, password: undefined } };
     },
   },
 };
