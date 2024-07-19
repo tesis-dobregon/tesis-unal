@@ -1,10 +1,15 @@
-FROM node:16 as build
+# First Stage: Build
+FROM node:18-alpine as build
 
 WORKDIR /tmp/app
 
 # Install dependencies
-COPY package.json package-lock.json ./
-RUN npm ci --silent
+COPY package*.json ./
+
+# TODO: This should use npm ci for production
+# RUN npm ci --silent
+# RUN npm install --production --silent
+RUN npm install --silent
 
 # Copy source
 COPY . .
@@ -12,20 +17,19 @@ COPY . .
 # Build
 RUN npm run build:backend
 
-# -------------------
-FROM node:16-alpine
+# Second Stage: Production
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy source
-COPY . .
+# Set environment variable
+ENV NODE_ENV=production
+
+# Copy installed dependencies from build stage
+COPY --from=build /tmp/app/node_modules ./node_modules
 
 # Copy built files
 COPY --from=build /tmp/app/dist/packages/backend .
-
-# Build and cleanup
-ENV NODE_ENV=production
-RUN npm ci --omit=dev
 
 # Start server
 CMD ["node", "./node_modules/moleculer/bin/moleculer-runner.js"]

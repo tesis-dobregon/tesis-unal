@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: smart-city-mongodb
+    ports:
+      - '27018:27017'
+    environment:
+      - MONGO_INITDB_DATABASE=smart-city
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - smart-city-network
+
+volumes:
+  mongo-data:
+    driver: local
+
+networks:
+  smart-city-network:
+    driver: bridge

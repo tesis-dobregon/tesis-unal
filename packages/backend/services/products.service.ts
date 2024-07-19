@@ -6,7 +6,7 @@ import type {
 } from 'moleculer-db';
 import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import type { DbServiceMethods } from '../mixins/db.mixin';
-import DbMixin from '../mixins/db.mixin';
+import { createDbServiceMixin } from '../mixins/db.mixin';
 
 export interface ProductEntity {
   _id: string;
@@ -39,7 +39,7 @@ const ProductsService: ServiceSchema<ProductSettings> & {
   /**
    * Mixins
    */
-  mixins: [DbMixin('products')],
+  mixins: [createDbServiceMixin('products')],
 
   /**
    * Settings

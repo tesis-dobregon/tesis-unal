@@ -5,13 +5,13 @@
 Desplegar todo usando el comando:
 
 ```sh
-$ yarn deploy:backend
+$ npm run deploy:backend
 ```
 
 Destruir todo (antes de terminar cada sesión de desarrollo para evitar sobrecostos):
 
 ```sh
-$ yarn destroy:backend
+$ npm run destroy:backend
 ```
 
 ### Ingress K8S
@@ -52,4 +52,164 @@ Workaround para solucionar error "Error from server (InternalError): error when 
 
 ```sh
 $ kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+```
+
+Solucionar problema con pods no arrancando por memoria en cluster (pendiente mensaje de google)
+Solucionar imagen para usar :latest en deployment (done)
+Probar frontend y backend unidos (tanto apuntando a local como al desplegado)
+Implementar login
+Desplegar frontend en algo
+
+Create user with moleculer client:
+
+```
+call users.create --user.username "john" --user.password "securePassword" --user.email "john@example.com"
+```
+
+## Listado de microservicios
+
+### Users
+
+Servicio de usuarios. Permite la creación de usuarios y la autenticación de los mismos.
+
+#### Creación de usuario
+
+- Creación en moleculer:
+
+```
+call users.create --user.username "john" --user.password "securePassword" --user.email "
+```
+
+- Creación en API:
+
+```
+curl -X POST http://0.0.0.0:3000/api/users -H "Content-Type: application/json" -d '{"user":{"username":"john","password":"securePassword","email":"john@example.com"}}'
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "user": {
+    "_id": "j2fNKvrjiUY50nix",
+    "username": "john2",
+    "email": "john2@example.com",
+    "bio": "",
+    "image": "",
+    "token": "<token>"
+  }
+}
+```
+
+#### Obtener usuario
+
+- Obtener en moleculer:
+
+```
+call users.get --id "j2fNKvrjiUY50nix"
+
+```
+
+- Obtener en API:
+
+```
+curl -X GET http://0.0.0.0:3000/api/users/j2fNKvrjiUY50nix
+
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "_id": "j2fNKvrjiUY50nix",
+  "username": "john2",
+  "email": "john2@example.com",
+  "bio": "",
+  "image": null
+}
+```
+
+#### Listar usuarios
+
+- Listar en moleculer:
+
+```
+call users.list
+```
+
+- Listar en API:
+
+```
+curl -X GET http://0.0.0.0:3000/api/users
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "rows": [
+    {
+      "_id": "j2fNKvrjiUY50nix",
+      "username": "john2",
+      "email": "john2@example.com",
+      "bio": "",
+      "image": null
+    },
+    {
+      "_id": "uKPR6i2cFZRjpft4",
+      "username": "john",
+      "email": "john@example.com",
+      "bio": "",
+      "image": null
+    }
+  ],
+  "total": 2,
+  "page": 1,
+  "pageSize": 10,
+  "totalPages": 1
+}
+```
+
+#### Borrar usuario
+
+- Borrar en moleculer:
+
+```
+call users.remove --id "NiTfawzEOeV2C8tw"
+```
+
+- Borrar en API:
+
+```
+curl -X DELETE http://0.0.0.0:3000/api/users/NiTfawzEOeV2C8tw
+```
+
+#### Login
+
+- Login en moleculer:
+
+```
+call users.login --email "john" --password "securePassword"
+```
+
+- Login en API:
+
+```
+curl -X POST http://0.0.0.0:3000/api/users/login -H "Content-Type: application/json" -d '{"email":"john@example.com", "password":"securePassword"}'
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "user": {
+    "username": "john",
+    "email": "john@example.com",
+    "bio": "",
+    "image": "",
+    "createdAt": "2024-07-19T00:19:03.120Z",
+    "_id": "uKPR6i2cFZRjpft4",
+    "token": "<token>"
+  }
+}
 ```
