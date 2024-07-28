@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Variables
-IMAGE_NAME="us.gcr.io/smart-city-unal/smart-city-unal"
+IMAGE_NAME="nano2766/smart-city-unal"
+# IMAGE_NAME="us.gcr.io/smart-city-unal/smart-city-unal"
 # Read the version from package.json
 VERSION=$(grep '"version":' package.json | sed -E 's/.*"([^"]+)".*/\1/')
 FULL_IMAGE_NAME="$IMAGE_NAME:$VERSION"

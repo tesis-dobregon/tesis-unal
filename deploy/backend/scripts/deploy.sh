@@ -1,9 +1,7 @@
 VERSION=$(grep '"version":' package.json | sed -E 's/.*"([^"]+)".*/\1/')
-IMAGE_NAME="us.gcr.io/smart-city-unal/smart-city-unal"
-FULL_IMAGE_NAME="$IMAGE_NAME:$VERSION"
 
 # Call the build script
-npm run docker:build
+# npm run docker:build
 
 # Update the kustomization.yaml with the new image tag
 sed -i '' -e "s/newTag: .*/newTag: $VERSION/" ./deploy/backend/k8s/app/kustomization.yaml

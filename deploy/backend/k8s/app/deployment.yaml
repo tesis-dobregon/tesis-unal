@@ -75,7 +75,7 @@ spec:
       containers:
         - name: api
           # Placeholder for image latest. It should really use the tagged image (date)
-          image: us.gcr.io/smart-city-unal/smart-city-unal:latest
+          image: nano2766/smart-city-unal:latest
           imagePullPolicy: 'Always'
           resources:
             requests:
@@ -112,7 +112,7 @@ spec:
 #       containers:
 #         - name: greeter
 #           # Placeholder for image latest. It should really use the tagged image (date)
-#           image: us.gcr.io/smart-city-unal/smart-city-unal:latest
+#           image: nano2766/smart:latest
 #           imagePullPolicy: Always
 #           resources:
 #             requests:
@@ -149,7 +149,7 @@ spec:
       containers:
         - name: products
           # Placeholder for image latest. It should really use the tagged image (date)
-          image: us.gcr.io/smart-city-unal/smart-city-unal:latest
+          image: nano2766/smart-city-unal:latest
           imagePullPolicy: 'Always'
           resources:
             requests:
@@ -186,7 +186,7 @@ spec:
       containers:
         - name: users
           # Placeholder for image latest. It should really use the tagged image (date)
-          image: us.gcr.io/smart-city-unal/smart-city-unal:latest
+          image: nano2766/smart-city-unal:latest
           imagePullPolicy: 'Always'
           resources:
             requests:

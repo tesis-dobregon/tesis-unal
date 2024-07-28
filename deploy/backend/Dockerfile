@@ -15,7 +15,7 @@ RUN npm install --silent
 COPY . .
 
 # Build
-RUN npm run build:backend
+RUN npm run backend:build
 
 # Second Stage: Production
 FROM node:18-alpine
