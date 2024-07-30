@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "backend": ["packages/backend/src/index.ts"]
+      "backend": ["packages/backend/src/index.ts"],
+      "sensor-data-simulator": ["packages/sensor-data-simulator/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

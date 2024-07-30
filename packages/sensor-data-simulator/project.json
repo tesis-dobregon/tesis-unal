@@ -1,0 +1,19 @@
+{
+  "name": "sensor-data-simulator",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/sensor-data-simulator/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/sensor-data-simulator",
+        "main": "packages/sensor-data-simulator/src/index.ts",
+        "tsConfig": "packages/sensor-data-simulator/tsconfig.lib.json",
+        "assets": ["packages/sensor-data-simulator/*.md"]
+      }
+    }
+  }
+}

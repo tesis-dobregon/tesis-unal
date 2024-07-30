@@ -61,6 +61,7 @@ export interface SensorEntity {
 
 export type ActionCreateParams = Partial<SensorEntity>;
 
+// TODO: change me for the type of sensor data
 export interface ActionQuantityParams {
   id: string;
   value: number;
@@ -138,6 +139,17 @@ const SensorsService: ServiceSchema<SensorSettings> & {
    * Actions
    */
   actions: {
+    /**
+     * The "moleculer-db" mixin registers the following actions:
+     *  - list
+     *  - find
+     *  - count
+     *  - create
+     *  - insert
+     *  - update
+     *  - remove
+     */
+    // --- ADDITIONAL ACTIONS ---
     create: false,
     register: {
       rest: 'POST /',
@@ -191,62 +203,23 @@ const SensorsService: ServiceSchema<SensorSettings> & {
         return transformedSensor;
       },
     },
-    /**
-     * The "moleculer-db" mixin registers the following actions:
-     *  - list
-     *  - find
-     *  - count
-     *  - create
-     *  - insert
-     *  - update
-     *  - remove
-     */
-    // --- ADDITIONAL ACTIONS ---
-    /**
-     * Increase the quantity of the product item.
-     */
-    // increaseQuantity: {
-    //   rest: 'PUT /:id/quantity/increase',
-    //   params: {
-    //     id: 'string',
-    //     value: 'number|integer|positive',
-    //   },
-    //   async handler(
-    //     this: SensorsThis,
-    //     ctx: Context<ActionQuantityParams>
-    //   ): Promise<object> {
-    //     const doc = await this.adapter.updateById(ctx.params.id, {
-    //       $inc: { quantity: ctx.params.value },
-    //     });
-    //     const json = await this.transformDocuments(ctx, ctx.params, doc);
-    //     await this.entityChanged('updated', json, ctx);
-    //
-    //     return json;
-    //   },
-    // },
-    //
-    // /**
-    //  * Decrease the quantity of the product item.
-    //  */
-    // decreaseQuantity: {
-    //   rest: 'PUT /:id/quantity/decrease',
-    //   params: {
-    //     id: 'string',
-    //     value: 'number|integer|positive',
-    //   },
-    //   async handler(
-    //     this: SensorsThis,
-    //     ctx: Context<ActionQuantityParams>
-    //   ): Promise<object> {
-    //     const doc = await this.adapter.updateById(ctx.params.id, {
-    //       $inc: { quantity: -ctx.params.value },
-    //     });
-    //     const json = await this.transformDocuments(ctx, ctx.params, doc);
-    //     await this.entityChanged('updated', json, ctx);
-    //
-    //     return json;
-    //   },
-    // },
+    processData: {
+      async handler(ctx: Context<ActionQuantityParams>) {
+        this.logger.info('Processing sensor data', ctx.params);
+
+        /**
+        const { id, value } = ctx.params;
+
+        const sensor = await this.adapter.findById(id);
+
+        if (!sensor) {
+          throw new Errors.MoleculerClientError('Sensor not found!', 404, '', [
+            { field: 'id', message: 'not found' },
+          ]);
+        }
+        */
+      },
+    },
   },
 
   /**
