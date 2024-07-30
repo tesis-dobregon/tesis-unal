@@ -102,10 +102,10 @@ const UserService: ServiceSchema<UsersSettings> = {
           });
           if (found) {
             throw new Errors.MoleculerClientError(
-              'Username is exist!',
-              422,
+              'Username alread exists!',
+              409,
               '',
-              [{ field: 'username', message: 'is exist' }]
+              [{ field: 'username', message: 'already exists' }]
             );
           }
         }

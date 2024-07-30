@@ -213,3 +213,155 @@ curl -X POST http://0.0.0.0:3000/api/users/login -H "Content-Type: application/j
   }
 }
 ```
+
+### Sensors
+
+#### Registrar un nuevo sensor
+
+- Registro en moleculer:
+
+```
+call sensors.register --name "sensor1" --customId "bcd123" --type "temperature" --measurementFrequency 120 --location.lat 0 --location.lon 0
+```
+
+- Registro en API:
+
+```
+ curl -X POST http://0.0.0.0:3000/api/sensors -H "Content-Type: application/json" -d '{"name":"sensor1","customId":"sensor_id_123","type":"temperature","measurementFrequency":120,"location":{"lat":0,"lon":0}}'
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "_id": "66a852b0f29cefa0f952eac7",
+  "customId": "sensor_id_123",
+  "name": "sensor1",
+  "type": "temperature",
+  "status": "waiting",
+  "location": {
+    "lat": 0,
+    "lon": 0
+  },
+  "measurementFrequency": 120,
+  "createdAt": "2024-07-30T02:40:48.120Z"
+}
+```
+
+#### Obtener un sensor
+
+- Obtener en moleculer:
+
+```
+call sensors.get --id "66a852b0f29cefa0f952eac7"
+```
+
+- Obtener en API:
+
+```
+curl -X GET http://0.0.0.0:3000/api/sensors/66a852b0f29cefa0f952eac7
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "_id": "66a852b0f29cefa0f952eac7",
+  "customId": "sensor_id_123",
+  "name": "sensor1",
+  "type": "temperature",
+  "status": "waiting",
+  "location": {
+    "lat": 0,
+    "lon": 0
+  },
+  "measurementFrequency": 120,
+  "createdAt": "2024-07-30T02:40:48.120Z"
+}
+```
+
+#### Listar sensores
+
+- Listar en moleculer:
+
+```
+call sensors.list
+```
+
+- Listar en API:
+
+```
+curl -X GET http://0.0.0.0:3000/api/sensors
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "rows": [
+    {
+      "_id": "66a852b0f29cefa0f952eac7",
+      "customId": "sensor_id_123",
+      "name": "sensor1",
+      "type": "temperature",
+      "status": "waiting",
+      "location": {
+        "lat": 0,
+        "lon": 0
+      },
+      "measurementFrequency": 120,
+      "createdAt": "2024-07-30T02:40:48.120Z"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "pageSize": 10,
+  "totalPages": 1
+}
+```
+
+#### Borrar sensor
+
+- Borrar en moleculer:
+
+```
+call sensors.remove --id "66a85170f29cefa0f952eac6"
+```
+
+- Borrar en API:
+
+```
+curl -X DELETE http://0.0.0.0:3000/api/sensors/66a85170f29cefa0f952eac6
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "_id": "66a85170f29cefa0f952eac6",
+  "customId": "cde123",
+  "name": "sensor1",
+  "type": "temperature",
+  "status": "waiting",
+  "location": {
+    "lat": 0,
+    "lon": 0
+  },
+  "measurementFrequency": 120,
+  "createdAt": "2024-07-30T02:35:28.617Z"
+}
+```
+
+Cuando no se encuentra el sensor:
+
+```json
+{
+  "name": "EntityNotFoundError",
+  "message": "Entity not found",
+  "code": 404,
+  "type": null,
+  "data": {
+    "id": "66a85170f29cefa0f952eac6"
+  }
+}
+```
