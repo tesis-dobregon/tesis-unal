@@ -1,7 +1,7 @@
 VERSION=$(grep '"version":' package.json | sed -E 's/.*"([^"]+)".*/\1/')
 
 # Call the build script
-# npm run docker:build
+# npm run backend:docker:build
 
 # Update the kustomization.yaml with the new image tag
 sed -i '' -e "s/newTag: .*/newTag: $VERSION/" ./deploy/backend/k8s/app/kustomization.yaml

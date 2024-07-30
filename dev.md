@@ -2,16 +2,28 @@
 
 ### Despliegue y Destroy
 
+Configurar kubeconfig:
+
+```sh
+export KUBECONFIG=/Users/howdy/Documents/civo-k8s-smart-city-unal-kubeconfig                                                          ─╯
+```
+
+Construir imagen de backend:
+
+```sh
+$ npm run backend:docker:build
+```
+
 Desplegar todo usando el comando:
 
 ```sh
-$ npm run deploy:backend
+$ npm run backend:deploy
 ```
 
 Destruir todo (antes de terminar cada sesión de desarrollo para evitar sobrecostos):
 
 ```sh
-$ npm run destroy:backend
+$ npm run backend:destroy
 ```
 
 ### Ingress K8S
@@ -52,18 +64,6 @@ Workaround para solucionar error "Error from server (InternalError): error when 
 
 ```sh
 $ kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
-```
-
-Solucionar problema con pods no arrancando por memoria en cluster (pendiente mensaje de google)
-Solucionar imagen para usar :latest en deployment (done)
-Probar frontend y backend unidos (tanto apuntando a local como al desplegado)
-Implementar login
-Desplegar frontend en algo
-
-Create user with moleculer client:
-
-```
-call users.create --user.username "john" --user.password "securePassword" --user.email "john@example.com"
 ```
 
 ## Listado de microservicios
@@ -365,3 +365,9 @@ Cuando no se encuentra el sensor:
   }
 }
 ```
+
+TODO:
+
+Probar frontend y backend unidos (tanto apuntando a local como al desplegado)
+Implementar login
+Desplegar frontend en algo
