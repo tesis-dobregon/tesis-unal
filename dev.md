@@ -368,6 +368,9 @@ Cuando no se encuentra el sensor:
 
 TODO:
 
+Proceso local que simule la generación de datos de sensores
+Envia datos a broker MQTT
+Sensors service se subscribe a broker MQTT para recibir datos de sensores
 Probar frontend y backend unidos (tanto apuntando a local como al desplegado)
 Implementar login
 Desplegar frontend en algo
