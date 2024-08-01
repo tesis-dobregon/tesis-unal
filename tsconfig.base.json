@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "backend": ["packages/backend/src/index.ts"],
+      "mqtt-gateway": ["packages/mqtt-gateway/src/index.ts"],
       "sensor-data-simulator": ["packages/sensor-data-simulator/src/index.ts"]
     }
   },

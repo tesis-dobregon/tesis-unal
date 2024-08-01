@@ -1,0 +1,19 @@
+{
+  "name": "mqtt-gateway",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/mqtt-gateway/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/mqtt-gateway",
+        "main": "packages/mqtt-gateway/src/index.ts",
+        "tsConfig": "packages/mqtt-gateway/tsconfig.lib.json",
+        "assets": ["packages/mqtt-gateway/*.md"]
+      }
+    }
+  }
+}

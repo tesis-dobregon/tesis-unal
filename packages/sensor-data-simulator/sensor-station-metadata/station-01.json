@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "uid": "AQ01",
+    "name": "AirQualityUnit01",
+    "description": "Air quality station in Duitama",
+    "latitude": 51.5074,
+    "longitude": 0.1278,
+    "type": "air_quality_standard"
+  },
+  "co": { "mean": 15.46, "std": 8.63, "unit": "ppm", "type": "integer" },
+  "co2": { "mean": 465.46, "std": 39.53, "unit": "ppm", "type": "integer" },
+  "pm10": { "mean": 23.95, "std": 36.29, "unit": "µg/m³", "type": "integer" },
+  "pm2_5": { "mean": 19.22, "std": 33.84, "unit": "µg/m³", "type": "integer" },
+  "pm5": { "mean": 13.25, "std": 13.25, "unit": "µg/m³", "type": "integer" },
+  "hr": { "mean": 62.96, "std": 16.05, "unit": "%", "type": "float" },
+  "temperature": { "mean": 16.12, "std": 5.22, "unit": "°C", "type": "float" }
+}

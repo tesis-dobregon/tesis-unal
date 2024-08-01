@@ -2,6 +2,7 @@
   "name": "sensor-data-simulator",
   "version": "0.0.1",
   "dependencies": {
+    "mathjs": "^13.0.3",
     "mqtt": "^5.9.0",
     "tslib": "^2.3.0"
   },

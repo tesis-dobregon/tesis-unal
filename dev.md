@@ -368,6 +368,15 @@ Cuando no se encuentra el sensor:
 
 TODO:
 
+- Necesito:
+- Crear un MQTT broker posiblemente deployarlo en un contenedor no necesita ser kubernetes
+- Un subscriber que se conecte al broker y reciba los datos de los sensores
+- Un published (mock device) que envie datos al broker
+- Un servicio que reciba los datos y los almacene en una base de datos
+- El subscriber solo necesita recibir los datos y consumir el servicio REST para almacenarlos
+- El subscriber NO necesariamente necesita ser un microservicio. Puede ser un script que se ejecute en un contenedor. Leer articulos de esto.
+
+Test transporter. Service that calls another service (nats). Evaluate if I should change it to MQTT.
 Proceso local que simule la generación de datos de sensores
 Envia datos a broker MQTT
 Sensors service se subscribe a broker MQTT para recibir datos de sensores
