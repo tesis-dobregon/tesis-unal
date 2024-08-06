@@ -15,7 +15,7 @@ export function runGateway() {
       console.log(
         `Received message from topic ${topic}: ${message.toString()}`
       );
-      // TODO: Send data to backend
+      // TODO: Send data to backend.
     }
   );
 }
