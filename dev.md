@@ -383,3 +383,7 @@ Sensors service se subscribe a broker MQTT para recibir datos de sensores
 Probar frontend y backend unidos (tanto apuntando a local como al desplegado)
 Implementar login
 Desplegar frontend en algo
+
+IP usada para conectar mqtt desde el celu:
+ifconfig
+inet 192.168.1.5 netmask 0xffffff00

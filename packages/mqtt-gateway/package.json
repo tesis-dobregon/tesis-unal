@@ -1,8 +1,14 @@
 {
-  "name": "mqtt-gateway",
+  "name": "@smart-city-unal/mqtt-gateway",
   "version": "0.0.1",
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dc:up": "docker-compose up -d",
+    "dc:logs": "docker-compose logs -f",
+    "dc:down": "docker-compose down"
   },
   "type": "commonjs",
   "main": "./src/index.js",

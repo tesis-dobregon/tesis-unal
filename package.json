@@ -19,7 +19,7 @@
     "backend:deploy": "./deploy/backend/scripts/deploy.sh",
     "backend:destroy": "./deploy/backend/scripts/destroy.sh",
     "simulator:build": "nx build sensor-data-simulator",
-    "simulator:run": "node dist/packages/sensor-data-simulator/src/index.js"
+    "simulator:start": "nx start sensor-data-simulator"
   },
   "keywords": [],
   "author": "",
@@ -77,7 +77,8 @@
     "includedScripts": []
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "libs/*"
   ],
   "dependencies": {
     "@emotion/react": "^11.11.4",

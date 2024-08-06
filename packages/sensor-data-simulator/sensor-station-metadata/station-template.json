@@ -1,10 +1,5 @@
 {
   "metadata": {
-    "uid": "AQ01",
-    "name": "AirQualityUnit01",
-    "description": "Air quality station in Duitama",
-    "latitude": 51.5074,
-    "longitude": 0.1278,
     "type": "air_quality_standard"
   },
   "co": { "mean": 15.46, "std": 8.63, "unit": "ppm", "type": "integer" },

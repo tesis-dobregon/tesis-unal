@@ -14,7 +14,6 @@
   },
   "files": [],
   "include": [],
-  "exclude": ["node_modules", "dist"],
   "references": [
     {
       "path": "./tsconfig.lib.json"
