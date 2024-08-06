@@ -1,1 +1,1 @@
-export * from './lib/mqtt-gateway';
+export * from './mqtt-gateway';
