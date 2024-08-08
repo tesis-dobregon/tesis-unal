@@ -4,13 +4,15 @@
   "dependencies": {
     "mathjs": "^13.0.3",
     "tslib": "^2.3.0",
-    "@smart-city-unal/shared-mqtt": "1.0.0"
+    "@smart-city-unal/shared-mqtt": "1.0.0",
+    "@smart-city-unal/shared-types": "1.0.0"
   },
   "type": "commonjs",
   "main": "src/index",
   "types": "src/index",
   "private": true,
   "devDependencies": {
-    "@types/mqtt": "^2.5.0"
+    "@types/mqtt": "^2.5.0",
+    "@smart-city-unal/shared-types": "1.0.0"
   }
 }

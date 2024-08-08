@@ -10,7 +10,7 @@ import { MqttClient } from 'mqtt';
 export function subscribeToTopic(
   client: MqttClient,
   topic: string,
-  onMessage: (topic: string, message: Buffer) => void
+  onMessage: (topic: string, message: Buffer) => Promise<void>
 ): void {
   client.subscribe(topic, (err) => {
     if (err) {
@@ -20,9 +20,9 @@ export function subscribeToTopic(
     }
   });
 
-  client.on('message', (receivedTopic, message) => {
+  client.on('message', async (receivedTopic, message) => {
     if (receivedTopic === topic) {
-      onMessage(receivedTopic, message);
+      await onMessage(receivedTopic, message);
     }
   });
 }

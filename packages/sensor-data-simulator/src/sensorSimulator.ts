@@ -4,6 +4,7 @@ import { round } from 'mathjs';
 import { generateRandomNumber, generateRandomPoint } from './util';
 import { GeoPoint } from './types';
 import { mqttServerClient, publishToTopic } from '@smart-city-unal/shared-mqtt';
+import { SensorData, SensorMetadata } from '@smart-city-unal/shared-types';
 
 const RADIUS = 3000; // 3 km
 const CENTER_POINT: GeoPoint = {
@@ -26,19 +27,19 @@ const FREQUENCY_TO_PUBLISH_SIMULATED_DATA = process.env
 // Define the folder path conta sensor station metadata files
 const METADATA_FOLDER = path.resolve(__dirname, '../sensor-station-metadata/');
 // Define the key used to store metadata in the sensor station metadata files
-const METADATA_KEY = 'metadata';
+const METADATA_KEY: keyof SensorData = 'metadata';
 
 function buildFileMetadataFile(fileName: string) {
   return path.resolve(METADATA_FOLDER, fileName);
 }
 
 function generateSimulatedSensorRecord(
-  station: Record<string, unknown>,
+  station: Record<keyof SensorData, unknown>,
   index: number
-) {
+): SensorData {
   // Generates a random point within a 3 km radius of the center point
   const { lat, lng } = generateRandomPoint(CENTER_POINT, RADIUS);
-  const record: Record<string, unknown> = {
+  const record: SensorData = {
     date: new Date().toISOString(),
     uid: `AQ0${index}`,
     name: `AirQualityUnit0${index}`,
@@ -56,12 +57,12 @@ function generateSimulatedSensorRecord(
       );
       // Round the random value to the nearest integer or 2 decimal places
       if (parsedValue.type === 'integer') {
-        record[key] = round(randomValue);
+        (record as any)[key as any] = round(randomValue);
       } else if (parsedValue.type === 'float') {
-        record[key] = round(randomValue, 2);
+        (record as any)[key] = round(randomValue, 2);
       }
     } else {
-      record['metadata'] = station['metadata'];
+      record.metadata = station['metadata'] as SensorMetadata;
     }
   });
 
@@ -83,9 +84,10 @@ function readSensorStationsFolderAndGenerateSimulatedRecord() {
     for (let i = 0; i < NUMBER_OF_SIMULATED_SENSORS; i++) {
       const sensorRecord = generateSimulatedSensorRecord(station, i);
       console.log('Simulated sensor record:', sensorRecord);
+      // TODO: define qos. IF the message is not acknowledge what I should do?
       publishToTopic(
         mqttServerClient,
-        `sensor/${(sensorRecord.metadata as any).type}/data`,
+        `sensor/${sensorRecord?.metadata?.type}/data`,
         JSON.stringify(sensorRecord)
       );
     }

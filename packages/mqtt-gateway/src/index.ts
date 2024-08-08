@@ -1,1 +1,1 @@
-export * from './mqtt-gateway';
+export * from './runGateway';
