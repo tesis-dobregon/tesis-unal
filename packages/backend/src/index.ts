@@ -2,6 +2,6 @@
 import ApiService from '../services/api.service';
 import UsersService from '../services/users.service';
 import SensorsService from '../services/sensors.service';
-import MqttService from '../services/mqtt.service';
+import IngestionService from '../services/ingestion.service';
 
-export { ApiService, UsersService, SensorsService, MqttService };
+export { ApiService, UsersService, SensorsService, IngestionService };

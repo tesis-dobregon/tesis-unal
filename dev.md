@@ -248,35 +248,35 @@ call sensors.register --name "sensor1" --customId "bcd123" --type "temperature" 
 }
 ```
 
-#### Obtener un sensor
+#### Obtener un sensor por customId
 
 - Obtener en moleculer:
 
 ```
-call sensors.get --id "66a852b0f29cefa0f952eac7"
+call sensors.findByCustomId --customId "sensor_id_123"
 ```
 
 - Obtener en API:
 
 ```
-curl -X GET http://0.0.0.0:3000/api/sensors/66a852b0f29cefa0f952eac7
+curl -X GET http://0.0.0.0:3000/api/sensors/sensor_id_123
 ```
 
 - Ejemplo de respuesta:
 
 ```json
 {
-  "_id": "66a852b0f29cefa0f952eac7",
-  "customId": "sensor_id_123",
-  "name": "sensor1",
-  "type": "temperature",
-  "status": "waiting",
+  "_id": "66bdfd1ed4e9fb3bfa5c2858",
+  "customId": "AQ01",
+  "name": "AirQualityUnit01",
+  "type": "air_quality_standard",
+  "status": "active",
   "location": {
     "lat": 0,
     "lon": 0
   },
   "measurementFrequency": 120,
-  "createdAt": "2024-07-30T02:40:48.120Z"
+  "createdAt": "2024-08-15T13:05:34.890Z"
 }
 ```
 
@@ -366,7 +366,93 @@ Cuando no se encuentra el sensor:
 }
 ```
 
+### Ingestion
+
+Este servicio se encarga de recibir los datos de los sensores y almacenarlos en la base de datos.
+
+#### Enviar datos de un sensor
+
+- Envío en moleculer:
+
+```
+call ingestion.recordSensorData --sensorId "AQ01" --data.date '2024-08-15T13:06:06.209Z' --data.uid 'AQ02' --data.name  'AirQualityUnit02' --data.description 'Air quality station in Duitama 2' --data.lat 5.814812360355247 --data.lng -73.0494939446564 --data.co 26 --data.co2 517 --data.pm10 21 --data.pm2_5 -2 --data.pm5 --data.hr 66.3 --data.temperature 17.45 --data.metadata.type 'air_quality_standard'
+```
+
+- Envio en API:
+
+```
+curl -X POST http://0.0.0.0:3000/api/ingestion/AQ01/data -H "Content-Type: application/json" -d '{"sensorId":"AQ01","data":{"date":"2024-08-15T13:06:06.209Z","uid":"AQ02","name":"AirQualityUnit02","description":"Air quality station in Duitama 2","lat":5.814812360355247,"lng":-73.0494939446564,"co":26,"co2":517,"pm10":21,"pm2_5":-2,"pm5":null,"hr":66.3,"temperature":17.45,"metadata":{"type":"air_quality_standard"}}}'
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "sensorId": "AQ01",
+  "data": {
+    "date": "2024-08-15T13:06:06.209Z",
+    "uid": "AQ02",
+    "name": "AirQualityUnit02",
+    "description": "Air quality station in Duitama 2",
+    "lat": 5.814812360355247,
+    "lng": -73.0494939446564,
+    "co": 26,
+    "co2": 517,
+    "pm10": 21,
+    "pm2_5": -2,
+    "pm5": null,
+    "hr": 66.3,
+    "temperature": 17.45,
+    "metadata": {
+      "type": "air_quality_standard"
+    }
+  }
+}
+```
+
+#### Listar datos de un sensor
+
+- Listar en moleculer:
+
+```
+call ingestion.listBySensorId --sensorId "AQ01"
+```
+
+- Listar en API:
+
+```
+curl -X GET http://0.0.0.0:3000/api/ingestion/AQ01
+```
+
+- Ejemplo de respuesta:
+
+```json
+[
+  {
+    "_id": "66be0e6865916e94268e7619",
+    "date": "2024-08-15T13:06:06.209Z",
+    "uid": "AQ02",
+    "name": "AirQualityUnit02",
+    "description": "Air quality station in Duitama 2",
+    "lat": 5.814812360355247,
+    "lng": -73.0494939446564,
+    "co": 26,
+    "co2": 517,
+    "pm10": 21,
+    "pm2_5": -2,
+    "pm5": null,
+    "temperature": 17.45,
+    "metadata": {
+      "type": "air_quality_standard"
+    },
+    "createdAt": "2024-08-15T14:19:20.609Z"
+  }
+]
+```
+
 TODO:
+
+- Remove all console.logs
 
 - Necesito:
 - Crear un MQTT broker posiblemente deployarlo en un contenedor no necesita ser kubernetes

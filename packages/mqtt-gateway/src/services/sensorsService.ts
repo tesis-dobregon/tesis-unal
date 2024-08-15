@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { buildSensorDataUrl } from './constants';
+import { buildIngestionUrl } from './constants';
 import { SensorData } from '@smart-city-unal/shared-types';
 
 export async function publishSensorData(
@@ -7,9 +7,9 @@ export async function publishSensorData(
 ): Promise<AxiosResponse> {
   try {
     console.log('Going to publish sensor data', sensorData);
-    const sensorDataUrl = buildSensorDataUrl(sensorData.uid);
+    const ingestionDataUrl = buildIngestionUrl(sensorData.uid);
     return await axios.post(
-      sensorDataUrl,
+      ingestionDataUrl,
       {
         data: sensorData,
       },
@@ -20,6 +20,7 @@ export async function publishSensorData(
       }
     );
   } catch (error) {
+    // TODO: handle exception correctly
     console.error({ error }, 'Failed to publish sensor data');
     throw error;
   }

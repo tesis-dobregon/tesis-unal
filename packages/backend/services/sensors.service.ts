@@ -203,21 +203,20 @@ const SensorsService: ServiceSchema<SensorSettings> & {
         return transformedSensor;
       },
     },
-    processData: {
-      async handler(ctx: Context<ActionQuantityParams>) {
-        this.logger.info('Processing sensor data', ctx.params);
-
-        /**
-        const { id, value } = ctx.params;
-
-        const sensor = await this.adapter.findById(id);
+    findByCustomId: {
+      rest: 'GET /:customId',
+      async handler(ctx: Context<{ customId: string }>) {
+        const sensor = await this.adapter.findOne({
+          customId: ctx.params.customId,
+        });
 
         if (!sensor) {
-          throw new Errors.MoleculerClientError('Sensor not found!', 404, '', [
-            { field: 'id', message: 'not found' },
+          throw new Errors.MoleculerClientError('Sensor not found', 404, '', [
+            { field: 'customId', message: 'not found' },
           ]);
         }
-        */
+
+        return this.transformDocuments(ctx, {}, sensor);
       },
     },
   },
@@ -234,22 +233,32 @@ const SensorsService: ServiceSchema<SensorSettings> & {
     async seedDB(this: SensorsThis) {
       await this.adapter.insertMany([
         {
-          customId: 'sensor-1',
+          customId: 'AQ00',
           userId: 'user-1',
-          name: 'Temperature Sensor',
-          type: 'temperature',
-          status: SensorStatus.WAITING,
-          measurementFrequency: 60,
+          name: 'AirQualityUnit00',
+          type: 'air_quality_standard',
+          status: SensorStatus.ACTIVE,
+          measurementFrequency: 120,
           location: { lat: 0, lon: 0 },
           createdAt: new Date(),
         },
         {
-          customId: 'sensor-2',
+          customId: 'AQ01',
           userId: 'user-1',
-          name: 'Humidity Sensor',
-          type: 'humidity',
+          name: 'AirQualityUnit01',
+          type: 'air_quality_standard',
+          status: SensorStatus.ACTIVE,
+          measurementFrequency: 120,
+          location: { lat: 0, lon: 0 },
+          createdAt: new Date(),
+        },
+        {
+          customId: 'AQ02',
+          userId: 'user-1',
+          name: 'AirQualityUnit02',
+          type: 'air_quality_standard',
           status: SensorStatus.WAITING,
-          measurementFrequency: 60,
+          measurementFrequency: 120,
           location: { lat: 0, lon: 0 },
           createdAt: new Date(),
         },

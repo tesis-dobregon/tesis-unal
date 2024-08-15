@@ -18,6 +18,8 @@
     "backend:build": "nx build backend",
     "backend:deploy": "./deploy/backend/scripts/deploy.sh",
     "backend:destroy": "./deploy/backend/scripts/destroy.sh",
+    "backend:dc:up": "nx run backend:dc:up",
+    "backend:dc:down": "nx run backend:dc:down",
     "simulator:build": "nx build sensor-data-simulator",
     "simulator:start": "nx start sensor-data-simulator",
     "gateway:start": "nx start mqtt-gateway"

@@ -1,4 +1,3 @@
-// TODO: move to shared package
 export type SensorId = string;
 export type SensorMetadata = {
   type: string;
