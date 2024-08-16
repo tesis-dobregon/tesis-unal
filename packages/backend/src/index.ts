@@ -3,5 +3,12 @@ import ApiService from '../services/api.service';
 import UsersService from '../services/users.service';
 import SensorsService from '../services/sensors.service';
 import IngestionService from '../services/ingestion.service';
+import AQIService from '../services/aqi.service';
 
-export { ApiService, UsersService, SensorsService, IngestionService };
+export {
+  ApiService,
+  UsersService,
+  SensorsService,
+  IngestionService,
+  AQIService,
+};

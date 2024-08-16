@@ -7,12 +7,7 @@ import type {
 } from 'moleculer-db';
 import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import { createDbServiceMixin } from '../mixins/db.mixin';
-
-export enum SensorStatus {
-  WAITING = 'waiting',
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-}
+import { SensorStatus } from './sensors.service';
 
 export type SensorCollectedData = {
   _id: string;
@@ -65,21 +60,6 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
       'temperature',
       'createdAt',
     ],
-
-    // Validator for the `create` & `insert` actions.
-    entityValidator: {
-      customId: 'string|min:3',
-      name: 'string|min:3',
-      location: {
-        type: 'object',
-        props: {
-          lat: 'number',
-          lon: 'number',
-        },
-        optional: true,
-      },
-      measurementFrequency: { type: 'number', min: 0, optional: true },
-    },
 
     indexes: [{ uid: 1 }, { name: 1 }],
   },
@@ -154,6 +134,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
             "sensorId": "AQ02"
           }
        */
+        // TODO: implement cache here
         // Check if the sensor exists
         const sensor: any = await this.broker.call('sensors.findByCustomId', {
           customId: ctx.params.sensorId,
@@ -186,7 +167,6 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
     listBySensorId: {
       rest: 'GET /:sensorId',
       async handler(ctx: Context<{ sensorId: string }>) {
-        console.log('chivi sensorID', ctx.params.sensorId);
         const sensorData = await this.adapter.find({
           uid: ctx.params.sensorId,
         });

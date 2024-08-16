@@ -453,6 +453,7 @@ curl -X GET http://0.0.0.0:3000/api/ingestion/AQ01
 TODO:
 
 - Remove all console.logs
+- Enable circuit breaker
 
 - Necesito:
 - Crear un MQTT broker posiblemente deployarlo en un contenedor no necesita ser kubernetes
