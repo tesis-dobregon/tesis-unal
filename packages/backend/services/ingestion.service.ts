@@ -55,13 +55,14 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
       'co',
       'co2',
       'pm10',
+      'pm5',
       'pm2_5',
       'hr',
       'temperature',
       'createdAt',
     ],
 
-    indexes: [{ uid: 1 }, { name: 1 }],
+    indexes: [{ uid: 1 }, { name: 1 }, { createdAt: 1 }],
   },
 
   /**
@@ -108,8 +109,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
         },
       },
       async handler(ctx: Context<ActionCreateParams>) {
-        console.log('chivi processing sensor data', ctx.params);
-        this.logger.info('Processing sensor data', ctx.params);
+        this.broker.logger.info('Processing sensor data', ctx.params);
         /**
        * Example data:
           {
@@ -139,7 +139,6 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
         const sensor: any = await this.broker.call('sensors.findByCustomId', {
           customId: ctx.params.sensorId,
         });
-        console.log('sensor', sensor);
         if (!sensor) {
           throw new Errors.MoleculerClientError('Sensor not found!', 404, '', [
             { field: 'sensorId', message: 'not found' },
@@ -147,7 +146,6 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
         }
 
         if (sensor.status === SensorStatus.WAITING) {
-          console.log('entra a activar', sensor);
           // Activate the sensor
           await this.broker.call('sensors.update', {
             id: sensor._id,
@@ -164,14 +162,45 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
         return data;
       },
     },
-    listBySensorId: {
-      rest: 'GET /:sensorId',
-      async handler(ctx: Context<{ sensorId: string }>) {
-        const sensorData = await this.adapter.find({
-          uid: ctx.params.sensorId,
+    listSensorData: {
+      rest: 'GET /',
+      params: {
+        // Filter by sensorId
+        sensorId: { type: 'string', optional: true },
+        // Filter by date range
+        startDate: { type: 'string', optional: true },
+        endDate: { type: 'string', optional: true },
+      },
+      async handler(
+        ctx: Context<{
+          sensorId?: string;
+          startDate?: string;
+          endDate?: string;
+        }>
+      ): Promise<SensorCollectedData[]> {
+        const { sensorId, startDate, endDate } = ctx.params;
+        const query = {
+          ...(sensorId && { uid: sensorId }),
+          ...(startDate &&
+            endDate && {
+              createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
+            }),
+          ...(startDate &&
+            !endDate && { createdAt: { $gte: new Date(startDate) } }),
+          ...(endDate &&
+            !startDate && { createdAt: { $lte: new Date(endDate) } }),
+        };
+        const result = await this.adapter.find({
+          query,
+          // Sort by createdAt in descending order
+          sort: { createdAt: -1 },
         });
-
-        return sensorData;
+        const transformed = await this.transformDocuments(
+          ctx,
+          ctx.params,
+          result
+        );
+        return transformed;
       },
     },
   },

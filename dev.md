@@ -450,6 +450,8 @@ curl -X GET http://0.0.0.0:3000/api/ingestion/AQ01
 ]
 ```
 
+aqi and ingestion documentation
+
 TODO:
 
 - Remove all console.logs

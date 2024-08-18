@@ -9,6 +9,7 @@ import type {
 } from 'moleculer-db';
 import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import { createDbServiceMixin } from '../mixins/db.mixin';
+import { SensorCollectedData } from './ingestion.service';
 
 export type AQIData = {
   _id: string;
@@ -50,10 +51,11 @@ const AQIService: ServiceSchema<AQISettings> = {
   mixins: [createDbServiceMixin('aqi'), Schedule],
 
   jobs: [
+    // TODO: recompute AQI every exact hour (e.g. 1:00, 2:00, 3:00, etc.)
+    // 0 * * * *
     // Recompute AQI every 1 minute
     {
       rule: '*/5 * * * * *',
-      // rule: '* * * * *',
       handler: 'compute',
     },
   ],
@@ -87,58 +89,82 @@ const AQIService: ServiceSchema<AQISettings> = {
    * Actions
    */
   actions: {
-    list: false,
     get: false,
     update: false,
     remove: false,
     create: false,
     insert: false,
-    compute: {
-      rest: 'POST /compute',
-      // params: {
-      //   pm2_5: { type: 'number', min: 0, optional: true },
-      //   pm10: { type: 'number', min: 0, optional: true },
-      //   o3: { type: 'number', min: 0, optional: true },
-      //   no2: { type: 'number', min: 0, optional: true },
-      //   co: { type: 'number', min: 0, optional: true },
-      //   so2: { type: 'number', min: 0, optional: true },
-      // },
-      async handler() {
-        console.log('computing AQI in service...');
-        await this.compute();
-        // const sensors = await this.broker.call('sensors.list');
-        // const aqiData = sensors.map((sensor) => {
-        //   const { _id, pm2_5, pm10, o3, no2, co, so2 } = sensor;
-        //   const aqi = this.calculateAqi(pm2_5, pm10, o3, no2, co, so2);
-        //   return {
-        //     _id,
-        //     pm2_5,
-        //     pm10,
-        //     o3,
-        //     no2,
-        //     co,
-        //     so2,
-        //     createdAt: new Date(),
-        //   };
-        // });
-        // return await this.adapter.insertMany(aqiData);
-      },
-    },
   },
   methods: {
-    compute() {
-      // this.broker.logger.info('hello, world!');
-      // TODO: replace with real data
-      // Now I need to get the data using the ingestion service
-      // Get for each pollutant the value for the date range, for example, 24 hours for pm2_5, 8 hours for o3, 1 hour for no2, etc.
-      // Then take an average of the values and calculate the AQI for each pollutant
+    // ******** NOTE ***********
+    // Currently the data collected by the sensors only includes the values for pm10, pm2_5 and co so
+    // the AQI will be calculated only for those contaminants.
+    // The code can be extended to include the calculation of the AQI for the rest of the contaminants
+    async compute() {
+      // The AQI for pm10 and pm2_5 is calculated based on the average of the last 24 hours
+      const dataFromLast24Hours: SensorCollectedData[] = await this.broker.call(
+        'ingestion.listSensorData',
+        {
+          query: {
+            createdAt: {
+              $gte: new Date(Date.now() - 24 * 60 * 60 * 1000),
+            },
+          },
+        }
+      );
+      // Get the sum of the pm10 and pm2_5 values for the last 24 hours
+      const { pm10Sum, pm2_5Sum } = dataFromLast24Hours.reduce(
+        (acc, data) => {
+          acc.pm10Sum += data.pm10 ?? 0;
+          acc.pm2_5Sum += data.pm2_5 ?? 0;
+          return acc;
+        },
+        { pm10Sum: 0, pm2_5Sum: 0 }
+      );
+      // Calculate the average of the pm10 and pm2_5 values for the last 24 hours
+      const totalDataFromLast24Hours = dataFromLast24Hours.length;
+      const pm10Average = pm10Sum / totalDataFromLast24Hours;
+      const pm2_5Average = pm2_5Sum / totalDataFromLast24Hours;
+      // Calculate the AQI for pm10 and pm2_5
+      const aqiForPm10 = this.calculateAqi(Pollutants.PM10, pm10Average);
+      const aqiForPm2_5 = this.calculateAqi(Pollutants.PM2_5, pm2_5Average);
+      // The AQI for co is calculated based on the average of the last 8 hours
+      const dataFromLast8Hours: SensorCollectedData[] = await this.broker.call(
+        'ingestion.listSensorData',
+        {
+          query: {
+            createdAt: {
+              $gte: new Date(Date.now() - 8 * 60 * 60 * 1000),
+            },
+          },
+        }
+      );
+      // Get the sum of the co values for the last 8 hours
+      const coSum = dataFromLast8Hours.reduce(
+        (acc, data) => (acc += data.co ?? 0),
+        0
+      );
+      // Calculate the average of the co values for the last 8 hours
+      const totalDataFromLast8Hours = dataFromLast8Hours.length;
+      const coAverage = coSum / totalDataFromLast8Hours;
+      // Calculate the AQI for co
+      const aqiForCo = this.calculateAqi(Pollutants.CO, coAverage);
+      this.broker.logger.info(
+        `AQI for pm10: ${aqiForPm10}, AQI for pm2_5: ${aqiForPm2_5}, AQI for co: ${aqiForCo}`
+      );
+      // TODO: publish event to be listened by the alerts service
       // Then persist the data in the database
-      const value = 10;
-      const aqiForPm2_5 = this.calculateAqi(Pollutants.PM2_5, value);
-      this.broker.logger.info('AQI for PM2.5:', aqiForPm2_5.toFixed(2));
+      return await this.adapter.insert({
+        pm2_5: aqiForPm2_5,
+        pm10: aqiForPm10,
+        co: aqiForCo,
+        createdAt: new Date(),
+      });
     },
+    // The calculation of the AQI is based on the following formula:
+    // IDEAM formula - https://www.ideam.gov.co/documents/24155/125494/35-HM+%C3%8Dndice+calidad+aire+3+FI.pdf/6c0c641a-0c9a-430d-9c37-93d3069c595b
     calculateAqi(pollutant: Pollutants, value: number) {
-      this.broker.logger.info('calculating AQI');
+      // this.broker.logger.info('calculating AQI');
       const { PCAlto, PCBajo, IAlto, IBajo } = this.getPollutantValues(
         pollutant,
         value
