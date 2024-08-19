@@ -412,16 +412,22 @@ curl -X POST http://0.0.0.0:3000/api/ingestion/AQ01/data -H "Content-Type: appli
 
 #### Listar datos de un sensor
 
-- Listar en moleculer:
+- Listar por sensor en moleculer:
 
 ```
-call ingestion.listBySensorId --sensorId "AQ01"
+call ingestion.listSensorData --sensorId 'AQ00'
+```
+
+- Listar por rango de fechas en moleculer:
+
+```
+call ingestion.listSensorData --sensorId 'AQ00' --startDate '2024-08-16T03:14:56.522Z' --endDate '2024-08-16T03:14:58.522Z'
 ```
 
 - Listar en API:
 
 ```
-curl -X GET http://0.0.0.0:3000/api/ingestion/AQ01
+curl -X GET http://0.0.0.0:3000/api/ingestion\?startDate\=2024-08-16T03:14:56.522Z\&endDate\=2024-08-16T03:14:58.522Z\&sensorId\=AQ00
 ```
 
 - Ejemplo de respuesta:
@@ -429,26 +435,186 @@ curl -X GET http://0.0.0.0:3000/api/ingestion/AQ01
 ```json
 [
   {
-    "_id": "66be0e6865916e94268e7619",
-    "date": "2024-08-15T13:06:06.209Z",
-    "uid": "AQ02",
-    "name": "AirQualityUnit02",
-    "description": "Air quality station in Duitama 2",
-    "lat": 5.814812360355247,
-    "lng": -73.0494939446564,
-    "co": 26,
-    "co2": 517,
-    "pm10": 21,
-    "pm2_5": -2,
-    "pm5": null,
-    "temperature": 17.45,
+    "_id": "66bec430b72882526df3c740",
+    "date": "2024-08-16T03:14:56.404Z",
+    "uid": "AQ00",
+    "name": "AirQualityUnit00",
+    "description": "Air quality station in Duitama 0",
+    "lat": 5.839508346114031,
+    "lng": -73.01633260874388,
     "metadata": {
       "type": "air_quality_standard"
     },
-    "createdAt": "2024-08-15T14:19:20.609Z"
+    "co": 21,
+    "co2": 443,
+    "pm10": 47,
+    "pm5": 29,
+    "pm2_5": -22,
+    "hr": 66.32,
+    "temperature": 18.02,
+    "createdAt": "2024-08-16T03:14:56.522Z"
   }
 ]
 ```
+
+### Alerts
+
+Este servicio es usado para crear alertas y notificar a los usuarios. Las alertas son creadas para cada
+contaminante, con base en un valor umbral. Cuando el indice de calidad del aire supera el valor umbral, se
+generate una alerta con base en la acción definida.
+
+#### Crear alerta
+
+- Crear en moleculer:
+
+```
+call alerts.create --contaminant 'pm2_5' --lowerThreshold 70 --upperThreshold 75 --action 'email' --metadata.email 'nano2766@gmail.com' --message 'El contaminante pm2_5 presenta valores dañinos para la salud'
+```
+
+- Crear en API:
+
+```
+curl -X POST http://0.0.0.0:3000/api/alerts -H "Content-Type: application/json" -d '{"contaminant":"pm10","lowerThreshold":70,"upperThreshold":75,"action":"email","metadata":{"email":"dobregon@unal.edu.co" } ,"message":"El contaminante pm10 presenta valores dañinos para la salud"}'
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "contaminant": "pm10",
+  "lowerThreshold": 70,
+  "upperThreshold": 75,
+  "action": "email",
+  "metadata": {
+    "email": "dobregon@unal.edu.co"
+  },
+  "message": "El contaminante pm10 presenta valores dañinos para la salud",
+  "createdAt": "2024-08-19T00:58:01.579Z",
+  "_id": "66c29899816e2a13518471c3"
+}
+```
+
+#### Actualizar alerta
+
+- Actualizar en moleculer:
+
+```
+call alerts.update --id "66c29899816e2a13518471c3" --contaminant 'pm10' --lowerThreshold 71
+```
+
+- Actualizar en API:
+
+```
+curl -X PUT http://0.0.0.0:3000/api/alerts/66c29899816e2a13518471c3 -H "Content-Type: application/json" -d '{"contaminant":"pm10","lowerThreshold":71,"upperThreshold":75}'
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "_id": "66c29899816e2a13518471c3",
+  "contaminant": "pm10",
+  "lowerThreshold": 71,
+  "upperThreshold": 75,
+  "action": "email",
+  "metadata": {
+    "email": "dobregon@unal.edu.co"
+  },
+  "message": "El contaminante pm10 presenta valores dañinos para la salud",
+  "createdAt": "2024-08-19T00:58:01.579Z",
+  "id": "66c29899816e2a13518471c3"
+}
+```
+
+#### Listar alertas
+
+- Listar en moleculer:
+
+```
+call alerts.list
+```
+
+- Listar en API:
+
+```
+curl -X GET http://0.0.0.0:3000/api/alerts
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "rows": [
+    {
+      "_id": "66c2854938ddbd6f33669202",
+      "contaminant": "pm2_5",
+      "lowerThreshold": 71,
+      "upperThreshold": 75,
+      "action": "email",
+      "metadata": {
+        "email": "nano2766@gmail.com"
+      },
+      "message": "El contaminante pm2_5 presenta valores dañinos para la salud",
+      "createdAt": "2024-08-18T23:35:37.694Z"
+    },
+    {
+      "_id": "66c29899816e2a13518471c3",
+      "contaminant": "pm10",
+      "lowerThreshold": 71,
+      "upperThreshold": 75,
+      "action": "email",
+      "metadata": {
+        "email": "dobregon@unal.edu.co"
+      },
+      "message": "El contaminante pm10 presenta valores dañinos para la salud",
+      "createdAt": "2024-08-19T00:58:01.579Z"
+    }
+  ],
+  "total": 2,
+  "page": 1,
+  "pageSize": 10,
+  "totalPages": 1
+}
+```
+
+#### Borrar alerta
+
+- Borrar en moleculer:
+
+```
+call alerts.remove --id "66c2854938ddbd6f33669202"
+```
+
+- Borrar en API:
+
+```
+curl -X DELETE http://0.0.0.0:3000/api/alerts/66c2854938ddbd6f33669202
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "_id": "66c29899816e2a13518471c3",
+  "contaminant": "pm10",
+  "lowerThreshold": 71,
+  "upperThreshold": 75,
+  "action": "email",
+  "metadata": {
+    "email": "dobregon@unal.edu.co"
+  },
+  "message": "El contaminante pm10 presenta valores dañinos para la salud",
+  "createdAt": "2024-08-19T00:58:01.579Z"
+}
+```
+
+### AQI (Indice de calidad del aire)
+
+TODO
+
+### Email
+
+TODO
 
 aqi and ingestion documentation
 
@@ -465,10 +631,6 @@ TODO:
 - El subscriber solo necesita recibir los datos y consumir el servicio REST para almacenarlos
 - El subscriber NO necesariamente necesita ser un microservicio. Puede ser un script que se ejecute en un contenedor. Leer articulos de esto.
 
-Test transporter. Service that calls another service (nats). Evaluate if I should change it to MQTT.
-Proceso local que simule la generación de datos de sensores
-Envia datos a broker MQTT
-Sensors service se subscribe a broker MQTT para recibir datos de sensores
 Probar frontend y backend unidos (tanto apuntando a local como al desplegado)
 Implementar login
 Desplegar frontend en algo

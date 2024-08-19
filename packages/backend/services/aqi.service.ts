@@ -55,7 +55,9 @@ const AQIService: ServiceSchema<AQISettings> = {
     // 0 * * * *
     // Recompute AQI every 1 minute
     {
-      rule: '*/5 * * * * *',
+      rule: '* * * * *',
+      // rule: '*/5 * * * * *',
+      // rule: '0 * * * *',
       handler: 'compute',
     },
   ],
@@ -154,12 +156,17 @@ const AQIService: ServiceSchema<AQISettings> = {
       );
       // TODO: publish event to be listened by the alerts service
       // Then persist the data in the database
-      return await this.adapter.insert({
+      const aqi = await this.adapter.insert({
         pm2_5: aqiForPm2_5,
         pm10: aqiForPm10,
         co: aqiForCo,
         createdAt: new Date(),
       });
+
+      // Generate an event to be listened by the alerts service
+      this.broker.emit('aqi.created', aqi);
+
+      return aqi;
     },
     // The calculation of the AQI is based on the following formula:
     // IDEAM formula - https://www.ideam.gov.co/documents/24155/125494/35-HM+%C3%8Dndice+calidad+aire+3+FI.pdf/6c0c641a-0c9a-430d-9c37-93d3069c595b
