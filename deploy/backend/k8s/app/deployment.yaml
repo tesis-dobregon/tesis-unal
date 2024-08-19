@@ -75,7 +75,7 @@ spec:
       containers:
         - name: api
           # Placeholder for image latest. It should really use the tagged image (date)
-          image: us.gcr.io/smart-city-unal/smart-city-unal:latest
+          image: nano2766/smart-city-unal:latest
           imagePullPolicy: 'Always'
           resources:
             requests:
@@ -93,63 +93,26 @@ spec:
 
 ---
 #########################################################
-# Greeter service - Commented because it is not used
-#########################################################
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: greeter
-# spec:
-#   selector:
-#     matchLabels:
-#       app: greeter
-#   replicas: 1
-#   template:
-#     metadata:
-#       labels:
-#         app: greeter
-#     spec:
-#       containers:
-#         - name: greeter
-#           # Placeholder for image latest. It should really use the tagged image (date)
-#           image: us.gcr.io/smart-city-unal/smart-city-unal:latest
-#           imagePullPolicy: Always
-#           resources:
-#             requests:
-#               memory: '512Mi'
-#               cpu: '250m'
-#             limits:
-#               memory: '1Gi'
-#               cpu: '500m'
-#           envFrom:
-#             - configMapRef:
-#                 name: common-env
-#           env:
-#             - name: SERVICES
-#               value: greeter
-
----
-#########################################################
-# Products service
+# Sensors service
 #########################################################
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: products
+  name: sensors
 spec:
   selector:
     matchLabels:
-      app: products
+      app: sensors
   replicas: 1
   template:
     metadata:
       labels:
-        app: products
+        app: sensors
     spec:
       containers:
-        - name: products
+        - name: sensors
           # Placeholder for image latest. It should really use the tagged image (date)
-          image: us.gcr.io/smart-city-unal/smart-city-unal:latest
+          image: nano2766/smart-city-unal:latest
           imagePullPolicy: 'Always'
           resources:
             requests:
@@ -163,7 +126,7 @@ spec:
                 name: common-env
           env:
             - name: SERVICES
-              value: products
+              value: sensors
 
 ---
 #########################################################
@@ -186,7 +149,7 @@ spec:
       containers:
         - name: users
           # Placeholder for image latest. It should really use the tagged image (date)
-          image: us.gcr.io/smart-city-unal/smart-city-unal:latest
+          image: nano2766/smart-city-unal:latest
           imagePullPolicy: 'Always'
           resources:
             requests:

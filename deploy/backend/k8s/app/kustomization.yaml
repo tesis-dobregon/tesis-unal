@@ -5,6 +5,7 @@ resources:
   - deployment.yaml
 
 images:
-  - name: us.gcr.io/smart-city-unal/smart-city-unal
+  # - name: us.gcr.io/smart-city-unal/smart-city-unal
+  - name: nano2766/smart-city-unal
     # Image is appended based on package.json version
-    newTag: 1.3.0
+    newTag: 1.3.1

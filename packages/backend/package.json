@@ -49,8 +49,11 @@
     "moleculer": "^0.14.27",
     "moleculer-db": "^0.8.21",
     "moleculer-db-adapter-mongo": "^0.4.16",
+    "moleculer-io": "^2.2.0",
+    "moleculer-mail": "^2.0.0",
     "moleculer-web": "^0.10.5",
-    "nats": "^2.7.1"
+    "nats": "^2.7.1",
+    "pug": "^3.0.3"
   },
   "engines": {
     "node": ">= 16.x.x"
