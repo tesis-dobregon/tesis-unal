@@ -46,6 +46,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/mqtt": "^2.5.0",
     "@types/node": "18.16.9",
+    "@types/oauth2-server": "^3.0.17",
     "@types/react": "18.2.33",
     "@types/react-dom": "18.2.14",
     "@typescript-eslint/eslint-plugin": "^7.3.0",

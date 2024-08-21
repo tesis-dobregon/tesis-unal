@@ -1,10 +1,10 @@
 import { hashSync, compare } from 'bcryptjs';
 import { Context, Errors, ServiceSchema } from 'moleculer';
 import { createDbServiceMixin } from '../mixins/db.mixin';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { DbAdapter, DbServiceSettings, MoleculerDbMethods } from 'moleculer-db';
 import MongoDbAdapter from 'moleculer-db-adapter-mongo';
-
+import { OAUTH2_DB_NAME } from '../constants';
 export interface UserEntity {
   _id: string;
   username: string;
@@ -54,7 +54,7 @@ const UserService: ServiceSchema<UsersSettings> = {
   /**
    * Mixins
    */
-  mixins: [createDbServiceMixin('users')],
+  mixins: [createDbServiceMixin(OAUTH2_DB_NAME, 'users')],
 
   /**
    * Dependencies
@@ -179,6 +179,36 @@ const UserService: ServiceSchema<UsersSettings> = {
         );
 
         return transformedUser;
+      },
+    },
+
+    resolveToken: {
+      async handler(ctx: Context<{ token: string }>) {
+        const { token } = ctx.params;
+        // const decoded = verify(token, this.settings.JWT_SECRET);
+        const decoded = await new Promise((resolve, reject) => {
+          verify(
+            token,
+            this.settings.JWT_SECRET,
+            (err: any, tokenDecoded: any) => {
+              this.logger.info(
+                'users.actions.verify.response',
+                err,
+                tokenDecoded
+              );
+              if (err) {
+                this.logger.error('users.actions.verify.response err:', err);
+                return reject(tokenDecoded);
+              }
+              this.logger.info(
+                'users.actions.verify.response.decoded',
+                tokenDecoded
+              );
+              return resolve(tokenDecoded);
+            }
+          );
+        });
+        return decoded;
       },
     },
   },

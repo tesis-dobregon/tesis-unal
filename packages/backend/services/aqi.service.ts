@@ -10,6 +10,7 @@ import type {
 import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import { createDbServiceMixin } from '../mixins/db.mixin';
 import { SensorCollectedData } from './ingestion.service';
+import { SMART_CITY_DB_NAME } from '../constants';
 
 export type AQIData = {
   _id: string;
@@ -48,16 +49,16 @@ const AQIService: ServiceSchema<AQISettings> = {
   /**
    * Mixins
    */
-  mixins: [createDbServiceMixin('aqi'), Schedule],
+  mixins: [createDbServiceMixin(SMART_CITY_DB_NAME, 'aqi'), Schedule],
 
   jobs: [
     // TODO: recompute AQI every exact hour (e.g. 1:00, 2:00, 3:00, etc.)
     // 0 * * * *
     // Recompute AQI every 1 minute
     {
-      rule: '* * * * *',
+      // rule: '* * * * *',
       // rule: '*/5 * * * * *',
-      // rule: '0 * * * *',
+      rule: '0 * * * *',
       handler: 'compute',
     },
   ],

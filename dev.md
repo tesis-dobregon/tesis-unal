@@ -77,7 +77,7 @@ Servicio de usuarios. Permite la creación de usuarios y la autenticación de lo
 - Creación en moleculer:
 
 ```
-call users.create --user.username "john" --user.password "securePassword" --user.email "
+call users.create --user.username "john" --user.password "securePassword" --user.email "nano2766@gmail.com"
 ```
 
 - Creación en API:
@@ -711,6 +711,19 @@ curl -X GET http://0.0.0.0:3000/api/aqi\?sort\='-createdAt'
 
 Este servicio es usado para enviar correos electrónicos.
 Actualmente no tiene rutas de API publicas, solo se puede usar desde el broker de mensajes.
+
+### Crear client oauth2
+
+Entrar a la BD y ejecutar el siguiente comando:
+
+```
+db.getCollection("clients").insert({
+  clientId: 'myClient',
+  clientSecret: 'password',
+  redirectUris: [],
+  grants: ['password'],
+})
+```
 
 TODO:
 
