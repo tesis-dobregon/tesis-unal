@@ -772,6 +772,22 @@ Verificar los logs del broker para asegurarse que se ha iniciado correctamente:
 npm run dc:logs
 ```
 
+Generar certificados self-signed para TLS en el broker MQTT
+
+```
+cd packages/mqtt-gateway/certs
+openssl genpkey -algorithm RSA -out server.key
+openssl req -new -key server.key -out server.csr
+openssl x509 -req -in server.csr -signkey server.key -out server.crt -days 365
+openssl req -new -x509 -key server.key -out ca.crt -days 365
+```
+
+Medidas de seguridad adicionales para MQTT que están configuradas:
+
+- QoS 1: Se asegura que el mensaje sea entregado al menos una vez al suscriptor.
+- TLS: Se asegura que la comunicación entre el cliente y el broker sea segura (MQTT over TLS).
+- Autenticación: Se asegura que solo los usuarios autorizados puedan conectarse al broker.
+
 TODO:
 
 - Remove all console.logs
