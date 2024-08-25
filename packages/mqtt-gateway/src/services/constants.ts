@@ -5,6 +5,7 @@ export const SMART_CITY_UNAL_URLS = {
   SENSORS_SERVICE: `${SMART_CITY_UNAL_BACKEND_URL}/api/sensors`,
   INGESTION_SERVICE: `${SMART_CITY_UNAL_BACKEND_URL}/api/ingestion`,
   USERS_SERVICE: `${SMART_CITY_UNAL_BACKEND_URL}/api/users`,
+  OAUTH_TOKEN: `${SMART_CITY_UNAL_BACKEND_URL}/oauth/token`,
 };
 
 export function buildIngestionUrl(sensorId: string) {
