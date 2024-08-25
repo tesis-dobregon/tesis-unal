@@ -1,10 +1,11 @@
-import { Context, Errors, Service, ServiceSchema } from 'moleculer';
+import { Context, Service, ServiceSchema } from 'moleculer';
 import type {
   DbAdapter,
   DbServiceSettings,
   MoleculerDbMethods,
 } from 'moleculer-db';
 import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
+import { SMART_CITY_DB_NAME } from '../constants';
 import { createDbServiceMixin } from '../mixins/db.mixin';
 import { AQIData } from './aqi.service';
 
@@ -45,7 +46,7 @@ const AlertsService: ServiceSchema<AlertsSettings> = {
   /**
    * Mixins
    */
-  mixins: [createDbServiceMixin('alerts')],
+  mixins: [createDbServiceMixin(SMART_CITY_DB_NAME, 'alerts')],
 
   events: {
     'aqi.created': {

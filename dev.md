@@ -77,7 +77,7 @@ Servicio de usuarios. Permite la creación de usuarios y la autenticación de lo
 - Creación en moleculer:
 
 ```
-call users.create --user.username "john" --user.password "securePassword" --user.email "
+call users.create --user.username "john" --user.password "securePassword" --user.email "nano2766@gmail.com"
 ```
 
 - Creación en API:
@@ -195,22 +195,17 @@ call users.login --email "john" --password "securePassword"
 - Login en API:
 
 ```
-curl -X POST http://0.0.0.0:3000/api/users/login -H "Content-Type: application/json" -d '{"email":"john@example.com", "password":"securePassword"}'
+curl -X POST -u "myClient:password" -d "grant_type=password&username=david&password=securePassword" http://0.0.0.0:3000/oauth/token
 ```
 
 - Ejemplo de respuesta:
 
 ```json
 {
-  "user": {
-    "username": "john",
-    "email": "john@example.com",
-    "bio": "",
-    "image": "",
-    "createdAt": "2024-07-19T00:19:03.120Z",
-    "_id": "uKPR6i2cFZRjpft4",
-    "token": "<token>"
-  }
+  "access_token": "<token>",
+  "token_type": "Bearer",
+  "expires_in": 3599,
+  "refresh_token": "020634bbe3e70e56a107d27719dda5859d8f774e"
 }
 ```
 
@@ -711,6 +706,87 @@ curl -X GET http://0.0.0.0:3000/api/aqi\?sort\='-createdAt'
 
 Este servicio es usado para enviar correos electrónicos.
 Actualmente no tiene rutas de API publicas, solo se puede usar desde el broker de mensajes.
+
+### Crear clientes oauth2
+
+#### Crear cliente grant_type password (usado para aplicaciones web)
+
+Entrar a la BD y ejecutar el siguiente comando:
+
+```
+db.getCollection("clients").insert({
+  clientId: 'myClient',
+  clientSecret: 'password',
+  redirectUris: [],
+  grants: ['password'],
+})
+```
+
+#### Crear cliente grant_type client_credentials (usado para aplicaciones de servidor a servidor, ej. gateway)
+
+Entrar a la BD y ejecutar el siguiente comando:
+
+```
+db.getCollection("clients").insert({
+  clientId: 'gateway',
+  clientSecret: 'password',
+  redirectUris: [],
+  grants: ['client_credentials'],
+})
+```
+
+### Ejemplo de uso de grant_type password
+
+```
+curl -X POST -u "myClient:password" -d "grant_type=password&username=david&password=securePassword" http://0.0.0.0:3000/oauth/token
+```
+
+### Ejemplo de uso de grant_type client_credentials
+
+```
+curl -X POST -u "gateway:password" -d "grant_type=client_credentials" http://0.0.0.0:3000/oauth/token
+```
+
+## Seguridad en broker MQTT
+
+La seguridad en el broker MQTT se logra mediante la creación de usuarios y contraseñas. Para ello se debe crear un archivo de contraseñas y luego iniciar el broker MQTT con la configuración adecuada.
+
+Creación de usuarios y contraseñas para el broker MQTT
+
+```
+cd packages/mqtt-gateway
+mosquitto_passwd -c mosquitto/config/password_file smart-city-unal
+```
+
+Ingresar la contraseña `smart-city-unal` cuando se solicite.
+
+Luego iniciar el broker MQTT con la siguiente configuración:
+
+```
+npm run dc:up
+```
+
+Verificar los logs del broker para asegurarse que se ha iniciado correctamente:
+
+```
+npm run dc:logs
+```
+
+Generar certificados self-signed para TLS en el broker MQTT
+
+```
+cd packages/mqtt-gateway/certs
+openssl genpkey -algorithm RSA -out server.key
+openssl req -new -key server.key -out server.csr
+openssl x509 -req -in server.csr -signkey server.key -out server.crt -days 365
+openssl req -new -x509 -key server.key -out ca.crt -days 365
+```
+
+Medidas de seguridad adicionales para MQTT que están configuradas:
+
+- QoS 1: Se asegura que el mensaje sea entregado al menos una vez al suscriptor.
+- TLS: Se asegura que la comunicación entre el cliente y el broker sea segura (MQTT over TLS).
+- Autenticación: Se asegura que solo los usuarios autorizados puedan conectarse al broker.
 
 TODO:
 

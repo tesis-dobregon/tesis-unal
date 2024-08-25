@@ -5,6 +5,7 @@ import type {
   MoleculerDbMethods,
 } from 'moleculer-db';
 import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
+import { SMART_CITY_DB_NAME } from '../constants';
 import type { DbServiceMethods } from '../mixins/db.mixin';
 import { createDbServiceMixin } from '../mixins/db.mixin';
 
@@ -84,7 +85,7 @@ const SensorsService: ServiceSchema<SensorSettings> & {
   /**
    * Mixins
    */
-  mixins: [createDbServiceMixin('sensors')],
+  mixins: [createDbServiceMixin(SMART_CITY_DB_NAME, 'sensors')],
 
   /**
    * Settings

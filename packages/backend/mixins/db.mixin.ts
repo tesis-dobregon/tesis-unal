@@ -15,7 +15,10 @@ type DbServiceSchema = Partial<ServiceSchema> &
 
 export type DbServiceThis = Service & DbServiceMethods;
 
-export function createDbServiceMixin(collection: string): DbServiceSchema {
+export function createDbServiceMixin(
+  dbName: string,
+  collection: string
+): DbServiceSchema {
   const cacheCleanEventName = `cache.clean.${collection}`;
 
   const schema: DbServiceSchema = {
@@ -67,7 +70,12 @@ export function createDbServiceMixin(collection: string): DbServiceSchema {
 
   if (process.env.MONGO_URI) {
     // Mongo adapter
-    schema.adapter = new MongoDbAdapter(process.env.MONGO_URI);
+    schema.adapter = new MongoDbAdapter(
+      process.env.MONGO_URI,
+      {},
+      dbName
+    ) as unknown as DbAdapter;
+    schema.dbName = dbName;
     schema.collection = collection;
   } else if (process.env.NODE_ENV === 'test') {
     // NeDB memory adapter for testing

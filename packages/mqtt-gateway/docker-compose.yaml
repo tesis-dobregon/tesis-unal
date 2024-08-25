@@ -6,9 +6,15 @@ services:
     restart: always
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/config/password_file:/mosquitto/config/password_file
+      - ./config:/mosquitto/config
+      - ./data:/mosquitto/data
+      - ./log:/mosquitto/log
+      - ./certs:/mosquitto/config/certs
     ports:
       - '1883:1883'
       - '9001:9001'
+      - '8883:8883'
     networks:
       - iot
 

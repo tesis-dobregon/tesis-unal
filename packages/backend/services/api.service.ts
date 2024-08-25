@@ -6,26 +6,40 @@ import type {
   Route,
 } from 'moleculer-web';
 import ApiGateway from 'moleculer-web';
-
-interface Meta {
-  userAgent?: string | null | undefined;
-  user?: object | null | undefined;
-}
+import OAuth2Server from '../mixins/oauth2.mixin';
 
 const ApiService: ServiceSchema<ApiSettingsSchema> = {
   name: 'api',
-  mixins: [ApiGateway],
+  mixins: [ApiGateway, OAuth2Server()],
 
   // More info about settings: https://moleculer.services/docs/0.14/moleculer-web.html
   settings: {
     // Exposed port
     port: process.env.PORT != null ? Number(process.env.PORT) : 3000,
+    JWT_SECRET: process.env.JWT_SECRET || 'jwt-unal-secret',
 
     // Exposed IP
     ip: '0.0.0.0',
 
     // Global Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
     use: [],
+
+    cors: {
+      origin: '*',
+      methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: [
+        'Access-Control-Allow-Origin',
+        'Authorization',
+        'Content-Type',
+      ],
+      exposedHeaders: [
+        'Access-Control-Allow-Origin',
+        'Authorization',
+        'Content-Type',
+      ],
+      credentials: false,
+      maxAge: 3600,
+    },
 
     routes: [
       {
@@ -40,7 +54,7 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
         mergeParams: true,
 
         // Enable authentication. Implement the logic into `authenticate` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authentication
-        authentication: false,
+        authentication: true,
 
         // Enable authorization. Implement the logic into `authorize` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authorization
         authorization: false,
@@ -49,35 +63,49 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
         // The gateway will dynamically build the full routes from service schema.
         autoAliases: true,
 
-        aliases: {},
+        aliases: {
+          'GET /': async function (
+            this: ServiceSchema,
+            _req: IncomingRequest & { body: any },
+            res: GatewayResponse
+          ) {
+            try {
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ msg: 'Welcome to the API' }));
+            } catch (error: any) {
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ error: error.message }));
+            }
+          },
+        },
 
         /**
-				 * Before call hook. You can check the request.
-				 *
-				onBeforeCall(
-					ctx: Context<unknown, Meta>,
-					route: Route,
-					req: IncomingRequest,
-					res: GatewayResponse,
-				): void {
-					// Set request headers to context meta
-					ctx.meta.userAgent = req.headers["user-agent"];
-				}, */
+         * Before call hook. You can check the request.
+         *
+        onBeforeCall(
+          ctx: Context<unknown, Meta>,
+          route: Route,
+          req: IncomingRequest,
+          res: GatewayResponse,
+        ): void {
+          // Set request headers to context meta
+          ctx.meta.userAgent = req.headers["user-agent"];
+        }, */
 
         /**
-				 * After call hook. You can modify the data.
-				 *
-				onAfterCall(
-					ctx: Context,
-					route: Route,
-					req: IncomingRequest,
-					res: GatewayResponse,
-					data: unknown,
-				): unknown {
-					// Async function which return with Promise
-					// return this.doSomething(ctx, res, data);
-					return data;
-				}, */
+         * After call hook. You can modify the data.
+         *
+        onAfterCall(
+          ctx: Context,
+          route: Route,
+          req: IncomingRequest,
+          res: GatewayResponse,
+          data: unknown,
+        ): unknown {
+          // Async function which return with Promise
+          // return this.doSomething(ctx, res, data);
+          return data;
+        }, */
 
         // Calling options. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Calling-options
         callOptions: {},
@@ -98,6 +126,53 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 
         // Enable/disable logging
         logging: true,
+      },
+      // Oauth routes
+      {
+        path: '/oauth',
+        whitelist: ['**'],
+        authentication: false,
+        authorization: false,
+        autoAliases: false,
+        aliases: {},
+      },
+      {
+        path: '/oauth/token',
+        aliases: {
+          'POST /': function token(
+            this: ServiceSchema,
+            req: IncomingRequest,
+            res: GatewayResponse,
+            next: any
+          ) {
+            return this.accessToken(req, res, next);
+          },
+        },
+        bodyParsers: {
+          json: true,
+          urlencoded: {
+            extended: true,
+          },
+        },
+      },
+      {
+        path: '/oauth/authorize',
+        aliases: {
+          'POST /': function auth(
+            this: ServiceSchema,
+            req: IncomingRequest,
+            res: GatewayResponse,
+            next: any
+          ) {
+            return this.authenticate(req, res, next);
+          },
+        },
+        bodyParsers: {
+          json: true,
+          urlencoded: {
+            extended: true,
+          },
+        },
       },
     ],
 
@@ -125,46 +200,41 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
      *
      * PLEASE NOTE, IT'S JUST AN EXAMPLE IMPLEMENTATION. DO NOT USE IN PRODUCTION!
      */
-    authenticate(
-      ctx: Context,
-      route: Route,
-      req: IncomingRequest
-    ): Record<string, unknown> | null {
-      // Read the token from header
-      const auth = req.headers.authorization;
+    async authenticate(ctx: Context, route: Route, req: IncomingRequest) {
+      const {
+        headers: { authorization },
+      } = req;
 
-      if (auth && auth.startsWith('Bearer')) {
-        const token = auth.slice(7);
-
-        // Check the token. Tip: call a service which verify the token. E.g. `accounts.resolveToken`
-        if (token === '123456') {
-          // Returns the resolved user. It will be set to the `ctx.meta.user`
-          return { id: 1, name: 'John Doe' };
+      if (authorization) {
+        if (!authorization.includes('Bearer')) {
+          throw new ApiGateway.Errors.UnAuthorizedError(
+            ApiGateway.Errors.ERR_NO_TOKEN,
+            null
+          );
         }
-        // Invalid token
+
+        try {
+          const token = await req.$ctx.call('users.resolveToken', {
+            token: authorization.split(' ')[1],
+          });
+          if (!token) {
+            throw new ApiGateway.Errors.UnAuthorizedError(
+              ApiGateway.Errors.ERR_INVALID_TOKEN,
+              null
+            );
+          }
+          req.$ctx.meta = { user: token };
+        } catch (err) {
+          throw new ApiGateway.Errors.UnAuthorizedError(
+            ApiGateway.Errors.ERR_INVALID_TOKEN,
+            null
+          );
+        }
+      } else {
         throw new ApiGateway.Errors.UnAuthorizedError(
-          ApiGateway.Errors.ERR_INVALID_TOKEN,
+          ApiGateway.Errors.ERR_NO_TOKEN,
           null
         );
-      } else {
-        // No token. Throw an error or do nothing if anonymous access is allowed.
-        // throw new E.UnAuthorizedError(E.ERR_NO_TOKEN);
-        return null;
-      }
-    },
-
-    /**
-     * Authorize the request. Check that the authenticated user has right to access the resource.
-     *
-     * PLEASE NOTE, IT'S JUST AN EXAMPLE IMPLEMENTATION. DO NOT USE IN PRODUCTION!
-     */
-    authorize(ctx: Context<null, Meta>, route: Route, req: IncomingRequest) {
-      // Get the authenticated user.
-      const { user } = ctx.meta;
-
-      // It check the `auth` property in action schema.
-      if (req.$action.auth === 'required' && !user) {
-        throw new ApiGateway.Errors.UnAuthorizedError('NO_RIGHTS', null);
       }
     },
   },
