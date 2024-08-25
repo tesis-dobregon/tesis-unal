@@ -202,7 +202,7 @@ curl -X POST -u "myClient:password" -d "grant_type=password&username=david&passw
 
 ```json
 {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmM1NWFkNDEwMmM3ZTU5ZmNkNWJhZGUiLCJjbGllbnRJZCI6IjY2YzU1MzlhMWQ3N2FlMjJkM2MxOTFiNyIsInNjb3BlIjp0cnVlLCJpYXQiOjE3MjQzNjc2NTIsImV4cCI6MTcyNDQ1NDA1Mn0.Is6e1xzovvmd4A7_5i0aUcOnrLYZu8g9JmOa77HtUhY",
+  "access_token": "<token>",
   "token_type": "Bearer",
   "expires_in": 3599,
   "refresh_token": "020634bbe3e70e56a107d27719dda5859d8f774e"
