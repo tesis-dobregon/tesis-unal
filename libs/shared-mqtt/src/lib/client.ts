@@ -6,6 +6,8 @@ const options: IClientOptions = {
   port: 1883,
   protocolVersion: 5,
   keepalive: 60,
+  username: process.env.MQTT_USERNAME || 'smart-city-unal', // Add your MQTT username
+  password: process.env.MQTT_PASSWORD || 'securePassword', // Add your MQTT password
   properties: {
     requestResponseInformation: true,
     requestProblemInformation: true,

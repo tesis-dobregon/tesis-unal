@@ -747,9 +747,32 @@ curl -X POST -u "myClient:password" -d "grant_type=password&username=david&passw
 curl -X POST -u "gateway:password" -d "grant_type=client_credentials" http://0.0.0.0:3000/oauth/token
 ```
 
-TODO:
+## Seguridad en broker MQTT
 
-- Test client credentials for API gateway
+La seguridad en el broker MQTT se logra mediante la creación de usuarios y contraseñas. Para ello se debe crear un archivo de contraseñas y luego iniciar el broker MQTT con la configuración adecuada.
+
+Creación de usuarios y contraseñas para el broker MQTT
+
+```
+cd packages/mqtt-gateway
+mosquitto_passwd -c mosquitto/config/password_file smart-city-unal
+```
+
+Ingresar la contraseña `smart-city-unal` cuando se solicite.
+
+Luego iniciar el broker MQTT con la siguiente configuración:
+
+```
+npm run dc:up
+```
+
+Verificar los logs del broker para asegurarse que se ha iniciado correctamente:
+
+```
+npm run dc:logs
+```
+
+TODO:
 
 - Remove all console.logs
 - Enable circuit breaker
