@@ -195,22 +195,17 @@ call users.login --email "john" --password "securePassword"
 - Login en API:
 
 ```
-curl -X POST http://0.0.0.0:3000/api/users/login -H "Content-Type: application/json" -d '{"email":"john@example.com", "password":"securePassword"}'
+curl -X POST -u "myClient:password" -d "grant_type=password&username=david&password=securePassword" http://0.0.0.0:3000/oauth/token
 ```
 
 - Ejemplo de respuesta:
 
 ```json
 {
-  "user": {
-    "username": "john",
-    "email": "john@example.com",
-    "bio": "",
-    "image": "",
-    "createdAt": "2024-07-19T00:19:03.120Z",
-    "_id": "uKPR6i2cFZRjpft4",
-    "token": "<token>"
-  }
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmM1NWFkNDEwMmM3ZTU5ZmNkNWJhZGUiLCJjbGllbnRJZCI6IjY2YzU1MzlhMWQ3N2FlMjJkM2MxOTFiNyIsInNjb3BlIjp0cnVlLCJpYXQiOjE3MjQzNjc2NTIsImV4cCI6MTcyNDQ1NDA1Mn0.Is6e1xzovvmd4A7_5i0aUcOnrLYZu8g9JmOa77HtUhY",
+  "token_type": "Bearer",
+  "expires_in": 3599,
+  "refresh_token": "020634bbe3e70e56a107d27719dda5859d8f774e"
 }
 ```
 
@@ -712,7 +707,9 @@ curl -X GET http://0.0.0.0:3000/api/aqi\?sort\='-createdAt'
 Este servicio es usado para enviar correos electrónicos.
 Actualmente no tiene rutas de API publicas, solo se puede usar desde el broker de mensajes.
 
-### Crear client oauth2
+### Crear clientes oauth2
+
+#### Crear cliente grant_type password (usado para aplicaciones web)
 
 Entrar a la BD y ejecutar el siguiente comando:
 
@@ -725,7 +722,34 @@ db.getCollection("clients").insert({
 })
 ```
 
+#### Crear cliente grant_type client_credentials (usado para aplicaciones de servidor a servidor, ej. gateway)
+
+Entrar a la BD y ejecutar el siguiente comando:
+
+```
+db.getCollection("clients").insert({
+  clientId: 'gateway',
+  clientSecret: 'password',
+  redirectUris: [],
+  grants: ['client_credentials'],
+})
+```
+
+### Ejemplo de uso de grant_type password
+
+```
+curl -X POST -u "myClient:password" -d "grant_type=password&username=david&password=securePassword" http://0.0.0.0:3000/oauth/token
+```
+
+### Ejemplo de uso de grant_type client_credentials
+
+```
+curl -X POST -u "gateway:password" -d "grant_type=client_credentials" http://0.0.0.0:3000/oauth/token
+```
+
 TODO:
+
+- Test client credentials for API gateway
 
 - Remove all console.logs
 - Enable circuit breaker

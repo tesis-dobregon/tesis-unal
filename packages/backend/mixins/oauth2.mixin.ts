@@ -1,11 +1,10 @@
-import { hashSync, compare } from 'bcryptjs';
-import OAuth2Server from 'oauth2-server';
-import { Errors, ServiceSchema } from 'moleculer';
-import { Context } from 'moleculer';
-import MongoOAuth2 from '../lib/oauth2';
-import type { GatewayResponse, IncomingRequest, Route } from 'moleculer-web';
-import { UserEntity } from '../services/users.service';
+import { compare } from 'bcryptjs';
 import { sign, verify } from 'jsonwebtoken';
+import { Context, Errors, ServiceSchema } from 'moleculer';
+import type { GatewayResponse, IncomingRequest, Route } from 'moleculer-web';
+import OAuth2Server from 'oauth2-server';
+import MongoOAuth2 from '../lib/oauth2';
+import { UserEntity } from '../services/users.service';
 
 const secretKey = process.env.JWT_SECRET || 'jwt-unal-secret';
 const { Request, Response } = OAuth2Server;
@@ -36,7 +35,7 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
   const schema: Oauth2ServiceSchema = {
     settings: {
       allowBearerTokensInQueryString: true,
-      accessTokenLifetime: 4 * 60 * 60, // 4hrs
+      accessTokenLifetime: 24 * 60 * 60, // 24hrs
       grants: ['refresh_token', 'client_credentials', 'password'],
     },
     methods: {
@@ -118,17 +117,19 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
         }
       },
       async getClient(clientId: string, clientSecret: string) {
-        const clients = await this.db.client.find();
-        this.logger.info('Clients:', clients);
-        const client = this.db.client
-          .findOne({ clientId, clientSecret })
-          .populate('user')
-          .lean()
-          .then((client: any) => client)
-          .catch((err: any) =>
-            this.logger.error('[oAuth2Server] getClient:', err)
-          );
-        return client;
+        const client = await this.db.client.findOne({ clientId });
+        if (!client) return null;
+
+        // If a secret is provided, validate it (only for confidential clients)
+        if (clientSecret && client.clientSecret !== clientSecret) {
+          return null;
+        }
+
+        return {
+          id: client._id,
+          clientId: client.clientId,
+          grants: ['client_credentials'], // Specify the allowed grants for this client
+        };
       },
       async getUser(username: string, password: string) {
         const user = (await this.db.user.findOne({ username })) as UserEntity;
@@ -146,13 +147,6 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
           ]);
         }
 
-        // const user = await this.db.user
-        //   .findOne({ username }) // Encriptación
-        //   .lean()
-        //   .then((user: any) => user)
-        //   .catch((err: any) =>
-        //     this.logger.error('[oAuth2Server] getUser:', err)
-        //   );
         return user;
       },
       revokeToken(token) {
@@ -167,13 +161,9 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
         try {
           // Create a JWT as the access token
           const jwtAccessToken = sign(
-            {
-              userId: user._id,
-              clientId: client._id,
-              scope: token.scope,
-            },
+            { clientId: client._id, scope: token.scope },
             secretKey,
-            { expiresIn: '24h' } // Adjust expiration as needed
+            { expiresIn: '24h' }
           );
 
           await Promise.all([
@@ -181,7 +171,7 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
               accessToken: jwtAccessToken,
               accessTokenExpiresAt: token.accessTokenExpiresAt,
               client: client._id,
-              user: user._id,
+              user: user ? user._id : null, // In client credentials flow, the user will be null
               scope: token.scope,
             }),
             token.refreshToken
@@ -189,7 +179,7 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
                   refreshToken: token.refreshToken,
                   refreshTokenExpiresAt: token.refreshTokenExpiresAt,
                   client: client._id,
-                  user: user._id,
+                  user: user ? user._id : null, // In client credentials flow, the user will be null
                   scope: token.scope,
                 })
               : Promise.resolve(),
@@ -202,7 +192,7 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
             refreshToken: token.refreshToken, // Keep the refresh token unchanged
             refreshTokenExpiresAt: token.refreshTokenExpiresAt,
             client,
-            user,
+            user, // user will be null in client credentials flow
           };
         } catch (err) {
           this.logger.error('[oAuth2Server] saveToken:', err);
@@ -244,7 +234,7 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
       },
       getUserFromClient(client) {
         return this.db.user
-          .findById(client.user)
+          .findOne(client.user)
           .lean()
           .then((dbUser: any) => dbUser)
           .catch((err: any) =>

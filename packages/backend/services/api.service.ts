@@ -230,6 +230,11 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
             null
           );
         }
+      } else {
+        throw new ApiGateway.Errors.UnAuthorizedError(
+          ApiGateway.Errors.ERR_NO_TOKEN,
+          null
+        );
       }
     },
   },
