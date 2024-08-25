@@ -8,7 +8,7 @@ import type {
 import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import { SMART_CITY_DB_NAME } from '../constants';
 import { createDbServiceMixin } from '../mixins/db.mixin';
-import { SensorStatus } from './sensors.service';
+import { SensorStatus } from '@smart-city-unal/shared-types';
 
 export type SensorCollectedData = {
   _id: string;

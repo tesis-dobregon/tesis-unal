@@ -1,3 +1,4 @@
+import { pick } from 'lodash';
 import type { Context, ServiceSchema } from 'moleculer';
 import type {
   ApiSettingsSchema,
@@ -179,9 +180,9 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
     // Do not log client side errors (does not log an error response when the error.code is 400<=X<500)
     log4XXResponses: false,
     // Logging the request parameters. Set to any log level to enable it. E.g. "info"
-    logRequestParams: null,
+    logRequestParams: 'info',
     // Logging the response data. Set to any log level to enable it. E.g. "info"
-    logResponseData: null,
+    logResponseData: 'info',
 
     // Serve assets from "public" folder. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Serve-static-files
     assets: {
@@ -189,6 +190,35 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 
       // Options to `server-static` module
       options: {},
+    },
+
+    onError(req: any, res: any, err: any) {
+      this.logger.error('Error occurred in request', JSON.stringify(err));
+      // Return with the error as JSON object
+      res.setHeader('Content-type', 'application/json; charset=utf-8');
+      const errorCode = err.inner ? err.inner.code : err.code;
+      res.writeHead(errorCode || 500);
+
+      if (errorCode == 422) {
+        const o: any = {};
+        const errorData = err.inner ? err.inner.data : err.data;
+        errorData.forEach((e: any) => {
+          const field = e.field.split('.').pop();
+          o[field] = e.message;
+        });
+
+        res.end(JSON.stringify({ errors: o }, null, 2));
+      } else {
+        const errObj: any = pick(err, [
+          'name',
+          'message',
+          'code',
+          'type',
+          'data',
+          'inner',
+        ]);
+        res.end(JSON.stringify(errObj, null, 2));
+      }
     },
   },
 

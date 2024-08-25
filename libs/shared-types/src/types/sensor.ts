@@ -1,7 +1,60 @@
 export type SensorId = string;
+
+export enum SensorStatus {
+  WAITING = 'waiting',
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}
+
+export interface SensorEntity {
+  _id: string;
+  /**
+   * The custom ID of the sensor given by the user in the UI.
+   */
+  customId: string;
+  /**
+   * The user ID that owns the sensor.
+   */
+  userId: string;
+  /**
+   * The name of the sensor.
+   */
+  name: string;
+  /**
+   * The type of the sensor.
+   */
+  type: string;
+  /**
+   * The status of the sensor.
+   */
+  status: SensorStatus;
+  /**
+   * The frequency of the measurement in seconds.
+   * It is used to determine how often the sensor should be polled.
+   * The default value is 60 seconds.
+   * The minimum value is 1 second.
+   */
+  measurementFrequency: number;
+  /**
+   * The location of the sensor.
+   */
+  location?: {
+    /**
+     * The latitude of the sensor.
+     */
+    lat: number;
+    /**
+     * The longitude of the sensor.
+     */
+    lon: number;
+  };
+  createdAt: Date;
+}
+
 export type SensorMetadata = {
   type: string;
 };
+
 export type SensorBaseData = {
   /**
    * Date when the data was collected
