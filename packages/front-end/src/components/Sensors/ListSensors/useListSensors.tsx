@@ -32,10 +32,11 @@ export const useListSensors = ({ data }: ListSensorsComponentProps) => {
     });
   };
 
-  const handleView = () => {
+  const handleView = (sensor: SensorEntity) => {
     sensorsContext?.setSensor({
       drawerMode: { showDrawer: true },
       action: SensorActions.VIEW,
+      sensorToEdit: sensor,
     });
   };
 

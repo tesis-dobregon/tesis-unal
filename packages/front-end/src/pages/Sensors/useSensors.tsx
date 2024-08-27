@@ -1,5 +1,5 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { SensorEditorComponent } from '../../components';
+import { useCallback, useContext, useState } from 'react';
+import { SensorEditorComponent, SensorDataComponent } from '../../components';
 import {
   SensorContext,
   SensorActions,
@@ -69,10 +69,15 @@ export const useSensors = () => {
               sensorToEdit={sensorContext?.sensorPage?.sensorToEdit}
             />
           );
-        case SensorActions.VIEW:
-          return <h1>TODO: Show Sensor data</h1>;
+        case SensorActions.VIEW: {
+          return sensorContext?.sensorPage?.sensorToEdit?._id ? (
+            <SensorDataComponent
+              sensorId={sensorContext.sensorPage.sensorToEdit.customId}
+            />
+          ) : null;
+        }
         default:
-          return <></>;
+          return null;
       }
     },
     [sensorContext]

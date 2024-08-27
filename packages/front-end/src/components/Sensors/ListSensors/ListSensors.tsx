@@ -185,7 +185,7 @@ export const ListSensorsComponent: React.FunctionComponent<
                       },
                       {
                         name: 'Ver',
-                        onClick: () => handleView(),
+                        onClick: () => handleView(data),
                         icon: MenuItemIcon.VIEW_DATA,
                       },
                     ]}
