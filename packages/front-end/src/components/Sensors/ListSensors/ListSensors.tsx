@@ -6,94 +6,94 @@ import {
   ListItemText,
   SvgIcon,
   Typography,
-} from "@mui/material";
-import { Sensor } from "../../../types/sensors/sensor";
-import { TableComponent } from "../../Table/Table";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import CircleIcon from "@mui/icons-material/Circle";
-import { HeaderProperty } from "../../../types/sensors/table/table";
-import { ButtonSubMenuComponent } from "../../ButtonSubMenu/ButtonSubMenu";
-import { MenuItemIcon } from "../../../types/icons/menuIcons";
-import { useContext } from "react";
-import { SensorContext } from "../../../types/sensors/providers";
-import { useListSensors } from "./useListSensors";
-
-interface ListSensorsComponentProps {
-  sensors: Sensor[];
-}
+} from '@mui/material';
+import { Sensor } from '../../../types/sensors/sensor';
+import { TableComponent } from '../../Table/Table';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import CircleIcon from '@mui/icons-material/Circle';
+import { HeaderProperty } from '../../../types/sensors/table/table';
+import { ButtonSubMenuComponent } from '../../ButtonSubMenu/ButtonSubMenu';
+import { MenuItemIcon } from '../../../types/icons/menuIcons';
+import { ListSensorsComponentProps, useListSensors } from './useListSensors';
+import { SensorEntity, SensorStatus } from '@smart-city-unal/shared-types';
 
 export const ListSensorsComponent: React.FunctionComponent<
   ListSensorsComponentProps
-> = ({ sensors = [] }) => {
-  const { handleEdit, handleDelete, handleView } = useListSensors();
-  const sensorsContext = useContext(SensorContext);
-  /**
-   * TODO
-   * Handle sensors with state
-   */
+> = (props) => {
+  const { handleEdit, handleDelete, handleView, rows } = useListSensors(props);
+
   const headerProperties: HeaderProperty[] = [
     {
-      name: "Nombre del sensor",
-      accesor: "name",
+      name: 'Nombre del sensor',
+      accesor: 'name',
       showName: true,
-      renderAction: (data: any) => {
+      renderAction: (data: SensorEntity) => {
         return <Typography>{data.name}</Typography>;
       },
     },
     {
-      name: "Id",
-      accesor: "identifier",
+      name: 'Id',
+      accesor: 'customId',
       showName: true,
-      renderAction: (data: any) => {
-        return <Typography>{data.identifier}</Typography>;
+      renderAction: (data: SensorEntity) => {
+        return <Typography>{data.customId}</Typography>;
       },
     },
     {
-      name: "Tipo",
-      accesor: "sensorType.name",
+      name: 'Tipo',
+      accesor: 'type',
       showName: true,
-      renderAction: (data: any) => {
-        return <Typography>{data.sensorType.name}</Typography>;
+      renderAction: (data: SensorEntity) => {
+        return <Typography>{data.type}</Typography>;
+      },
+    },
+    // {
+    //   name: 'Última Act.',
+    //   accesor: 'lastUpdate',
+    //   showName: true,
+    //   renderAction: (data: any) => {
+    //     return <Typography>{data.lastHeartBeat}</Typography>;
+    //   },
+    // },
+    {
+      name: 'Periodo',
+      accesor: 'measurementFrequency',
+      showName: true,
+      renderAction: (data: SensorEntity) => {
+        return <Typography>{data.measurementFrequency}</Typography>;
       },
     },
     {
-      name: "Última Act.",
-      accesor: "lastUpdate",
+      name: 'Estado',
+      accesor: 'status',
       showName: true,
-      renderAction: (data: any) => {
-        return <Typography>{data.lastUpdate}</Typography>;
-      },
-    },
-    {
-      name: "Periodo",
-      accesor: "frequency.name",
-      showName: true,
-      renderAction: (data: any) => {
-        return <Typography>{data.frequency.name}</Typography>;
-      },
-    },
-    {
-      name: "Estado",
-      accesor: "state.name",
-      showName: true,
-      renderAction: (data: any) => {
-        switch (data.state.id) {
-          case 1:
+      renderAction: (data: SensorEntity) => {
+        switch (data.status) {
+          case SensorStatus.ACTIVE:
             return (
               <Box
-                sx={{ display: "flex", flexDirection: "row" }}
+                sx={{ display: 'flex', flexDirection: 'row' }}
                 component="section"
               >
                 <SvgIcon component={CircleIcon} color="success">
-                  {" "}
+                  {' '}
                 </SvgIcon>
               </Box>
             );
-          case 2:
+
+          case SensorStatus.WAITING:
+            return (
+              <Box component="section">
+                <SvgIcon component={CircleIcon} color="warning">
+                  {' '}
+                </SvgIcon>
+              </Box>
+            );
+          case SensorStatus.INACTIVE:
             return (
               <Box component="section">
                 <SvgIcon component={CircleIcon} color="error">
-                  {" "}
+                  {' '}
                 </SvgIcon>
               </Box>
             );
@@ -103,8 +103,28 @@ export const ListSensorsComponent: React.FunctionComponent<
       },
     },
     {
-      name: "Actions",
-      accesor: "",
+      name: 'Ubicación',
+      accesor: 'location',
+      showName: true,
+      renderAction: (data: SensorEntity) => {
+        return (
+          <Typography>
+            {data.location?.lat} , {data?.location?.lon}
+          </Typography>
+        );
+      },
+    },
+    {
+      name: 'Creado',
+      accesor: 'createdAt',
+      showName: true,
+      renderAction: (data: SensorEntity) => {
+        return <Typography>{data.createdAt.toString()}</Typography>;
+      },
+    },
+    {
+      name: 'Actions',
+      accesor: '',
       showName: false,
       renderAction: (data: any) => <></>,
     },
@@ -118,25 +138,34 @@ export const ListSensorsComponent: React.FunctionComponent<
             <SvgIcon component={CircleIcon} color="success" />
             <ListItemText
               primary="Activo"
-              secondary={"Representa un sensor en funcionamiento"}
+              secondary={'Representa un sensor en funcionamiento'}
+            />
+          </ListItem>
+          <ListItem key={0}>
+            <SvgIcon component={CircleIcon} color="warning" />
+            <ListItemText
+              primary="Pendiente"
+              secondary={
+                'Representa un sensor que ha sido creado pero no ha sido activado'
+              }
             />
           </ListItem>
           <ListItem key={1}>
             <SvgIcon component={CircleIcon} color="error" />
             <ListItemText
               primary="Inactivo"
-              secondary={"Representa un sensor apagado"}
+              secondary={'Representa un sensor apagado'}
             />
           </ListItem>
         </List>
       </Box>
 
       <TableComponent
-        data={sensors}
+        data={rows}
         header={headerProperties.map((property) => ({
           ...property,
           renderAction:
-            property.name === "Actions"
+            property.name === 'Actions'
               ? (data: Sensor) => (
                   <ButtonSubMenuComponent
                     clickableElement={
@@ -146,17 +175,17 @@ export const ListSensorsComponent: React.FunctionComponent<
                     }
                     menuOptions={[
                       {
-                        name: "Editar",
+                        name: 'Editar',
                         onClick: () => handleEdit(data),
                         icon: MenuItemIcon.EDIT,
                       },
                       {
-                        name: "Eliminar",
+                        name: 'Eliminar',
                         onClick: () => handleDelete(data),
                         icon: MenuItemIcon.DELETE,
                       },
                       {
-                        name: "Ver",
+                        name: 'Ver',
                         onClick: () => handleView(),
                         icon: MenuItemIcon.VIEW_DATA,
                       },

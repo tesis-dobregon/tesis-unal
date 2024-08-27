@@ -1,24 +1,35 @@
-import { SensorTypeList } from "../../../types/sensors/sensorTypeFixture";
-import { FrequencyList } from "../../../types/sensors/frequencyFixture";
-import { Sensor } from "../../../types/sensors/sensor";
-import { useState } from "react";
-import { SelectChangeEvent } from "@mui/material";
+import { SensorTypeList } from '../../../types/sensors/sensorTypeFixture';
+import { FrequencyList } from '../../../types/sensors/frequencyFixture';
+import { useMemo, useState } from 'react';
+import { SelectChangeEvent } from '@mui/material';
+import { SensorEntity } from '@smart-city-unal/shared-types';
+import { useCreateSensor } from '../../../hooks';
 
-export const useSensorEditor = (isEdit: boolean, sensorToEdit?: Sensor) => {
+export interface AddSensorProps {
+  isEdit: boolean;
+  sensorToEdit?: SensorEntity;
+}
+
+export const useSensorEditor = ({ isEdit, sensorToEdit }: AddSensorProps) => {
+  const {
+    mutate: createSensor,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useCreateSensor();
+
   const [name, setName] = useState<string>(
-    isEdit ? sensorToEdit?.name || "" : ""
+    isEdit ? sensorToEdit?.name || '' : ''
   );
-  const [selectedSensorType, setSelectedSensorType] = useState<number>(
-    isEdit
-      ? sensorToEdit?.sensorType.id || SensorTypeList[0].id
-      : SensorTypeList[0].id
+  const [selectedSensorType, setSelectedSensorType] = useState<string>(
+    isEdit ? sensorToEdit?.type || SensorTypeList[0].id : SensorTypeList[0].id
   );
   const [identifier, setIdentifier] = useState<string>(
-    isEdit ? sensorToEdit?.identifier || "" : ""
+    isEdit ? sensorToEdit?.customId || '' : ''
   );
   const [selectedFrequency, setSelectedFrequency] = useState<number>(
     isEdit
-      ? sensorToEdit?.frequency.id || FrequencyList[0].id
+      ? sensorToEdit?.measurementFrequency || FrequencyList[0].id
       : FrequencyList[0].id
   );
 
@@ -32,14 +43,37 @@ export const useSensorEditor = (isEdit: boolean, sensorToEdit?: Sensor) => {
     setIdentifier(event.target.value);
   };
 
-  const handleSensorTypeChange = (event: SelectChangeEvent<number>) => {
-    setSelectedSensorType(event.target.value as number);
+  const handleSensorTypeChange = (event: SelectChangeEvent<string>) => {
+    setSelectedSensorType(event.target.value);
   };
 
   const handleFrequencyChange = (event: SelectChangeEvent<number>) => {
     setSelectedFrequency(event.target.value as number);
   };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    createSensor({
+      name,
+      customId: identifier,
+      type: selectedSensorType,
+      measurementFrequency: selectedFrequency,
+    });
+  };
+
+  const buttonText = useMemo(() => {
+    if (isLoading) {
+      return 'Cargando...';
+    }
+    if (isEdit) {
+      return 'Editar Sensor';
+    }
+    return 'Crear Sensor';
+  }, []);
+
   return {
+    isEdit,
     name,
     handleNameChange,
     selectedSensorType,
@@ -48,5 +82,10 @@ export const useSensorEditor = (isEdit: boolean, sensorToEdit?: Sensor) => {
     handleIdentifierChange,
     selectedFrequency,
     handleFrequencyChange,
+    handleSubmit,
+    isLoading,
+    isError,
+    isSuccess,
+    buttonText,
   };
 };

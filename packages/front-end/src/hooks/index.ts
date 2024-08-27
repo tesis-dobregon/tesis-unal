@@ -1,1 +1,2 @@
-export * from './useSensors';
+export * from './useQuerySensors';
+export * from './useCreateSensor';

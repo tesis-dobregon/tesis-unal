@@ -1,11 +1,10 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Link } from '@mui/material';
+import { Box, CircularProgress, Link } from '@mui/material';
 import {
   DrawerComponent,
   ListSensorsComponent,
   RefreshButton,
 } from '../../components';
-import { SensorsList } from '../../types/sensors/SensorsFixture';
 import { ModalComponent } from '../../components/Modal/Modal';
 import { SensorActions } from '../../types/sensors/providers';
 import { useSensors } from './useSensors';
@@ -39,16 +38,18 @@ const Sensors: React.FunctionComponent = () => {
     handleOpenModal,
     getDrawerComponent,
     sensorContext,
+    isLoading,
+    isError,
+    data,
+    setPage,
+    setPageSize,
+    onRefreshPage,
   } = useSensors();
 
   return (
     <Box sx={sxMap.container}>
       <Box sx={sxMap.row}>
-        <RefreshButton
-          onClick={() => {
-            console.log('Refreshing sensors...');
-          }}
-        ></RefreshButton>
+        <RefreshButton onClick={onRefreshPage}></RefreshButton>
 
         <Link onClick={handleOpenAddSensorDrawer} sx={sxMap.list}>
           <AddIcon color="action" fontSize="large"></AddIcon>
@@ -59,7 +60,11 @@ const Sensors: React.FunctionComponent = () => {
           width: '100%',
         }}
       >
-        <ListSensorsComponent sensors={SensorsList}></ListSensorsComponent>
+        {isLoading && <CircularProgress />}
+        {isError && <Box>Error...</Box>}
+        {!isLoading && !isError && data && (
+          <ListSensorsComponent data={data}></ListSensorsComponent>
+        )}
       </Box>
       <DrawerComponent
         children={getDrawerComponent(sensorContext?.sensorPage?.action)}

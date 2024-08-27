@@ -1,9 +1,19 @@
-import { Sensor } from "../../../types/sensors/sensor";
-import { useContext } from "react";
-import { SensorContext, SensorActions } from "../../../types/sensors/providers";
+import { Sensor } from '../../../types/sensors/sensor';
+import { useContext } from 'react';
+import { SensorContext, SensorActions } from '../../../types/sensors/providers';
+import { SensorsResponse } from '../../../hooks';
 
-export const useListSensors = () => {
+export interface ListSensorsComponentProps {
+  data: SensorsResponse;
+}
+
+export const useListSensors = ({ data }: ListSensorsComponentProps) => {
   const sensorsContext = useContext(SensorContext);
+  const { rows, total, totalPages } = data || {
+    rows: [],
+    total: 0,
+    totalPages: 1,
+  };
 
   const handleEdit = (sensor: Sensor) => {
     sensorsContext?.setSensor({
@@ -28,5 +38,5 @@ export const useListSensors = () => {
     });
   };
 
-  return { handleEdit, handleDelete, handleView };
+  return { handleEdit, handleDelete, handleView, rows, total, totalPages };
 };

@@ -2,7 +2,7 @@ import { useQuery } from 'react-query';
 import axiosInstance from '../axiosInstance'; // Your axios instance
 import { SensorEntity } from '@smart-city-unal/shared-types';
 
-interface SensorsResponse {
+export interface SensorsResponse {
   rows: SensorEntity[];
   total: number;
   page: number;
@@ -28,7 +28,7 @@ const fetchSensors = async (
   return data;
 };
 
-const useSensors = ({ page, pageSize }: UseSensorsParams) => {
+const useQuerySensors = ({ page, pageSize }: UseSensorsParams) => {
   return useQuery(
     ['sensors', page, pageSize],
     () => fetchSensors(page, pageSize),
@@ -39,4 +39,4 @@ const useSensors = ({ page, pageSize }: UseSensorsParams) => {
   );
 };
 
-export { useSensors };
+export { useQuerySensors };

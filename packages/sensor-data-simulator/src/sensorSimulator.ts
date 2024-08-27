@@ -10,13 +10,13 @@ const RADIUS = 3000; // 3 km
 const CENTER_POINT: GeoPoint = {
   // Duitama center point
   lat: 5.827528376419425,
-  lng: -73.03398797041362,
+  lon: -73.03398797041362,
 };
 
 // Number of simulated sensors to generate
 const NUMBER_OF_SIMULATED_SENSORS = process.env.NUMBER_OF_SIMULATED_SENSORS
   ? Number(process.env.NUMBER_OF_SIMULATED_SENSORS)
-  : 3;
+  : 4;
 
 // Frequency to publish simulated sensor data in milliseconds. Default is 15 seconds.
 const FREQUENCY_TO_PUBLISH_SIMULATED_DATA = process.env
@@ -38,14 +38,14 @@ function generateSimulatedSensorRecord(
   index: number
 ): SensorData {
   // Generates a random point within a 3 km radius of the center point
-  const { lat, lng } = generateRandomPoint(CENTER_POINT, RADIUS);
+  const { lat, lon } = generateRandomPoint(CENTER_POINT, RADIUS);
   const record: SensorData = {
     date: new Date().toISOString(),
     uid: `AQ0${index}`,
     name: `AirQualityUnit0${index}`,
     description: `Air quality station in Duitama ${index}`,
     lat,
-    lng,
+    lon,
   };
 
   Object.entries(station).forEach(([key, value]) => {

@@ -69,7 +69,7 @@ export type SensorBaseData = {
   name: string;
   description: string;
   lat: number;
-  lng: number;
+  lon: number;
   metadata?: SensorMetadata;
 };
 
@@ -84,7 +84,7 @@ export type SensorBaseData = {
     name: 'AirQualityUnit02',
     description: 'Air quality station in Duitama 2',
     lat: 5.810082209872709,
-    lng: -73.04845685741972,
+    lon: -73.04845685741972,
     metadata: { type: 'air_quality_standard' },
     co: 6,
     co2: 475,

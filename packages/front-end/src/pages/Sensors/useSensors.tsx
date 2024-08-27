@@ -1,13 +1,21 @@
-import { useCallback, useContext, useEffect } from "react";
-import { SensorEditorComponent } from "../../components";
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { SensorEditorComponent } from '../../components';
 import {
   SensorContext,
   SensorActions,
   SensorPage,
-} from "../../types/sensors/providers";
+} from '../../types/sensors/providers';
+import { useQuerySensors } from '../../hooks';
 
 export const useSensors = () => {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   const sensorContext = useContext(SensorContext);
+  const { data, isLoading, isError, refetch } = useQuerySensors({
+    page,
+    pageSize,
+  });
 
   const handleCloseDrawer = useCallback(() => {
     sensorContext?.setSensor({
@@ -58,9 +66,9 @@ export const useSensors = () => {
     [sensorContext]
   );
 
-  useEffect(() => {
-    console.log("sensorContext: ", sensorContext);
-  }, [sensorContext]);
+  const onRefreshPage = async () => {
+    await refetch();
+  };
 
   return {
     handleCloseDrawer,
@@ -68,5 +76,11 @@ export const useSensors = () => {
     handleOpenModal,
     getDrawerComponent,
     sensorContext,
+    data,
+    isLoading,
+    isError,
+    setPage,
+    setPageSize,
+    onRefreshPage,
   };
 };

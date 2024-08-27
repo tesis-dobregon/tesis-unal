@@ -65,6 +65,7 @@ const SensorsService: ServiceSchema<SensorSettings> & {
         },
         optional: true,
       },
+      // Measurement frequency in seconds
       measurementFrequency: { type: 'number', min: 0, optional: true },
     },
 
@@ -190,7 +191,7 @@ const SensorsService: ServiceSchema<SensorSettings> & {
           type: 'air_quality_standard',
           status: SensorStatus.ACTIVE,
           measurementFrequency: 120,
-          location: { lat: 0, lon: 0 },
+          location: { lat: 5.833644803443941, lon: -73.01971685262258 },
           createdAt: new Date(),
         },
         {
@@ -200,7 +201,7 @@ const SensorsService: ServiceSchema<SensorSettings> & {
           type: 'air_quality_standard',
           status: SensorStatus.ACTIVE,
           measurementFrequency: 120,
-          location: { lat: 0, lon: 0 },
+          location: { lat: 5.822111411690199, lon: -73.04992465374539 },
           createdAt: new Date(),
         },
         {
@@ -210,7 +211,10 @@ const SensorsService: ServiceSchema<SensorSettings> & {
           type: 'air_quality_standard',
           status: SensorStatus.WAITING,
           measurementFrequency: 120,
-          location: { lat: 0, lon: 0 },
+          location: {
+            lat: 5.83307471269905,
+            lon: -73.0268232217087,
+          },
           createdAt: new Date(),
         },
       ]);

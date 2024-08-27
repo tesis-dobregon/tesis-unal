@@ -1,10 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://0.0.0.0:3000',
-  // headers: {
-  //   'Content-Type': 'application/x-www-form-urlencoded',
-  // },
+  baseURL: process.env.REACT_APP_API_URL ?? 'http://0.0.0.0:3000',
 });
 
 // Add a request interceptor to include the bearer token in all requests
