@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import { SensorTypeList } from '../../../types/sensors/sensorTypeFixture';
 import { FrequencyList } from '../../../types/sensors/frequencyFixture';
-import { Sensor } from '../../../types/sensors/sensor';
 import { AddSensorProps, useSensorEditor } from './useSensorsEditor';
 
 export const SensorEditorComponent: React.FunctionComponent<AddSensorProps> = (
@@ -29,8 +28,8 @@ export const SensorEditorComponent: React.FunctionComponent<AddSensorProps> = (
     selectedFrequency,
     handleFrequencyChange,
     handleSubmit,
-    isError,
-    isSuccess,
+    errorMessage,
+    successMessage,
     buttonText,
   } = useSensorEditor(props);
   return (
@@ -118,17 +117,17 @@ export const SensorEditorComponent: React.FunctionComponent<AddSensorProps> = (
                 {buttonText}
               </Button>
             </Grid>
-            {isError && (
+            {errorMessage && (
               <Grid item xs={12}>
                 <Typography variant="body1" color="error">
-                  Error al crear el sensor
+                  {errorMessage}
                 </Typography>
               </Grid>
             )}
-            {isSuccess && (
+            {successMessage && (
               <Grid item xs={12}>
                 <Typography variant="body1" color="success">
-                  Sensor creado con éxito
+                  {successMessage}
                 </Typography>
               </Grid>
             )}

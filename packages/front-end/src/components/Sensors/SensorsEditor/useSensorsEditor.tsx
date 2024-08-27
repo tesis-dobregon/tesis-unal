@@ -1,9 +1,10 @@
-import { SensorTypeList } from '../../../types/sensors/sensorTypeFixture';
-import { FrequencyList } from '../../../types/sensors/frequencyFixture';
-import { useMemo, useState } from 'react';
 import { SelectChangeEvent } from '@mui/material';
 import { SensorEntity } from '@smart-city-unal/shared-types';
-import { useCreateSensor } from '../../../hooks';
+import { useContext, useMemo, useState } from 'react';
+import { useCreateSensor, useEditSensor } from '../../../hooks';
+import { FrequencyList } from '../../../types/sensors/frequencyFixture';
+import { SensorContext } from '../../../types/sensors/providers';
+import { SensorTypeList } from '../../../types/sensors/sensorTypeFixture';
 
 export interface AddSensorProps {
   isEdit: boolean;
@@ -11,12 +12,21 @@ export interface AddSensorProps {
 }
 
 export const useSensorEditor = ({ isEdit, sensorToEdit }: AddSensorProps) => {
+  const sensorContext = useContext(SensorContext);
+
   const {
     mutate: createSensor,
-    isLoading,
-    isError,
-    isSuccess,
+    isLoading: isCreating,
+    isError: isCreateError,
+    isSuccess: isCreateSuccess,
   } = useCreateSensor();
+
+  const {
+    mutate: editSensor,
+    isLoading: isEditing,
+    isError: isEditError,
+    isSuccess: isEditSuccess,
+  } = useEditSensor();
 
   const [name, setName] = useState<string>(
     isEdit ? sensorToEdit?.name || '' : ''
@@ -53,24 +63,48 @@ export const useSensorEditor = ({ isEdit, sensorToEdit }: AddSensorProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    createSensor({
-      name,
-      customId: identifier,
-      type: selectedSensorType,
-      measurementFrequency: selectedFrequency,
-    });
+    if (isEdit) {
+      return editSensor({
+        sensorId: sensorContext?.sensorPage?.sensorToEdit?._id || '',
+        newSensor: {
+          name,
+          type: selectedSensorType,
+          measurementFrequency: selectedFrequency,
+        },
+      });
+    } else {
+      createSensor({
+        name,
+        customId: identifier,
+        type: selectedSensorType,
+        measurementFrequency: selectedFrequency,
+      });
+    }
   };
 
   const buttonText = useMemo(() => {
-    if (isLoading) {
+    if (isCreating || isEditing) {
       return 'Cargando...';
     }
     if (isEdit) {
       return 'Editar Sensor';
     }
     return 'Crear Sensor';
-  }, []);
+  }, [isCreating, isEditing, isEdit]);
+
+  const errorMessage = useMemo(() => {
+    if (isCreateError || isEditError) {
+      return 'Error al guardar el sensor';
+    }
+    return '';
+  }, [isCreateError, isEditError]);
+
+  const successMessage = useMemo(() => {
+    if (isCreateSuccess || isEditSuccess) {
+      return 'Sensor guardado correctamente';
+    }
+    return '';
+  }, [isCreateSuccess, isEditSuccess]);
 
   return {
     isEdit,
@@ -83,9 +117,9 @@ export const useSensorEditor = ({ isEdit, sensorToEdit }: AddSensorProps) => {
     selectedFrequency,
     handleFrequencyChange,
     handleSubmit,
-    isLoading,
-    isError,
-    isSuccess,
+    isLoading: isCreating || isEditing,
     buttonText,
+    successMessage,
+    errorMessage,
   };
 };

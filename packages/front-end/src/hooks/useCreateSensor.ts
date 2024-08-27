@@ -1,6 +1,8 @@
 import { useMutation } from 'react-query';
 import axiosInstance from '../axiosInstance';
 import { SensorEntity } from '@smart-city-unal/shared-types';
+import { queryClient } from '../main';
+import { QUERY_KEYS } from './constants';
 
 type CreateSensorParams = Pick<
   SensorEntity,
@@ -17,5 +19,9 @@ const createSensor = async (newSensor: CreateSensorParams) => {
 };
 
 export const useCreateSensor = () => {
-  return useMutation(createSensor);
+  return useMutation(createSensor, {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SENSORS] });
+    },
+  });
 };

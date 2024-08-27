@@ -2,6 +2,7 @@ import { Sensor } from '../../../types/sensors/sensor';
 import { useContext } from 'react';
 import { SensorContext, SensorActions } from '../../../types/sensors/providers';
 import { SensorsResponse } from '../../../hooks';
+import { SensorEntity } from '@smart-city-unal/shared-types';
 
 export interface ListSensorsComponentProps {
   data: SensorsResponse;
@@ -15,7 +16,7 @@ export const useListSensors = ({ data }: ListSensorsComponentProps) => {
     totalPages: 1,
   };
 
-  const handleEdit = (sensor: Sensor) => {
+  const handleEdit = (sensor: SensorEntity) => {
     sensorsContext?.setSensor({
       sensorToEdit: sensor,
       drawerMode: { showDrawer: true },
@@ -23,7 +24,7 @@ export const useListSensors = ({ data }: ListSensorsComponentProps) => {
     });
   };
 
-  const handleDelete = (sensor: Sensor) => {
+  const handleDelete = (sensor: SensorEntity) => {
     sensorsContext?.setSensor({
       sensorToEdit: sensor,
       drawerMode: { showDrawer: false },

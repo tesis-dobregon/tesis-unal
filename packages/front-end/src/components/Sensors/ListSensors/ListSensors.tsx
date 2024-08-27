@@ -7,7 +7,6 @@ import {
   SvgIcon,
   Typography,
 } from '@mui/material';
-import { Sensor } from '../../../types/sensors/sensor';
 import { TableComponent } from '../../Table/Table';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -166,7 +165,7 @@ export const ListSensorsComponent: React.FunctionComponent<
           ...property,
           renderAction:
             property.name === 'Actions'
-              ? (data: Sensor) => (
+              ? (data: SensorEntity) => (
                   <ButtonSubMenuComponent
                     clickableElement={
                       <IconButton aria-label="more">

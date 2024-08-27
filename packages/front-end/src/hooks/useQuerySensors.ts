@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
 import axiosInstance from '../axiosInstance'; // Your axios instance
 import { SensorEntity } from '@smart-city-unal/shared-types';
+import { QUERY_KEYS } from './constants';
 
 export interface SensorsResponse {
   rows: SensorEntity[];
@@ -30,7 +31,7 @@ const fetchSensors = async (
 
 const useQuerySensors = ({ page, pageSize }: UseSensorsParams) => {
   return useQuery(
-    ['sensors', page, pageSize],
+    [QUERY_KEYS.SENSORS, page, pageSize],
     () => fetchSensors(page, pageSize),
     {
       keepPreviousData: true, // This helps to avoid flickering when changing pages
