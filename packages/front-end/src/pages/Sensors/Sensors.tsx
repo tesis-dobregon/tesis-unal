@@ -1,5 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, CircularProgress, Link } from '@mui/material';
+import { Box, CircularProgress, Link, Typography } from '@mui/material';
 import {
   DrawerComponent,
   ListSensorsComponent,
@@ -44,6 +44,9 @@ const Sensors: React.FunctionComponent = () => {
     setPage,
     setPageSize,
     onRefreshPage,
+    handleDeleteSensor,
+    isDeleting,
+    isDeleteError,
   } = useSensors();
 
   return (
@@ -60,8 +63,17 @@ const Sensors: React.FunctionComponent = () => {
           width: '100%',
         }}
       >
-        {isLoading && <CircularProgress />}
-        {isError && <Box>Error...</Box>}
+        {isLoading || (isDeleting && <CircularProgress />)}
+        {isError && (
+          <Box>
+            <Typography>Error al cargar los sensores</Typography>
+          </Box>
+        )}
+        {isDeleteError && (
+          <Box>
+            <Typography>Error al eliminar el sensor</Typography>
+          </Box>
+        )}
         {!isLoading && !isError && data && (
           <ListSensorsComponent data={data}></ListSensorsComponent>
         )}
@@ -78,6 +90,7 @@ const Sensors: React.FunctionComponent = () => {
         title="Eliminar Sensor"
         firstButtonText="Aceptar"
         secondButtontext="Cancelar"
+        handleAction={handleDeleteSensor}
       ></ModalComponent>
     </Box>
   );

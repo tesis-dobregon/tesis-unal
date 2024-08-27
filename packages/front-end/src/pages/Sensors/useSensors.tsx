@@ -5,9 +5,14 @@ import {
   SensorActions,
   SensorPage,
 } from '../../types/sensors/providers';
-import { useQuerySensors } from '../../hooks';
+import { useDeleteSensor, useQuerySensors } from '../../hooks';
 
 export const useSensors = () => {
+  const {
+    mutate: deleteSensor,
+    isLoading: isDeleting,
+    isError: isDeleteError,
+  } = useDeleteSensor();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -44,6 +49,13 @@ export const useSensors = () => {
     },
     [sensorContext]
   );
+
+  const handleDeleteSensor = () => {
+    if (sensorContext?.sensorPage?.sensorToEdit?._id) {
+      deleteSensor(sensorContext?.sensorPage?.sensorToEdit?._id);
+      handleCloseDrawer();
+    }
+  };
 
   const getDrawerComponent = useCallback(
     (action?: SensorActions) => {
@@ -82,5 +94,8 @@ export const useSensors = () => {
     setPage,
     setPageSize,
     onRefreshPage,
+    handleDeleteSensor,
+    isDeleting,
+    isDeleteError,
   };
 };

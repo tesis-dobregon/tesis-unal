@@ -140,7 +140,7 @@ export const ListSensorsComponent: React.FunctionComponent<
               secondary={'Representa un sensor en funcionamiento'}
             />
           </ListItem>
-          <ListItem key={0}>
+          <ListItem key={1}>
             <SvgIcon component={CircleIcon} color="warning" />
             <ListItemText
               primary="Pendiente"
@@ -149,7 +149,7 @@ export const ListSensorsComponent: React.FunctionComponent<
               }
             />
           </ListItem>
-          <ListItem key={1}>
+          <ListItem key={2}>
             <SvgIcon component={CircleIcon} color="error" />
             <ListItemText
               primary="Inactivo"
