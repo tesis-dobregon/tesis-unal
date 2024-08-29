@@ -8,19 +8,16 @@ import {
 import { useDeleteSensor, useQuerySensors } from '../../hooks';
 
 export const useSensors = () => {
+  const [refreshKey, setRefreshKey] = useState(0);
   const {
     mutate: deleteSensor,
     isLoading: isDeleting,
     isError: isDeleteError,
   } = useDeleteSensor();
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  // const [page, setPage] = useState(1);
+  // const [pageSize, setPageSize] = useState(10);
 
   const sensorContext = useContext(SensorContext);
-  const { data, isLoading, isError, refetch } = useQuerySensors({
-    page,
-    pageSize,
-  });
 
   const handleCloseDrawer = useCallback(() => {
     sensorContext?.setSensor({
@@ -84,7 +81,7 @@ export const useSensors = () => {
   );
 
   const onRefreshPage = async () => {
-    await refetch();
+    setRefreshKey((prev: number) => prev + 1);
   };
 
   return {
@@ -93,14 +90,12 @@ export const useSensors = () => {
     handleOpenModal,
     getDrawerComponent,
     sensorContext,
-    data,
-    isLoading,
-    isError,
-    setPage,
-    setPageSize,
+    // setPage,
+    // setPageSize,
     onRefreshPage,
     handleDeleteSensor,
     isDeleting,
     isDeleteError,
+    refreshKey,
   };
 };

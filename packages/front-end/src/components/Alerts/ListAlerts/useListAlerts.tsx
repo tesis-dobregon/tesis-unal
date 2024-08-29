@@ -1,11 +1,16 @@
 import { Alert } from '@smart-city-unal/shared-types';
 import { AlertActions, AlertContext } from '../../../types/alerts/providers';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useQueryAlerts } from '../../../hooks';
 
-export const useListAlerts = () => {
+export interface ListAlertsProps {
+  visualMode?: boolean;
+  refreshKey?: number;
+}
+
+export const useListAlerts = ({ visualMode, refreshKey }: ListAlertsProps) => {
   const alertContext = useContext(AlertContext);
-  const { data, isLoading, isError } = useQueryAlerts();
+  const { data, isLoading, isError, refetch } = useQueryAlerts();
   const { rows, total, totalPages } = data || {
     rows: [],
     total: 0,
@@ -32,6 +37,15 @@ export const useListAlerts = () => {
     });
   };
 
+  useEffect(() => {
+    const refreshData = async () => {
+      await refetch();
+    };
+    if (refreshKey) {
+      refreshData();
+    }
+  }, [refreshKey]);
+
   return {
     data,
     isLoading,
@@ -41,5 +55,6 @@ export const useListAlerts = () => {
     totalPages,
     handleEdit,
     handleDelete,
+    visualMode,
   };
 };

@@ -5,12 +5,12 @@ import React from 'react';
 import { HeaderProperty } from '../../../types/sensors/table/table';
 import { ButtonSubMenuComponent } from '../../ButtonSubMenu/ButtonSubMenu';
 import { TableComponent } from '../../Table/Table';
-import { useListAlerts } from './useListAlerts';
+import { ListAlertsProps, useListAlerts } from './useListAlerts';
 import { MenuItemIcon } from '../../../types/icons/menuIcons';
 
-export const ListAlertsComponent: React.FunctionComponent = () => {
-  const { isLoading, isError, rows, handleEdit, handleDelete } =
-    useListAlerts();
+export const ListAlertsComponent: React.FC<ListAlertsProps> = (props) => {
+  const { isLoading, isError, rows, handleEdit, handleDelete, visualMode } =
+    useListAlerts(props);
 
   const headerProperties: HeaderProperty[] = [
     {
@@ -71,13 +71,16 @@ export const ListAlertsComponent: React.FunctionComponent = () => {
         );
       },
     },
-    {
+  ];
+
+  if (!visualMode) {
+    headerProperties.push({
       name: 'Actions',
       accesor: '',
       showName: false,
       renderAction: (data: any) => <></>,
-    },
-  ];
+    });
+  }
 
   return (
     <Box>

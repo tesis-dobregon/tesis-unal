@@ -43,6 +43,7 @@ const Alerts = () => {
     handleOpenAddAlertDrawer,
     handleCloseDrawer,
     getDrawerComponent,
+    refreshKey,
   } = useAlerts();
 
   return (
@@ -64,11 +65,11 @@ const Alerts = () => {
       {isDeleting && <CircularProgress />}
       {isDeleteError && (
         <Box>
-          <Typography>Error al eliminar el sensor</Typography>
+          <Typography>Error al eliminar la alerta</Typography>
         </Box>
       )}
 
-      <ListAlertsComponent />
+      <ListAlertsComponent refreshKey={refreshKey} />
       <DrawerComponent
         children={getDrawerComponent(alertContext?.alertPage?.action)}
         onCloseDrawer={handleCloseDrawer}

@@ -19,7 +19,8 @@ import { SensorEntity, SensorStatus } from '@smart-city-unal/shared-types';
 export const ListSensorsComponent: React.FunctionComponent<
   ListSensorsComponentProps
 > = (props) => {
-  const { handleEdit, handleDelete, handleView, rows } = useListSensors(props);
+  const { handleEdit, handleDelete, handleView, rows, visualMode } =
+    useListSensors(props);
 
   const headerProperties: HeaderProperty[] = [
     {
@@ -121,43 +122,48 @@ export const ListSensorsComponent: React.FunctionComponent<
         return <Typography>{data.createdAt.toString()}</Typography>;
       },
     },
-    {
+  ];
+
+  if (!visualMode) {
+    headerProperties.push({
       name: 'Actions',
       accesor: '',
       showName: false,
       renderAction: (data: any) => <></>,
-    },
-  ];
+    });
+  }
 
   return (
     <Box>
-      <Box>
-        <List>
-          <ListItem key={0}>
-            <SvgIcon component={CircleIcon} color="success" />
-            <ListItemText
-              primary="Activo"
-              secondary={'Representa un sensor en funcionamiento'}
-            />
-          </ListItem>
-          <ListItem key={1}>
-            <SvgIcon component={CircleIcon} color="warning" />
-            <ListItemText
-              primary="Pendiente"
-              secondary={
-                'Representa un sensor que ha sido creado pero no ha sido activado'
-              }
-            />
-          </ListItem>
-          <ListItem key={2}>
-            <SvgIcon component={CircleIcon} color="error" />
-            <ListItemText
-              primary="Inactivo"
-              secondary={'Representa un sensor apagado'}
-            />
-          </ListItem>
-        </List>
-      </Box>
+      {!visualMode && (
+        <Box>
+          <List>
+            <ListItem key={0}>
+              <SvgIcon component={CircleIcon} color="success" />
+              <ListItemText
+                primary="Activo"
+                secondary={'Representa un sensor en funcionamiento'}
+              />
+            </ListItem>
+            <ListItem key={1}>
+              <SvgIcon component={CircleIcon} color="warning" />
+              <ListItemText
+                primary="Pendiente"
+                secondary={
+                  'Representa un sensor que ha sido creado pero no ha sido activado'
+                }
+              />
+            </ListItem>
+            <ListItem key={2}>
+              <SvgIcon component={CircleIcon} color="error" />
+              <ListItemText
+                primary="Inactivo"
+                secondary={'Representa un sensor apagado'}
+              />
+            </ListItem>
+          </List>
+        </Box>
+      )}
 
       <TableComponent
         data={rows}

@@ -1,12 +1,13 @@
 import Button from '@mui/material/Button';
 import RefreshIcon from '@mui/icons-material/Cached';
+import { SxProps, Theme } from '@mui/material';
 
 export const RefreshButton = ({
   onClick,
   sx,
 }: {
   onClick: () => void;
-  sx: any;
+  sx?: SxProps<Theme>;
 }) => {
   return (
     <Button

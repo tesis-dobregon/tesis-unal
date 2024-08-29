@@ -20,8 +20,14 @@ const sxMap = {
     rowGap: '3rem',
     justifyContent: 'space-between',
   },
+  title: {
+    width: '100%',
+  },
   list: {
     cursor: 'pointer',
+  },
+  refreshButton: {
+    marginRight: '2rem',
   },
 };
 
@@ -32,21 +38,25 @@ const Sensors: React.FunctionComponent = () => {
     handleOpenModal,
     getDrawerComponent,
     sensorContext,
-    isLoading,
-    isError,
-    data,
-    setPage,
-    setPageSize,
+    // setPage,
+    // setPageSize,
     onRefreshPage,
     handleDeleteSensor,
     isDeleting,
     isDeleteError,
+    refreshKey,
   } = useSensors();
 
   return (
     <Box sx={sxMap.container}>
       <Box sx={sxMap.row}>
-        <RefreshButton onClick={onRefreshPage}></RefreshButton>
+        <Typography variant="h4" sx={sxMap.title}>
+          Sensores
+        </Typography>
+        <RefreshButton
+          sx={sxMap.refreshButton}
+          onClick={onRefreshPage}
+        ></RefreshButton>
 
         <Link onClick={handleOpenAddSensorDrawer} sx={sxMap.list}>
           <AddIcon color="action" fontSize="large"></AddIcon>
@@ -57,20 +67,13 @@ const Sensors: React.FunctionComponent = () => {
           width: '100%',
         }}
       >
-        {isLoading || (isDeleting && <CircularProgress />)}
-        {isError && (
-          <Box>
-            <Typography>Error al cargar los sensores</Typography>
-          </Box>
-        )}
+        {isDeleting && <CircularProgress />}
         {isDeleteError && (
           <Box>
             <Typography>Error al eliminar el sensor</Typography>
           </Box>
         )}
-        {!isLoading && !isError && data && (
-          <ListSensorsComponent data={data}></ListSensorsComponent>
-        )}
+        <ListSensorsComponent refreshKey={refreshKey}></ListSensorsComponent>
       </Box>
       <DrawerComponent
         children={getDrawerComponent(sensorContext?.sensorPage?.action)}

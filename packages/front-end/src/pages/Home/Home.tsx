@@ -1,51 +1,97 @@
-import { Typography } from '@mui/material';
-import { useState } from 'react';
-// import { useSensorsData } from '../../hooks';
+import { Box, Button, Grid, Typography } from '@mui/material';
+import { AirQualityTable } from '../../components/AirQuality';
+import { ListAlertsComponent, ListSensorsComponent } from '../../components';
+import { useHome } from './useHome';
+
+const sxMap = {
+  tile: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    height: '100%',
+    padding: 2,
+    border: '1px solid #E0E0E0',
+    borderRadius: 4,
+    maxWidth: '100%',
+    overflow: 'auto',
+  },
+  viewMore: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+    marginTop: 2,
+  },
+};
+
+const Tile = ({ children }: { children: React.ReactNode }) => {
+  return <Box sx={sxMap.tile}>{children}</Box>;
+};
 
 const Home = () => {
-  // TODO: example
-  // const [page, setPage] = useState(1);
-  // const [pageSize, setPageSize] = useState(10);
-  //
-  // const { data, isLoading, isError } = useSensorsData({ page, pageSize });
-  //
-  // if (isLoading) return <div>Loading...</div>;
-  // if (isError) return <div>Error fetching sensors data</div>;
-  //
-  // const { rows, total, totalPages } = data || {
-  //   rows: [],
-  //   total: 0,
-  //   totalPages: 1,
-  // };
-  //
-  // return (
-  //   <div>
-  //     <h1>Sensors</h1>
-  //     <ul>
-  //       {rows.map((sensor) => (
-  //         <li key={sensor._id}>{JSON.stringify(sensor, null, 2)}</li>
-  //       ))}
-  //     </ul>
-  //     <div>
-  //       <p>
-  //         Page {page} of {totalPages}
-  //       </p>
-  //       <button
-  //         onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-  //         disabled={page === 1}
-  //       >
-  //         Previous
-  //       </button>
-  //       <button
-  //         onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-  //         disabled={page === totalPages}
-  //       >
-  //         Next
-  //       </button>
-  //     </div>
-  //   </div>
-  // );
-  return <Typography variant="h1">Home</Typography>;
+  const { redirectToAlerts, redirectToSensors } = useHome();
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={12} sm={4}>
+        <Tile>
+          <Typography variant="h6">Ciudad</Typography>
+          <Typography variant="h4">Duitama, Boyacá</Typography>
+        </Tile>
+      </Grid>
+      <Grid item xs={12} sm={4}>
+        <Tile>
+          <Typography variant="h6">Temperatura</Typography>
+          <Typography variant="h4">25°C</Typography>
+        </Tile>
+      </Grid>
+      <Grid item xs={12} sm={4}>
+        <Tile>
+          <Typography variant="h6">Humedad</Typography>
+          <Typography variant="h4">80%</Typography>
+        </Tile>
+      </Grid>
+
+      <Grid item xs={12} sm={6}>
+        <Tile>
+          <AirQualityTable />
+        </Tile>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Tile>
+          <Box p={2}>Indice de calidad del aire por contaminante</Box>
+        </Tile>
+      </Grid>
+
+      <Grid item xs={12} sm={6}>
+        <Tile>
+          <ListSensorsComponent visualMode />
+          <Box sx={sxMap.viewMore}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={redirectToSensors}
+            >
+              Ver más
+            </Button>
+          </Box>
+        </Tile>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <Tile>
+          <ListAlertsComponent visualMode />
+          <Box sx={sxMap.viewMore}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={redirectToAlerts}
+            >
+              Ver más
+            </Button>
+          </Box>
+        </Tile>
+      </Grid>
+    </Grid>
+  );
 };
 
 export default Home;

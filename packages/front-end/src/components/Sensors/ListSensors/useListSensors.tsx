@@ -1,15 +1,24 @@
-import { Sensor } from '../../../types/sensors/sensor';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SensorContext, SensorActions } from '../../../types/sensors/providers';
-import { SensorsResponse } from '../../../hooks';
 import { SensorEntity } from '@smart-city-unal/shared-types';
+import { useQuerySensors } from '../../../hooks';
 
 export interface ListSensorsComponentProps {
-  data: SensorsResponse;
+  visualMode?: boolean;
+  refreshKey?: number;
 }
 
-export const useListSensors = ({ data }: ListSensorsComponentProps) => {
+export const useListSensors = ({
+  visualMode,
+  refreshKey,
+}: ListSensorsComponentProps) => {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const sensorsContext = useContext(SensorContext);
+  const { data, isLoading, isError, refetch } = useQuerySensors({
+    page,
+    pageSize,
+  });
   const { rows, total, totalPages } = data || {
     rows: [],
     total: 0,
@@ -40,5 +49,24 @@ export const useListSensors = ({ data }: ListSensorsComponentProps) => {
     });
   };
 
-  return { handleEdit, handleDelete, handleView, rows, total, totalPages };
+  useEffect(() => {
+    const refreshData = async () => {
+      await refetch();
+    };
+    if (refreshKey) {
+      refreshData();
+    }
+  }, [refreshKey]);
+
+  return {
+    handleEdit,
+    handleDelete,
+    handleView,
+    rows,
+    total,
+    totalPages,
+    isLoading,
+    isError,
+    visualMode,
+  };
 };

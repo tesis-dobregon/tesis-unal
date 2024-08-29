@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { useDeleteAlert } from '../../hooks';
 import {
   AlertActions,
@@ -8,6 +8,7 @@ import {
 import { AlertEditor } from '../../components/Alerts/AlertsEditor';
 
 export const useAlerts = () => {
+  const [refreshKey, setRefreshKey] = useState(0);
   const {
     mutate: deleteAlert,
     isLoading: isDeleting,
@@ -40,7 +41,7 @@ export const useAlerts = () => {
   };
 
   const onRefreshPage = async () => {
-    // await refetch();
+    setRefreshKey((prev: number) => prev + 1);
   };
 
   const handleOpenAddAlertDrawer = useCallback(() => {
@@ -90,5 +91,6 @@ export const useAlerts = () => {
     handleOpenAddAlertDrawer,
     handleCloseDrawer,
     getDrawerComponent,
+    refreshKey,
   };
 };
