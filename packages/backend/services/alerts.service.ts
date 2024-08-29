@@ -1,3 +1,8 @@
+import {
+  Alert,
+  AlertAction,
+  AlertMetadata,
+} from '@smart-city-unal/shared-types';
 import { Context, Service, ServiceSchema } from 'moleculer';
 import type {
   DbAdapter,
@@ -8,26 +13,6 @@ import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import { SMART_CITY_DB_NAME } from '../constants';
 import { createDbServiceMixin } from '../mixins/db.mixin';
 import { AQIData } from './aqi.service';
-
-export enum AlertAction {
-  EMAIL = 'email',
-  // This can be extended to other actions like SMS, push notifications, etc.
-}
-
-export type AlertMetadata = {
-  email: string;
-};
-
-export type Alert = {
-  _id: string;
-  contaminant: string;
-  lowerThreshold: number;
-  upperThreshold: number;
-  action: AlertAction;
-  metadata: AlertMetadata;
-  message: string;
-  createdAt: Date;
-};
 
 export type ActionCreateParams = Partial<AlertMetadata>;
 
@@ -136,6 +121,9 @@ const AlertsService: ServiceSchema<AlertsSettings> = {
   actions: {
     get: false,
     insert: false,
+    list: {
+      cache: false,
+    },
     create: {
       rest: 'POST /',
       params: {

@@ -44,6 +44,12 @@ export const SensorDataComponent = (props: SensorDataComponentProps) => {
               onChange={(newValue) =>
                 setStartDate(newValue ? newValue.toString() : null)
               }
+              slotProps={{
+                field: { clearable: true },
+                popper: {
+                  disablePortal: true,
+                },
+              }}
               slots={{
                 textField: (props) => <TextField {...props} fullWidth />,
               }}
@@ -56,6 +62,12 @@ export const SensorDataComponent = (props: SensorDataComponentProps) => {
               onChange={(newValue) =>
                 setEndDate(newValue ? newValue.toString() : null)
               }
+              slotProps={{
+                field: { clearable: true },
+                popper: {
+                  disablePortal: true,
+                },
+              }}
               slots={{
                 textField: (props) => <TextField {...props} fullWidth />,
               }}

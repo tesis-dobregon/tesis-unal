@@ -11,13 +11,7 @@ import { useSensors } from './useSensors';
 
 const sxMap = {
   container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    height: '100%',
     width: '100%',
-    px: '4rem',
-    py: '2rem',
   },
   row: {
     display: 'flex',

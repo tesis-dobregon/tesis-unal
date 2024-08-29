@@ -3,3 +3,7 @@ export * from './useCreateSensor';
 export * from './useEditSensor';
 export * from './useDeleteSensor';
 export * from './useQuerySensorData';
+export * from './useQueryAlerts';
+export * from './useDeleteAlert';
+export * from './useCreateAlert';
+export * from './useEditAlert';

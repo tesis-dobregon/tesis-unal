@@ -5,3 +5,4 @@ export * from './Sensors/SensorData/SensorData';
 export * from './Sensors/ListSensors/ListSensors';
 export * from './Layouts/PageLayout';
 export * from './ButtonSubMenu';
+export * from './Alerts/ListAlerts';

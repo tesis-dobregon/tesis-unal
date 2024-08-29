@@ -184,7 +184,7 @@ export const ListSensorsComponent: React.FunctionComponent<
                         icon: MenuItemIcon.DELETE,
                       },
                       {
-                        name: 'Ver',
+                        name: 'Ver datos recolectados',
                         onClick: () => handleView(data),
                         icon: MenuItemIcon.VIEW_DATA,
                       },

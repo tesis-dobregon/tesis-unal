@@ -1,9 +1,8 @@
 import { SelectChangeEvent } from '@mui/material';
 import { SensorEntity } from '@smart-city-unal/shared-types';
-import { useContext, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useCreateSensor, useEditSensor } from '../../../hooks';
 import { FrequencyList } from '../../../types/sensors/frequencyFixture';
-import { SensorContext } from '../../../types/sensors/providers';
 import { SensorTypeList } from '../../../types/sensors/sensorTypeFixture';
 
 export interface AddSensorProps {
@@ -12,8 +11,6 @@ export interface AddSensorProps {
 }
 
 export const useSensorEditor = ({ isEdit, sensorToEdit }: AddSensorProps) => {
-  const sensorContext = useContext(SensorContext);
-
   const {
     mutate: createSensor,
     isLoading: isCreating,
@@ -65,7 +62,7 @@ export const useSensorEditor = ({ isEdit, sensorToEdit }: AddSensorProps) => {
     e.preventDefault();
     if (isEdit) {
       return editSensor({
-        sensorId: sensorContext?.sensorPage?.sensorToEdit?._id || '',
+        sensorId: sensorToEdit?._id || '',
         newSensor: {
           name,
           type: selectedSensorType,

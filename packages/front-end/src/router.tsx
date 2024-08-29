@@ -2,11 +2,10 @@ import { createBrowserRouter, redirect } from 'react-router-dom';
 import { PageLayout } from './components';
 import Home from './pages/Home/Home';
 import NotFound from './pages/NotFound/NotFound';
-import Sensors from './pages/Sensors/Sensors';
-import Alerts from './pages/Alerts/Alerts';
 import LoginPage, { loginAction, loginLoader } from './pages/Login/Login';
 import { authProvider } from './providers';
 import { SensorsPage } from './pages/Sensors';
+import { AlertsPage } from './pages/Alerts';
 
 const router = createBrowserRouter([
   {
@@ -35,7 +34,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/alertas',
-        element: <Alerts />,
+        element: <AlertsPage />,
       },
       { path: '*', element: <NotFound /> },
     ],

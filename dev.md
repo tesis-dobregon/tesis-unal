@@ -792,6 +792,8 @@ TODO:
 
 - Add lastHeartbeat to sensors and render in the frontend as ultima actualización
 - Revisar lat y long porque están quedando como 0
+- Servicio para mostrar las alertas que se han enviado. history de alertas
+- Replicar mostrar mensajes drawer de alert en sensores
 
 - Remove all console.logs
 - Enable circuit breaker
