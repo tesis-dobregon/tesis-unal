@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import axiosInstance from '../axiosInstance'; // Your axios instance
+import axiosInstance from '../axiosInstance';
 import { SensorData } from '@smart-city-unal/shared-types';
 
 const fetchSensorData = async (

@@ -2,6 +2,7 @@ import {
   Alert,
   AlertAction,
   AlertMetadata,
+  AQIData,
 } from '@smart-city-unal/shared-types';
 import { Context, Service, ServiceSchema } from 'moleculer';
 import type {
@@ -12,7 +13,6 @@ import type {
 import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import { SMART_CITY_DB_NAME } from '../constants';
 import { createDbServiceMixin } from '../mixins/db.mixin';
-import { AQIData } from './aqi.service';
 
 export type ActionCreateParams = Partial<AlertMetadata>;
 

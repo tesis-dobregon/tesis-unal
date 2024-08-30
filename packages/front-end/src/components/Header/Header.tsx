@@ -58,6 +58,11 @@ export const Header = () => {
                 </ListItemButton>
               </ListItem>
               <ListItem>
+                <ListItemButton component={Link} to="/calidad-aire">
+                  <ListItemText>Calidad del Aire</ListItemText>
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
                 <ListItemButton component={Link} to="/sensores">
                   <ListItemText>Sensores</ListItemText>
                 </ListItemButton>

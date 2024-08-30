@@ -6,6 +6,7 @@ import LoginPage, { loginAction, loginLoader } from './pages/Login/Login';
 import { authProvider } from './providers';
 import { SensorsPage } from './pages/Sensors';
 import { AlertsPage } from './pages/Alerts';
+import { AqiPage } from './pages/Aqi';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
+      },
+      {
+        path: '/calidad-aire',
+        element: <AqiPage />,
       },
       {
         path: '/sensores',

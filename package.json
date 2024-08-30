@@ -86,14 +86,16 @@
     "libs/*"
   ],
   "dependencies": {
+    "@date-io/date-fns": "^2.14.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.15",
-    "@mui/lab": "^5.0.0-alpha.173",
+    "@mui/lab": "^5.0.0-alpha.135",
     "@mui/material": "^5.15.15",
     "@mui/x-date-pickers": "^7.14.0",
     "axios": "1.6.8",
     "bcryptjs": "^2.4.3",
+    "date-fns": "^2.29.3",
     "jsonwebtoken": "^9.0.2",
     "moleculer-schedule": "^0.2.3",
     "mqtt": "^5.9.0",
@@ -101,6 +103,7 @@
     "react-dom": "18.2.0",
     "react-query": "^3.39.3",
     "react-router-dom": "6.11.2",
+    "recharts": "^2.12.7",
     "tslib": "^2.3.0"
   },
   "peerDependencies": {

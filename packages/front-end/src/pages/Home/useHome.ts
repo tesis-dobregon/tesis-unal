@@ -10,8 +10,13 @@ export const useHome = () => {
     navigate('/sensores');
   };
 
+  const redirecToAqi = () => {
+    navigate('/calidad-aire');
+  };
+
   return {
     redirectToAlerts,
     redirectToSensors,
+    redirecToAqi,
   };
 };

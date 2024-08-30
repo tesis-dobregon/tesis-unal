@@ -7,3 +7,4 @@ export * from './useQueryAlerts';
 export * from './useDeleteAlert';
 export * from './useCreateAlert';
 export * from './useEditAlert';
+export * from './useQueryAQIPerPollutant';

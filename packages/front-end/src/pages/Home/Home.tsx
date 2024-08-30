@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
-import { AirQualityTable } from '../../components/AirQuality';
+import { AirQualityTable, AirQualityIndex } from '../../components/AirQuality';
 import { ListAlertsComponent, ListSensorsComponent } from '../../components';
 import { useHome } from './useHome';
 
@@ -29,7 +29,7 @@ const Tile = ({ children }: { children: React.ReactNode }) => {
 };
 
 const Home = () => {
-  const { redirectToAlerts, redirectToSensors } = useHome();
+  const { redirectToAlerts, redirectToSensors, redirecToAqi } = useHome();
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={4}>
@@ -58,7 +58,12 @@ const Home = () => {
       </Grid>
       <Grid item xs={12} sm={6}>
         <Tile>
-          <Box p={2}>Indice de calidad del aire por contaminante</Box>
+          <AirQualityIndex />
+          <Box sx={sxMap.viewMore}>
+            <Button variant="contained" color="primary" onClick={redirecToAqi}>
+              Ver más
+            </Button>
+          </Box>
         </Tile>
       </Grid>
 

@@ -702,6 +702,35 @@ curl -X GET http://0.0.0.0:3000/api/aqi\?sort\='-createdAt'
 }
 ```
 
+### Obtener AQI por contaminante
+
+Valores aceptados:
+
+- pm2_5
+- pm10
+- co
+
+- Obtener AQI por contaminante en moleculer:
+
+```
+call aqi.getLatestByPollutant --pollutant 'pm2_5'
+```
+
+- Obtener AQI por contaminante en API:
+
+```
+curl -X GET http://0.0.0.0:3000/api/aqi/latest/pm2_5
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "pollutant": 191.73946360153258,
+  "createdAt": "2024-08-19T19:51:00.060Z"
+}
+```
+
 ### Email
 
 Este servicio es usado para enviar correos electrónicos.
@@ -794,6 +823,11 @@ TODO:
 - Revisar lat y long porque están quedando como 0
 - Servicio para mostrar las alertas que se han enviado. history de alertas
 - Replicar mostrar mensajes drawer de alert en sensores
+- Paginación resolver en sensors y alerts
+- Comunicación hacia el sensor? Post MVP
+- Desplegar frontend en algo
+- Desplegar backend probar
+- Data de temperatura y humedad esta quemada
 
 - Remove all console.logs
 - Enable circuit breaker
@@ -801,14 +835,10 @@ TODO:
 - Necesito:
 - Crear un MQTT broker posiblemente deployarlo en un contenedor no necesita ser kubernetes
 - Un subscriber que se conecte al broker y reciba los datos de los sensores
-- Un published (mock device) que envie datos al broker
-- Un servicio que reciba los datos y los almacene en una base de datos
-- El subscriber solo necesita recibir los datos y consumir el servicio REST para almacenarlos
 - El subscriber NO necesariamente necesita ser un microservicio. Puede ser un script que se ejecute en un contenedor. Leer articulos de esto.
 
 Probar frontend y backend unidos (tanto apuntando a local como al desplegado)
 Implementar login
-Desplegar frontend en algo
 
 IP usada para conectar mqtt desde el celu:
 ifconfig
