@@ -8,7 +8,7 @@ import type {
 import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import { SMART_CITY_DB_NAME } from '../constants';
 import { createDbServiceMixin } from '../mixins/db.mixin';
-import { SensorStatus } from './sensors.service';
+import { SensorStatus } from '@smart-city-unal/shared-types';
 
 export type SensorCollectedData = {
   _id: string;
@@ -51,7 +51,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
       'name',
       'description',
       'lat',
-      'lng',
+      'lon',
       'metadata',
       'co',
       'co2',
@@ -93,7 +93,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
             name: 'string',
             description: { type: 'string', optional: true },
             lat: { type: 'number', optional: true },
-            lng: { type: 'number', optional: true },
+            lon: { type: 'number', optional: true },
             metadata: {
               type: 'object',
               props: {
@@ -120,7 +120,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
               "name": "AirQualityUnit02",
               "description": "Air quality station in Duitama 2",
               "lat": 5.808055396578313,
-              "lng": -73.04021022387752,
+              "lon": -73.04021022387752,
               "metadata": {
                 "type": "air_quality_standard"
               },

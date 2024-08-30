@@ -39,12 +39,13 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
       grants: ['refresh_token', 'client_credentials', 'password'],
     },
     methods: {
-      accessToken(req: any, res: any, next: any) {
+      async accessToken(req: any, res: any, next: any) {
         const request = new Request(req);
         const response = new Response(res);
         this.logger.info('Access Token');
-        try {
-          return this.oauth.token(request, response).then((_token: any) => {
+        return this.oauth
+          .token(request, response)
+          .then((_token: any) => {
             response.headers = {
               ...response.headers,
               'Content-Type': 'application/json charset=utf-8',
@@ -53,10 +54,10 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
               res.setHeader(h, response.headers[h]);
             res.writeHead(response.status);
             res.end(JSON.stringify(response.body));
+          })
+          .catch((err: any) => {
+            next(err);
           });
-        } catch (err) {
-          next(err);
-        }
       },
       authenticate(
         _ctx: Context<null, Meta>,
@@ -68,18 +69,17 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
         this.logger.info('mixins.oauth2.authenticate');
         const request = new Request(req);
         const response = new Response(res);
-        try {
-          return this.oauth
-            .authenticate(request, response)
-            .then((token: any) => {
-              // this.logger.info('Authenticating', token)
-              // resp(res, response.body, response.status, response.headers);
-              return token;
-            });
-        } catch (err) {
-          this.logger.error('Authenticating error', err);
-          return next(err);
-        }
+        return this.oauth
+          .authenticate(request, response)
+          .then((token: any) => {
+            // this.logger.info('Authenticating', token)
+            // resp(res, response.body, response.status, response.headers);
+            return token;
+          })
+          .catch((err: any) => {
+            this.logger.error('Authenticating error', err);
+            return next(err);
+          });
       },
       async authorize(
         _ctx: Context<null, Meta>,
@@ -91,16 +91,17 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
         this.logger.info('AUTHORIZE');
         const request = new Request(req);
         const response = new Response(res);
-        try {
-          return this.oauth.authorize(request, response).then((token: any) => {
+        return this.oauth
+          .authorize(request, response)
+          .then((token: any) => {
             this.logger.info('Authorizing', token);
             // resp(res, response.body, response.status, response.headers);
             return token;
+          })
+          .catch((err: any) => {
+            this.logger.error('Authorizing error', err);
+            // resp(res, response.body, response.status, response.headers);
           });
-        } catch (err) {
-          this.logger.error('Authorizing error', err);
-          // resp(res, response.body, response.status, response.headers);
-        }
       },
       async getAccessToken(token: string) {
         try {
@@ -118,6 +119,7 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
       },
       async getClient(clientId: string, clientSecret: string) {
         const client = await this.db.client.findOne({ clientId });
+
         if (!client) return null;
 
         // If a secret is provided, validate it (only for confidential clients)
@@ -128,13 +130,13 @@ export default function createOauth2ServiceMixin(): Oauth2ServiceSchema {
         return {
           id: client._id,
           clientId: client.clientId,
-          grants: ['client_credentials'], // Specify the allowed grants for this client
+          grants: client.grants,
         };
       },
       async getUser(username: string, password: string) {
         const user = (await this.db.user.findOne({ username })) as UserEntity;
         if (!user) {
-          throw new Errors.MoleculerClientError('Email not found!', 422, '', [
+          throw new Errors.MoleculerClientError('Email not found', 422, '', [
             { field: 'email', message: 'not found' },
           ]);
         }

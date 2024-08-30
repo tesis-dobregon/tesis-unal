@@ -2,11 +2,11 @@ import { createBrowserRouter, redirect } from 'react-router-dom';
 import { PageLayout } from './components';
 import Home from './pages/Home/Home';
 import NotFound from './pages/NotFound/NotFound';
-import Sensors from './pages/Sensors/Sensors';
-import Alerts from './pages/Alerts/Alerts';
 import LoginPage, { loginAction, loginLoader } from './pages/Login/Login';
-import { fakeAuthProvider } from './providers';
+import { authProvider } from './providers';
 import { SensorsPage } from './pages/Sensors';
+import { AlertsPage } from './pages/Alerts';
+import { AqiPage } from './pages/Aqi';
 
 const router = createBrowserRouter([
   {
@@ -15,14 +15,14 @@ const router = createBrowserRouter([
       // If the user is not logged in and tries to access any route under this Layout, we redirect
       // them to `/login` with a `from` parameter that allows login to redirect back
       // to this page upon successful authentication
-      if (!fakeAuthProvider.isAuthenticated) {
+      if (!authProvider.isAuthenticated) {
         const params = new URLSearchParams();
         params.set('from', new URL(request.url).pathname);
         return redirect('/login?' + params.toString());
       }
 
       // Our root route always provides the user, if logged in
-      return { user: fakeAuthProvider.username };
+      return { user: authProvider.username };
     },
     children: [
       {
@@ -30,12 +30,16 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: '/calidad-aire',
+        element: <AqiPage />,
+      },
+      {
         path: '/sensores',
         element: <SensorsPage />,
       },
       {
         path: '/alertas',
-        element: <Alerts />,
+        element: <AlertsPage />,
       },
       { path: '*', element: <NotFound /> },
     ],
@@ -50,7 +54,7 @@ const router = createBrowserRouter([
     path: '/logout',
     async action() {
       // We signout in a "resource route" that we can hit from a fetcher.Form
-      await fakeAuthProvider.signout();
+      await authProvider.signout();
       return redirect('/');
     },
   },

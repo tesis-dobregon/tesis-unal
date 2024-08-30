@@ -370,13 +370,13 @@ Este servicio se encarga de recibir los datos de los sensores y almacenarlos en 
 - Envío en moleculer:
 
 ```
-call ingestion.recordSensorData --sensorId "AQ01" --data.date '2024-08-15T13:06:06.209Z' --data.uid 'AQ02' --data.name  'AirQualityUnit02' --data.description 'Air quality station in Duitama 2' --data.lat 5.814812360355247 --data.lng -73.0494939446564 --data.co 26 --data.co2 517 --data.pm10 21 --data.pm2_5 -2 --data.pm5 --data.hr 66.3 --data.temperature 17.45 --data.metadata.type 'air_quality_standard'
+call ingestion.recordSensorData --sensorId "AQ01" --data.date '2024-08-15T13:06:06.209Z' --data.uid 'AQ02' --data.name  'AirQualityUnit02' --data.description 'Air quality station in Duitama 2' --data.lat 5.814812360355247 --data.lon -73.0494939446564 --data.co 26 --data.co2 517 --data.pm10 21 --data.pm2_5 -2 --data.pm5 --data.hr 66.3 --data.temperature 17.45 --data.metadata.type 'air_quality_standard'
 ```
 
 - Envio en API:
 
 ```
-curl -X POST http://0.0.0.0:3000/api/ingestion/AQ01/data -H "Content-Type: application/json" -d '{"sensorId":"AQ01","data":{"date":"2024-08-15T13:06:06.209Z","uid":"AQ02","name":"AirQualityUnit02","description":"Air quality station in Duitama 2","lat":5.814812360355247,"lng":-73.0494939446564,"co":26,"co2":517,"pm10":21,"pm2_5":-2,"pm5":null,"hr":66.3,"temperature":17.45,"metadata":{"type":"air_quality_standard"}}}'
+curl -X POST http://0.0.0.0:3000/api/ingestion/AQ01/data -H "Content-Type: application/json" -d '{"sensorId":"AQ01","data":{"date":"2024-08-15T13:06:06.209Z","uid":"AQ02","name":"AirQualityUnit02","description":"Air quality station in Duitama 2","lat":5.814812360355247,"lon":-73.0494939446564,"co":26,"co2":517,"pm10":21,"pm2_5":-2,"pm5":null,"hr":66.3,"temperature":17.45,"metadata":{"type":"air_quality_standard"}}}'
 ```
 
 - Ejemplo de respuesta:
@@ -390,7 +390,7 @@ curl -X POST http://0.0.0.0:3000/api/ingestion/AQ01/data -H "Content-Type: appli
     "name": "AirQualityUnit02",
     "description": "Air quality station in Duitama 2",
     "lat": 5.814812360355247,
-    "lng": -73.0494939446564,
+    "lon": -73.0494939446564,
     "co": 26,
     "co2": 517,
     "pm10": 21,
@@ -436,7 +436,7 @@ curl -X GET http://0.0.0.0:3000/api/ingestion\?startDate\=2024-08-16T03:14:56.52
     "name": "AirQualityUnit00",
     "description": "Air quality station in Duitama 0",
     "lat": 5.839508346114031,
-    "lng": -73.01633260874388,
+    "lon": -73.01633260874388,
     "metadata": {
       "type": "air_quality_standard"
     },
@@ -702,6 +702,35 @@ curl -X GET http://0.0.0.0:3000/api/aqi\?sort\='-createdAt'
 }
 ```
 
+### Obtener AQI por contaminante
+
+Valores aceptados:
+
+- pm2_5
+- pm10
+- co
+
+- Obtener AQI por contaminante en moleculer:
+
+```
+call aqi.getLatestByPollutant --pollutant 'pm2_5'
+```
+
+- Obtener AQI por contaminante en API:
+
+```
+curl -X GET http://0.0.0.0:3000/api/aqi/latest/pm2_5
+```
+
+- Ejemplo de respuesta:
+
+```json
+{
+  "pollutant": 191.73946360153258,
+  "createdAt": "2024-08-19T19:51:00.060Z"
+}
+```
+
 ### Email
 
 Este servicio es usado para enviar correos electrónicos.
@@ -790,20 +819,26 @@ Medidas de seguridad adicionales para MQTT que están configuradas:
 
 TODO:
 
+- Add lastHeartbeat to sensors and render in the frontend as ultima actualización
+- Revisar lat y long porque están quedando como 0
+- Servicio para mostrar las alertas que se han enviado. history de alertas
+- Replicar mostrar mensajes drawer de alert en sensores
+- Paginación resolver en sensors y alerts
+- Comunicación hacia el sensor? Post MVP
+- Desplegar frontend en algo
+- Desplegar backend probar
+- Data de temperatura y humedad esta quemada
+
 - Remove all console.logs
 - Enable circuit breaker
 
 - Necesito:
 - Crear un MQTT broker posiblemente deployarlo en un contenedor no necesita ser kubernetes
 - Un subscriber que se conecte al broker y reciba los datos de los sensores
-- Un published (mock device) que envie datos al broker
-- Un servicio que reciba los datos y los almacene en una base de datos
-- El subscriber solo necesita recibir los datos y consumir el servicio REST para almacenarlos
 - El subscriber NO necesariamente necesita ser un microservicio. Puede ser un script que se ejecute en un contenedor. Leer articulos de esto.
 
 Probar frontend y backend unidos (tanto apuntando a local como al desplegado)
 Implementar login
-Desplegar frontend en algo
 
 IP usada para conectar mqtt desde el celu:
 ifconfig

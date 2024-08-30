@@ -1,12 +1,22 @@
-import { useCallback, useContext, useEffect } from "react";
-import { SensorEditorComponent } from "../../components";
+import { useCallback, useContext, useState } from 'react';
+import { SensorEditorComponent, SensorDataComponent } from '../../components';
 import {
   SensorContext,
   SensorActions,
   SensorPage,
-} from "../../types/sensors/providers";
+} from '../../types/sensors/providers';
+import { useDeleteSensor, useQuerySensors } from '../../hooks';
 
 export const useSensors = () => {
+  const [refreshKey, setRefreshKey] = useState(0);
+  const {
+    mutate: deleteSensor,
+    isLoading: isDeleting,
+    isError: isDeleteError,
+  } = useDeleteSensor();
+  // const [page, setPage] = useState(1);
+  // const [pageSize, setPageSize] = useState(10);
+
   const sensorContext = useContext(SensorContext);
 
   const handleCloseDrawer = useCallback(() => {
@@ -37,6 +47,13 @@ export const useSensors = () => {
     [sensorContext]
   );
 
+  const handleDeleteSensor = () => {
+    if (sensorContext?.sensorPage?.sensorToEdit?._id) {
+      deleteSensor(sensorContext?.sensorPage?.sensorToEdit?._id);
+      handleCloseDrawer();
+    }
+  };
+
   const getDrawerComponent = useCallback(
     (action?: SensorActions) => {
       switch (action) {
@@ -49,18 +66,23 @@ export const useSensors = () => {
               sensorToEdit={sensorContext?.sensorPage?.sensorToEdit}
             />
           );
-        case SensorActions.VIEW:
-          return <h1>TODO: Show Sensor data</h1>;
+        case SensorActions.VIEW: {
+          return sensorContext?.sensorPage?.sensorToEdit?._id ? (
+            <SensorDataComponent
+              sensorId={sensorContext.sensorPage.sensorToEdit.customId}
+            />
+          ) : null;
+        }
         default:
-          return <></>;
+          return null;
       }
     },
     [sensorContext]
   );
 
-  useEffect(() => {
-    console.log("sensorContext: ", sensorContext);
-  }, [sensorContext]);
+  const onRefreshPage = async () => {
+    setRefreshKey((prev: number) => prev + 1);
+  };
 
   return {
     handleCloseDrawer,
@@ -68,5 +90,12 @@ export const useSensors = () => {
     handleOpenModal,
     getDrawerComponent,
     sensorContext,
+    // setPage,
+    // setPageSize,
+    onRefreshPage,
+    handleDeleteSensor,
+    isDeleting,
+    isDeleteError,
+    refreshKey,
   };
 };

@@ -9,22 +9,16 @@ import {
   InputLabel,
   Select,
   MenuItem,
-} from "@mui/material";
-import { SensorTypeList } from "../../../types/sensors/sensorTypeFixture";
-import { FrequencyList } from "../../../types/sensors/frequencyFixture";
-import { Sensor } from "../../../types/sensors/sensor";
-import { useSensorEditor } from "./useSensorsEditor";
+} from '@mui/material';
+import { SensorTypeList } from '../../../types/sensors/sensorTypeFixture';
+import { FrequencyList } from '../../../types/sensors/frequencyFixture';
+import { AddSensorProps, useSensorEditor } from './useSensorsEditor';
 
-interface AddSensorProps {
-  isEdit: boolean;
-  sensorToEdit?: Sensor;
-}
-
-export const SensorEditorComponent: React.FunctionComponent<AddSensorProps> = ({
-  isEdit,
-  sensorToEdit,
-}) => {
+export const SensorEditorComponent: React.FunctionComponent<AddSensorProps> = (
+  props
+) => {
   const {
+    isEdit,
     name,
     handleNameChange,
     selectedSensorType,
@@ -33,18 +27,22 @@ export const SensorEditorComponent: React.FunctionComponent<AddSensorProps> = ({
     handleIdentifierChange,
     selectedFrequency,
     handleFrequencyChange,
-  } = useSensorEditor(isEdit, sensorToEdit);
+    handleSubmit,
+    errorMessage,
+    successMessage,
+    buttonText,
+  } = useSensorEditor(props);
   return (
     <Box
       sx={{
-        marginTop: "4rem",
+        marginTop: '4rem',
       }}
     >
       <Container>
         <Typography variant="h4" align="center" gutterBottom>
-          {isEdit ? "Editar Sensor" : "Crear Sensor"}
+          {isEdit ? 'Editar Sensor' : 'Crear Sensor'}
         </Typography>
-        <form>
+        <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormControl fullWidth>
@@ -102,7 +100,7 @@ export const SensorEditorComponent: React.FunctionComponent<AddSensorProps> = ({
                   onChange={handleFrequencyChange}
                 >
                   {FrequencyList.map((item) => (
-                    <MenuItem key={item.id} value={item.id}>
+                    <MenuItem key={item.id} value={item.value}>
                       {item.name}
                     </MenuItem>
                   ))}
@@ -110,10 +108,29 @@ export const SensorEditorComponent: React.FunctionComponent<AddSensorProps> = ({
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <Button color="primary" variant="contained" fullWidth>
-                {isEdit ? "Editar" : "Crear Sensor"}
+              <Button
+                type="submit"
+                color="primary"
+                variant="contained"
+                fullWidth
+              >
+                {buttonText}
               </Button>
             </Grid>
+            {errorMessage && (
+              <Grid item xs={12}>
+                <Typography variant="body1" color="error">
+                  {errorMessage}
+                </Typography>
+              </Grid>
+            )}
+            {successMessage && (
+              <Grid item xs={12}>
+                <Typography variant="body1" color="success">
+                  {successMessage}
+                </Typography>
+              </Grid>
+            )}
           </Grid>
         </form>
       </Container>

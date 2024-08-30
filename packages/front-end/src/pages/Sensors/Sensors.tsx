@@ -1,24 +1,17 @@
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Link } from '@mui/material';
+import { Box, CircularProgress, Link, Typography } from '@mui/material';
 import {
   DrawerComponent,
   ListSensorsComponent,
   RefreshButton,
 } from '../../components';
-import { SensorsList } from '../../types/sensors/SensorsFixture';
 import { ModalComponent } from '../../components/Modal/Modal';
 import { SensorActions } from '../../types/sensors/providers';
 import { useSensors } from './useSensors';
 
 const sxMap = {
   container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    height: '100%',
     width: '100%',
-    px: '4rem',
-    py: '2rem',
   },
   row: {
     display: 'flex',
@@ -27,8 +20,14 @@ const sxMap = {
     rowGap: '3rem',
     justifyContent: 'space-between',
   },
+  title: {
+    width: '100%',
+  },
   list: {
     cursor: 'pointer',
+  },
+  refreshButton: {
+    marginRight: '2rem',
   },
 };
 
@@ -39,15 +38,24 @@ const Sensors: React.FunctionComponent = () => {
     handleOpenModal,
     getDrawerComponent,
     sensorContext,
+    // setPage,
+    // setPageSize,
+    onRefreshPage,
+    handleDeleteSensor,
+    isDeleting,
+    isDeleteError,
+    refreshKey,
   } = useSensors();
 
   return (
     <Box sx={sxMap.container}>
       <Box sx={sxMap.row}>
+        <Typography variant="h4" sx={sxMap.title}>
+          Sensores
+        </Typography>
         <RefreshButton
-          onClick={() => {
-            console.log('Refreshing sensors...');
-          }}
+          sx={sxMap.refreshButton}
+          onClick={onRefreshPage}
         ></RefreshButton>
 
         <Link onClick={handleOpenAddSensorDrawer} sx={sxMap.list}>
@@ -59,7 +67,13 @@ const Sensors: React.FunctionComponent = () => {
           width: '100%',
         }}
       >
-        <ListSensorsComponent sensors={SensorsList}></ListSensorsComponent>
+        {isDeleting && <CircularProgress />}
+        {isDeleteError && (
+          <Box>
+            <Typography>Error al eliminar el sensor</Typography>
+          </Box>
+        )}
+        <ListSensorsComponent refreshKey={refreshKey}></ListSensorsComponent>
       </Box>
       <DrawerComponent
         children={getDrawerComponent(sensorContext?.sensorPage?.action)}
@@ -73,6 +87,7 @@ const Sensors: React.FunctionComponent = () => {
         title="Eliminar Sensor"
         firstButtonText="Aceptar"
         secondButtontext="Cancelar"
+        handleAction={handleDeleteSensor}
       ></ModalComponent>
     </Box>
   );

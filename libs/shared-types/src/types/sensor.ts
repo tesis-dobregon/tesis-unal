@@ -1,7 +1,60 @@
 export type SensorId = string;
+
+export enum SensorStatus {
+  WAITING = 'waiting',
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}
+
+export interface SensorEntity {
+  _id: string;
+  /**
+   * The custom ID of the sensor given by the user in the UI.
+   */
+  customId: string;
+  /**
+   * The user ID that owns the sensor.
+   */
+  userId: string;
+  /**
+   * The name of the sensor.
+   */
+  name: string;
+  /**
+   * The type of the sensor.
+   */
+  type: string;
+  /**
+   * The status of the sensor.
+   */
+  status: SensorStatus;
+  /**
+   * The frequency of the measurement in seconds.
+   * It is used to determine how often the sensor should be polled.
+   * The default value is 60 seconds.
+   * The minimum value is 1 second.
+   */
+  measurementFrequency: number;
+  /**
+   * The location of the sensor.
+   */
+  location?: {
+    /**
+     * The latitude of the sensor.
+     */
+    lat: number;
+    /**
+     * The longitude of the sensor.
+     */
+    lon: number;
+  };
+  createdAt: Date;
+}
+
 export type SensorMetadata = {
   type: string;
 };
+
 export type SensorBaseData = {
   /**
    * Date when the data was collected
@@ -16,7 +69,7 @@ export type SensorBaseData = {
   name: string;
   description: string;
   lat: number;
-  lng: number;
+  lon: number;
   metadata?: SensorMetadata;
 };
 
@@ -31,7 +84,7 @@ export type SensorBaseData = {
     name: 'AirQualityUnit02',
     description: 'Air quality station in Duitama 2',
     lat: 5.810082209872709,
-    lng: -73.04845685741972,
+    lon: -73.04845685741972,
     metadata: { type: 'air_quality_standard' },
     co: 6,
     co2: 475,

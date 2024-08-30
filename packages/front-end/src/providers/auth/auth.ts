@@ -1,24 +1,70 @@
+import axiosInstance from '../../axiosInstance';
+
 interface AuthProvider {
   isAuthenticated: boolean;
   username: null | string;
-  signin(username: string): Promise<void>;
+  signin(username: string, password: string): Promise<void>;
   signout(): Promise<void>;
 }
 
+interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  refresh_token: string;
+}
+
 /**
- * This represents some generic auth provider API, like Firebase.
+ * This auth provider will handle real authentication and store the token.
  */
-export const fakeAuthProvider: AuthProvider = {
-  isAuthenticated: false,
-  username: null,
-  async signin(username: string) {
-    await new Promise((r) => setTimeout(r, 500)); // fake delay
-    fakeAuthProvider.isAuthenticated = true;
-    fakeAuthProvider.username = username;
+export const authProvider: AuthProvider = {
+  isAuthenticated: !!localStorage.getItem('access_token'), // Initialize from storage
+  username: localStorage.getItem('username') || null,
+
+  async signin(username: string, password: string) {
+    // Call your login API and get the token
+    const data = new URLSearchParams({
+      grant_type: 'password',
+      username,
+      password,
+    });
+
+    const response = await axiosInstance.post<AuthResponse>(
+      '/oauth/token',
+      data,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        auth: {
+          username: process.env.REACT_APP_CLIENT_ID ?? 'myClient',
+          password: process.env.REACT_APP_CLIENT_SECRET ?? 'password',
+        },
+      }
+    );
+
+    const { access_token } = response.data;
+
+    // Store the token and user details
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('username', username);
+
+    // Set default headers for axios to include the bearer token
+    axiosInstance.defaults.headers.common[
+      'Authorization'
+    ] = `Bearer ${access_token}`;
+
+    this.isAuthenticated = true;
+    this.username = username;
   },
+
   async signout() {
-    await new Promise((r) => setTimeout(r, 500)); // fake delay
-    fakeAuthProvider.isAuthenticated = false;
-    fakeAuthProvider.username = "";
+    // Remove the token and clear the user state
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
+    delete axiosInstance.defaults.headers.common['Authorization'];
+
+    this.isAuthenticated = false;
+    this.username = null;
   },
 };

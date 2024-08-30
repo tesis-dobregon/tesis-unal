@@ -11,26 +11,7 @@ import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import { createDbServiceMixin } from '../mixins/db.mixin';
 import { SensorCollectedData } from './ingestion.service';
 import { SMART_CITY_DB_NAME } from '../constants';
-
-export type AQIData = {
-  _id: string;
-  pm2_5: number;
-  pm10: number;
-  o3: number;
-  no2: number;
-  co: number;
-  so2: number;
-  createdAt: Date;
-};
-
-export enum Pollutants {
-  PM2_5 = 'PM2.5',
-  PM10 = 'PM10',
-  O3 = 'O3',
-  NO2 = 'NO2',
-  CO = 'CO',
-  SO2 = 'SO2',
-}
+import { AQIData, LatestAQI, Pollutants } from '@smart-city-unal/shared-types';
 
 export type ActionCreateParams = Partial<AQIData>;
 
@@ -97,6 +78,57 @@ const AQIService: ServiceSchema<AQISettings> = {
     remove: false,
     create: false,
     insert: false,
+    list: false,
+    getLatestByPollutant: {
+      rest: 'GET /latest/:pollutant',
+      params: {
+        pollutant: { type: 'string', values: Object.values(Pollutants) },
+      },
+      async handler(ctx): Promise<LatestAQI | null> {
+        const { pollutant } = ctx.params;
+        const data = await this.adapter.find({
+          query: {},
+          sort: { createdAt: -1 },
+          limit: 1,
+        });
+        if (data.length === 0) {
+          return null;
+        }
+        const value = data[0][pollutant];
+        if (value === undefined) {
+          return null;
+        }
+        return {
+          pollutant: data[0][pollutant],
+          createdAt: data[0].createdAt,
+        };
+      },
+    },
+    listAqiData: {
+      rest: 'GET /',
+      params: {
+        startDate: { type: 'string', optional: true },
+        endDate: { type: 'string', optional: true },
+      },
+      async handler(ctx) {
+        const { startDate, endDate } = ctx.params;
+        const query = {
+          ...(startDate &&
+            endDate && {
+              createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
+            }),
+          ...(startDate &&
+            !endDate && { createdAt: { $gte: new Date(startDate) } }),
+          ...(endDate &&
+            !startDate && { createdAt: { $lte: new Date(endDate) } }),
+        };
+        const data = await this.adapter.find({
+          query,
+          sort: { createdAt: -1 },
+        });
+        return data;
+      },
+    },
   },
   methods: {
     // ******** NOTE ***********

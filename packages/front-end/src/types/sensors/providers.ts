@@ -1,5 +1,5 @@
-import { createContext } from "react";
-import { Sensor } from "../../types/sensors/sensor";
+import { createContext } from 'react';
+import { SensorEntity } from '@smart-city-unal/shared-types';
 
 export enum SensorActions {
   NONE = 'NONE',
@@ -14,7 +14,7 @@ interface DrawerMode {
 }
 
 export interface SensorPage {
-  sensorToEdit?: Sensor | undefined;
+  sensorToEdit?: SensorEntity | undefined;
   drawerMode: DrawerMode;
   action?: SensorActions;
 }

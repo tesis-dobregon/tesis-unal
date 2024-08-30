@@ -6,8 +6,9 @@ import {
   redirect,
   useLocation,
   useNavigation,
+  useActionData,
 } from 'react-router-dom';
-import { fakeAuthProvider } from '../../providers';
+import { authProvider } from '../../providers';
 
 const LoginPage: React.FC<unknown> = () => {
   const location = useLocation();
@@ -16,6 +17,8 @@ const LoginPage: React.FC<unknown> = () => {
 
   const navigation = useNavigation();
   const isLoggingIn = navigation.formData?.get('username') != null;
+
+  const actionData = useActionData() as { error: string } | undefined;
 
   return (
     <Box>
@@ -51,7 +54,7 @@ const LoginPage: React.FC<unknown> = () => {
                   <TextField
                     name="username"
                     fullWidth
-                    placeholder="correo@unal.edu.co"
+                    placeholder="Nombre de usuario"
                     variant="outlined"
                   />
                 </Grid>
@@ -86,6 +89,13 @@ const LoginPage: React.FC<unknown> = () => {
                     {isLoggingIn ? 'Ingresando...' : 'Ingresar'}
                   </Button>
                 </Grid>
+                {actionData?.error && (
+                  <Grid item xs={12}>
+                    <Typography color="error" align="center">
+                      {actionData.error}
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             </Form>
           </Box>
@@ -97,8 +107,8 @@ const LoginPage: React.FC<unknown> = () => {
 
 export const loginAction = async ({ request }: LoaderFunctionArgs) => {
   const formData = await request.formData();
-  const username = formData.get('username') as string | null;
-  // let userPassword = formData.get("password") as string | null;
+  const username = formData.get('username') as string;
+  const userPassword = formData.get('password') as string;
 
   // Validate our form inputs and return validation errors via useActionData()
   if (!username) {
@@ -109,7 +119,7 @@ export const loginAction = async ({ request }: LoaderFunctionArgs) => {
 
   // Sign in and redirect to the proper destination if successful.
   try {
-    await fakeAuthProvider.signin(username);
+    await authProvider.signin(username, userPassword);
   } catch (error) {
     // Unused as of now but this is how you would handle invalid
     // username/password combinations - just like validating the inputs
@@ -124,7 +134,7 @@ export const loginAction = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const loginLoader = async () => {
-  if (fakeAuthProvider.isAuthenticated) {
+  if (authProvider.isAuthenticated) {
     return redirect('/');
   }
   return null;

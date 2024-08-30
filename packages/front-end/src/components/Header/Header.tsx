@@ -1,5 +1,5 @@
 /// <reference types="vite-plugin-svgr/client" />
-import { useState } from "react";
+import { useState } from 'react';
 import {
   AppBar,
   Avatar,
@@ -17,9 +17,9 @@ import {
   SvgIcon,
   Toolbar,
   Tooltip,
-} from "@mui/material";
-import Logo from "../../assets/logo-header.svg?react";
-import { Link, useFetcher } from "react-router-dom";
+} from '@mui/material';
+import Logo from '../../assets/logo-header.svg?react';
+import { Link, useFetcher } from 'react-router-dom';
 
 export const Header = () => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -33,15 +33,20 @@ export const Header = () => {
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
-        <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Toolbar
+          sx={{
+            justifyContent: 'space-between',
+            p: 0,
+          }}
+        >
           <Stack direction="row" spacing={8}>
             <SvgIcon
               sx={{
-                width: "50px",
+                width: '50px',
                 margin: 0,
-                position: "absolute",
-                top: "50%",
-                transform: "translateY(-50%)",
+                position: 'absolute',
+                top: '50%',
+                transform: 'translateY(-50%)',
               }}
             >
               <Logo />
@@ -50,6 +55,11 @@ export const Header = () => {
               <ListItem>
                 <ListItemButton component={Link} to="/">
                   <ListItemText>Home</ListItemText>
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
+                <ListItemButton component={Link} to="/calidad-aire">
+                  <ListItemText>Calidad del Aire</ListItemText>
                 </ListItemButton>
               </ListItem>
               <ListItem>
@@ -72,24 +82,24 @@ export const Header = () => {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: "45px" }}
+              sx={{ mt: '45px' }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
+                vertical: 'top',
+                horizontal: 'right',
               }}
               keepMounted
               transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
+                vertical: 'top',
+                horizontal: 'right',
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={handleCloseUserMenu}>
                 <fetcher.Form method="post" action="/logout">
-                  <Button type="submit" variant="text" sx={{ color: "black" }}>
+                  <Button type="submit" variant="text" sx={{ color: 'black' }}>
                     Cerrar sesión
                   </Button>
                 </fetcher.Form>

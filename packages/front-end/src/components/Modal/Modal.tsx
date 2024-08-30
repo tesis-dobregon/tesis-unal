@@ -17,6 +17,7 @@ interface ModalComponentProps {
   isOpen: boolean;
   handleModalOpen: (action?: any) => void;
   title?: string;
+  handleAction: () => void;
 }
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -34,6 +35,7 @@ export const ModalComponent: React.FunctionComponent<ModalComponentProps> = ({
   isOpen = false,
   handleModalOpen,
   title,
+  handleAction,
 }) => {
   const handleClose = () => {
     handleModalOpen();
@@ -53,7 +55,7 @@ export const ModalComponent: React.FunctionComponent<ModalComponentProps> = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button variant="text" sx={{ color: 'black' }} onClick={handleClose}>
+        <Button variant="text" sx={{ color: 'black' }} onClick={handleAction}>
           {firstButtonText}
         </Button>
         <Button variant="text" sx={{ color: 'black' }} onClick={handleClose}>
