@@ -2,7 +2,7 @@
 
 Este repositorio contiene el código fuente y los diagramas correspondientes al proyecto de trabajo de grado para la Maestría en Ingeniería de Sistemas y Computación de la Universidad Nacional de Colombia. El proyecto se enmarca en el desarrollo de una solución IoT orientada al monitoreo de la calidad del aire, aplicando múltiples tecnologías y arquitecturas modernas. A continuación, se describen brevemente los componentes principales de la solución:
 
-![Diagrama de arquitectura de la aplicación](.diagrams/poc/Arquitectura_concreta.png)
+![Diagrama de arquitectura de la aplicación](./diagrams/poc/Arquitectura_concreta.png)
 
 - **Capa Física**: Se encarga de la recolección de datos de sensores, los cuales miden contaminantes atmosféricos como CO, CO2, PM2.5, PM5, PM10, así como otros parámetros ambientales como la Humedad Relativa y la Temperatura. Esta capa es simulada por un módulo de software que genera datos similares a los recolectados por los sensores de calidad del aire de la ciudad de Duitama, Boyacá.
 
