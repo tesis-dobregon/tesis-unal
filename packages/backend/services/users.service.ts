@@ -1,10 +1,11 @@
-import { hashSync, compare } from 'bcryptjs';
+import { hashSync } from 'bcryptjs';
 import { Context, Errors, ServiceSchema } from 'moleculer';
 import { createDbServiceMixin } from '../mixins/db.mixin';
 import { sign, verify } from 'jsonwebtoken';
 import { DbAdapter, DbServiceSettings, MoleculerDbMethods } from 'moleculer-db';
 import MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import { OAUTH2_DB_NAME } from '../constants';
+
 export interface UserEntity {
   _id: string;
   username: string;
@@ -138,50 +139,6 @@ const UserService: ServiceSchema<UsersSettings> = {
         return transformedUser;
       },
     },
-    /**
-     * Login with username & password
-     * @actions
-     * @param {String} email
-     * @param {String} password
-     * @returns {Object} Logged in user with token
-     */
-    login: {
-      rest: 'POST /login',
-      params: {
-        email: { type: 'email' },
-        password: { type: 'string', min: 1 },
-      },
-      async handler(
-        this: UsersThis,
-        ctx: Context<{ email: string; password: string }, { token?: string }>
-      ) {
-        const { email, password } = ctx.params;
-
-        const user = (await this.adapter.findOne({ email })) as UserEntity;
-        if (!user) {
-          throw new Errors.MoleculerClientError('Email not found!', 422, '', [
-            { field: 'email', message: 'not found' },
-          ]);
-        }
-
-        const match = await compare(password, hashSync(password, 10));
-
-        if (!match) {
-          throw new Errors.MoleculerClientError('Wrong password!', 422, '', [
-            { field: 'password', message: 'is incorrect' },
-          ]);
-        }
-
-        const transformedUser = await this.transformEntity(
-          user,
-          true,
-          ctx.meta.token
-        );
-
-        return transformedUser;
-      },
-    },
-
     resolveToken: {
       async handler(ctx: Context<{ token: string }>) {
         const { token } = ctx.params;
