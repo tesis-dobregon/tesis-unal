@@ -62,6 +62,8 @@ Siga los pasos a continuación para desplegar la aplicación en un entorno de pr
    npm run frontend:build
    ```
 
+5. **Verificar el estado del frontend**: Puede ir a la dirección [https://smart-city-unal-3kgxc8jjx-davids-projects-effc7146.vercel.app/login?from=/](https://smart-city-unal-3kgxc8jjx-davids-projects-effc7146.vercel.app/login?from=/) en su navegador para verificar que el frontend esté funcionando correctamente.
+
 ## Despliegue del gateway
 
 5. **Ejecute el siguiente comando para desplegar el API Gateway en Docker**:
