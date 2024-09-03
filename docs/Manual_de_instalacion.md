@@ -57,7 +57,7 @@ Siga los pasos a continuación para instalar la aplicación en su entorno local:
    ```
 
 Puede configurar el número de sensores y la frecuencia de envío de datos modificando las variables `NUMBER_OF_SIMULATED_SENSORS`
-`FREQUENCY_TO_PUBLISH_SIMULATED_DATA` en el archivo `.env` en el archivo `services/simulator/simulator.service.js`.
+`FREQUENCY_TO_PUBLISH_SIMULATED_DATA` en el archivo `.env`.
 
 10. **Verificar el estado del simulador de sensores**: Puede verificar en la consola que el simulador de sensores esté funcionando correctamente.
 

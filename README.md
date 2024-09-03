@@ -4,7 +4,7 @@ Este repositorio contiene el código fuente y los diagramas correspondientes al 
 
 ![Diagrama de arquitectura de la aplicación](./diagrams/poc/Arquitectura_concreta.png)
 
-- **Capa Física**: Se encarga de la recolección de datos de sensores, los cuales miden contaminantes atmosféricos como CO, CO2, PM2.5, PM5, PM10, así como otros parámetros ambientales como la Humedad Relativa y la Temperatura. Esta capa es simulada por un módulo de software que genera datos similares a los recolectados por los sensores de calidad del aire de la ciudad de Duitama, Boyacá.
+- **Capa de Percepción**: Se encarga de la recolección de datos de sensores, los cuales miden contaminantes atmosféricos como CO, CO2, PM2.5, PM5, PM10, así como otros parámetros ambientales como la Humedad Relativa y la Temperatura. Esta capa es simulada por un módulo de software que genera datos similares a los recolectados por los sensores de calidad del aire de la ciudad de Duitama, Boyacá.
 
 - **Capa de Transporte**: Un gateway IoT actúa como intermediario entre los sensores y el sistema central. Los datos son recibidos mediante un broker MQTT y se transmiten de forma segura a la capa de procesamiento a través del protocolo HTTPS.
 
