@@ -1,5 +1,8 @@
 VERSION=$(grep '"version":' package.json | sed -E 's/.*"([^"]+)".*/\1/')
 
+# Set the KUBECONFIG environment variable
+export KUBECONFIG=/Users/howdy/Documents/civo-k8s-smart-city-unal-kubeconfig
+
 # Call the build script
 # npm run backend:docker:build
 
@@ -14,6 +17,9 @@ kubectl apply -f ./deploy/backend/k8s/nginx/ingress-controller.yaml
 
 # Workaround to get rid of error
 kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+
+# Create secret to store sensitive data
+kubectl apply -f ./deploy/backend/k8s/app/secret.yaml
 
 # Deploy backend in k8s using kustomize to append the new image tag
 kubectl apply -k ./deploy/backend/k8s/app --validate=false

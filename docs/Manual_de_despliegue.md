@@ -31,7 +31,15 @@ Siga los pasos a continuación para desplegar la aplicación en un entorno de pr
 
    Este comando configurará el clúster de Kubernetes en su entorno local para que pueda desplegar los servicios en él.
 
-3. **Ejecute el siguiente comando para desplegar los microservicios en Kubernetes**:
+3. **Incrementar la versión del package.json si se han realizado cambios al código**:
+
+   ```bash
+   npm version patch
+   ```
+
+   Este comando incrementará la versión del proyecto en el archivo `package.json`. Asegúrese de ejecutar este comando si ha realizado cambios en el código de la aplicación para que los servicios se desplieguen correctamente.
+
+4. **Ejecute el siguiente comando para desplegar los microservicios en Kubernetes**:
 
    ```bash
    npm run backend:deploy
@@ -48,7 +56,7 @@ Siga los pasos a continuación para desplegar la aplicación en un entorno de pr
 
 ## Desplegar frontend
 
-4. **Ejecutar el siguiente comando para desplegar el frontend en Vercel**:
+5. **Ejecutar el siguiente comando para desplegar el frontend en Vercel**:
 
    ```bash
    npm run frontend:deploy
@@ -62,11 +70,11 @@ Siga los pasos a continuación para desplegar la aplicación en un entorno de pr
    npm run frontend:build
    ```
 
-5. **Verificar el estado del frontend**: Puede ir a la dirección [https://smart-city-unal-3kgxc8jjx-davids-projects-effc7146.vercel.app/login?from=/](https://smart-city-unal-3kgxc8jjx-davids-projects-effc7146.vercel.app/login?from=/) en su navegador para verificar que el frontend esté funcionando correctamente.
+6. **Verificar el estado del frontend**: Puede ir a la dirección [https://smart-city-unal-3kgxc8jjx-davids-projects-effc7146.vercel.app/login?from=/](https://smart-city-unal-3kgxc8jjx-davids-projects-effc7146.vercel.app/login?from=/) en su navegador para verificar que el frontend esté funcionando correctamente.
 
 ## Despliegue del gateway
 
-5. **Ejecute el siguiente comando para desplegar el API Gateway en Docker**:
+7. **Ejecute el siguiente comando para desplegar el API Gateway en Docker**:
 
    ```bash
    npm run gateway:start
