@@ -58,3 +58,8 @@ out
 
 # Local self-signed certs
 certs
+
+# Kubernetes secrets
+secret.yaml
+.vercel
+.env*.local

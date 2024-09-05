@@ -6,7 +6,7 @@ import OAuth2Server from 'oauth2-server';
 import MongoOAuth2 from '../lib/oauth2';
 import { UserEntity } from '../services/users.service';
 
-const secretKey = process.env.JWT_SECRET || 'jwt-unal-secret';
+const secretKey = process.env.VITE_JWT_SECRET || 'jwt-unal-secret';
 const { Request, Response } = OAuth2Server;
 interface Meta {
   userAgent?: string | null | undefined;

@@ -9,12 +9,12 @@ const MailService: ServiceSchema = {
   name: 'mail',
   mixins: [Mail],
   settings: {
-    from: process.env.EMAIL || 'missing-email',
+    from: process.env.VITE_EMAIL || 'missing-email',
     transport: {
       service: 'Outlook365',
       auth: {
-        user: process.env.EMAIL || 'missing-email',
-        pass: process.env.EMAIL_PASS || 'missing-pass',
+        user: process.env.VITE_EMAIL || 'missing-email',
+        pass: process.env.VITE_EMAIL_PASS || 'missing-pass',
       },
       port: 465,
     },

@@ -11,7 +11,7 @@ data:
   SERVICEDIR: services
   TRANSPORTER: nats://nats:4222
   CACHER: Memory
-  MONGO_URI: mongodb://mongo/smart-city-unal
+  MONGO_URI: mongodb://mongo
 
 ---
 #########################################################
@@ -27,32 +27,6 @@ spec:
   ports:
     - port: 3000
       targetPort: 3000
-
----
-#########################################################
-# Ingress for Moleculer API Gateway
-#########################################################
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ingress
-spec:
-  ingressClassName: nginx
-  tls:
-    - hosts:
-        - smart-city-unal.com
-      secretName: self-signed-tls
-  rules:
-    - host: smart-city-unal.com
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 3000
 
 ---
 #########################################################
@@ -165,6 +139,154 @@ spec:
             - name: SERVICES
               value: users
 
+---
+#########################################################
+# Alerts service
+#########################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alerts
+spec:
+  selector:
+    matchLabels:
+      app: alerts
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: alerts
+    spec:
+      containers:
+        - name: alerts
+          # Placeholder for image latest. It should really use the tagged image (date)
+          image: nano2766/smart-city-unal:latest
+          imagePullPolicy: 'Always'
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+          envFrom:
+            - configMapRef:
+                name: common-env
+          env:
+            - name: SERVICES
+              value: alerts
+---
+#########################################################
+# AQI service
+#########################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aqi
+spec:
+  selector:
+    matchLabels:
+      app: aqi
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: aqi
+    spec:
+      containers:
+        - name: aqi
+          # Placeholder for image latest. It should really use the tagged image (date)
+          image: nano2766/smart-city-unal:latest
+          imagePullPolicy: 'Always'
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+          envFrom:
+            - configMapRef:
+                name: common-env
+          env:
+            - name: SERVICES
+              value: aqi
+---
+#########################################################
+# Ingestion service
+#########################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingestion
+spec:
+  selector:
+    matchLabels:
+      app: ingestion
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ingestion
+    spec:
+      containers:
+        - name: ingestion
+          # Placeholder for image latest. It should really use the tagged image (date)
+          image: nano2766/smart-city-unal:latest
+          imagePullPolicy: 'Always'
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+          envFrom:
+            - configMapRef:
+                name: common-env
+          env:
+            - name: SERVICES
+              value: ingestion
+---
+
+---
+#########################################################
+# Mail service
+#########################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail
+spec:
+  selector:
+    matchLabels:
+      app: mail
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mail
+    spec:
+      containers:
+        - name: mail
+          # Placeholder for image latest. It should really use the tagged image (date)
+          image: nano2766/smart-city-unal:latest
+          imagePullPolicy: 'Always'
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+          envFrom:
+            - configMapRef:
+                name: common-env
+            - secretRef:
+                name: sensitive-data
+          env:
+            - name: SERVICES
+              value: mail
 ---
 #########################################################
 # MongoDB server

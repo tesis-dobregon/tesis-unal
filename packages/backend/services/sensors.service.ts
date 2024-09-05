@@ -102,6 +102,9 @@ const SensorsService: ServiceSchema<SensorSettings> & {
      *  - remove
      */
     // --- ADDITIONAL ACTIONS ---
+    list: {
+      cache: false,
+    },
     create: false,
     register: {
       rest: 'POST /',

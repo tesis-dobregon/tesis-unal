@@ -1,6 +1,6 @@
 {
   "name": "smart-city-unal",
-  "version": "1.3.1",
+  "version": "1.4.8",
   "description": "Repositorio con el código para el proyecto de tesis.",
   "main": "index.js",
   "private": true,
@@ -13,6 +13,7 @@
     "frontend:serve": "nx serve front-end",
     "frontend:test": "nx test front-end",
     "frontend:build": "nx build front-end",
+    "frontend:deploy": "vercel --prod",
     "backend:docker:build": "./deploy/backend/scripts/build.sh",
     "backend:dev": "nx run backend:dev",
     "backend:build": "nx build backend",
@@ -20,6 +21,7 @@
     "backend:destroy": "./deploy/backend/scripts/destroy.sh",
     "backend:dc:up": "nx run backend:dc:up",
     "backend:dc:down": "nx run backend:dc:down",
+    "backend:metrics": "nx run backend:metrics",
     "simulator:build": "nx build sensor-data-simulator",
     "simulator:start": "nx start sensor-data-simulator",
     "gateway:start": "nx start mqtt-gateway"
@@ -69,6 +71,7 @@
     "jsdom": "~22.1.0",
     "lint-staged": "^15.2.2",
     "nx": "18.2.3",
+    "oauth2-server": "^3.1.1",
     "prettier": "^2.6.2",
     "sass": "^1.55.0",
     "ts-jest": "^29.1.0",

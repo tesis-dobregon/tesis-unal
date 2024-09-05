@@ -1,72 +1,10 @@
-## Dev Notes
+# Documentación de los servicios REST
 
-### Despliegue y Destroy
+Este documento describe los servicios REST que componen la capa de procesamiento de la solución IoT para el monitoreo de la calidad del aire. Estos servicios se encargan de la creación y gestión de usuarios, sensores, alertas, datos de calidad del aire y envío de correos electrónicos. La comunicación entre los servicios se realiza mediante el protocolo HTTP, siguiendo las mejores prácticas de diseño de APIs RESTful.
 
-Configurar kubeconfig:
+## Servicios disponibles
 
-```sh
-export KUBECONFIG=/Users/howdy/Documents/civo-k8s-smart-city-unal-kubeconfig                                                          ─╯
-```
-
-Construir imagen de backend:
-
-```sh
-$ npm run backend:docker:build
-```
-
-Desplegar todo usando el comando:
-
-```sh
-$ npm run backend:deploy
-```
-
-Destruir todo (antes de terminar cada sesión de desarrollo para evitar sobrecostos):
-
-```sh
-$ npm run backend:destroy
-```
-
-### Ingress K8S
-
-- Instrucciones utilizadas para generar agregar TLS al ingress de K8S [aqui](https://medium.com/@muppedaanvesh/%EF%B8%8F-kubernetes-ingress-transitioning-to-https-with-self-signed-certificates-0c7ab0231e76)
-
-Comando usado para generar el self-signed certificate (generados en la carpeta `certs`):
-
-```sh
-$ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-    -out self-signed-tls.crt -keyout self-signed-tls.key \
-    -subj "/CN=smart-city-unal.com" \
-    -reqexts SAN \
-    -extensions SAN \
-    -config <(cat /etc/ssl/openssl.cnf \
-        <(printf "[SAN]\nsubjectAltName=DNS:smart-city-unal.com,DNS:*.smart-city-unal.com"))
-```
-
-Probar conexión segura https:
-
-```sh
-$ curl -v https://34.42.148.211 -H 'Host: smart-city-unal.com' -k                                                                                        ─╯
-```
-
-Probar conexión http (un 308 Permanent Redirect es esperado si https está habilitado):
-
-```sh
-$ curl http://34.42.148.211 -H 'Host: smart-city-unal.com' -k
-```
-
-Crear secret (necesario antes de todo):
-
-```sh
-$ kubectl create secret tls self-signed-tls --key ./certs/self-signed-tls.key --cert ./certs/self-signed-tls.crt
-```
-
-Workaround para solucionar error "Error from server (InternalError): error when creating "./deploy/backend/k8s/deployment.yaml": Internal error occurred: failed calling webhook "validate.nginx.ingress.kubernetes.io": failed to call webhook: Post "https://ingress-nginx-controller-admission.ingress-nginx.svc:443/networking/v1/ingresses?timeout=10s": tls: failed to verify certificate: x509: certificate signed by unknown authority":
-
-```sh
-$ kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
-```
-
-## Listado de microservicios
+A continuación se describen los servicios REST disponibles en la aplicación:
 
 ### Users
 
@@ -706,9 +644,9 @@ curl -X GET http://0.0.0.0:3000/api/aqi\?sort\='-createdAt'
 
 Valores aceptados:
 
-- pm2_5
-- pm10
-- co
+- `pm2_5`
+- `pm10`
+- `co`
 
 - Obtener AQI por contaminante en moleculer:
 
@@ -775,103 +713,3 @@ curl -X POST -u "myClient:password" -d "grant_type=password&username=david&passw
 ```
 curl -X POST -u "gateway:password" -d "grant_type=client_credentials" http://0.0.0.0:3000/oauth/token
 ```
-
-## Crear usuario administrador para el frontend
-
-```
-db.getCollection("users").insert({
-    "username" : "david",
-    "password" : "$2a$10$4W30Hv0kb6TvdE0ikn4st.pkdTzwYAxqeBzbUaWH6Hoyjib95pxFW",
-    "email" : "nano276@gmail.com",
-    "bio" : "",
-    "image" : null,
-})
-```
-
-## Seguridad en broker MQTT
-
-La seguridad en el broker MQTT se logra mediante la creación de usuarios y contraseñas. Para ello se debe crear un archivo de contraseñas y luego iniciar el broker MQTT con la configuración adecuada.
-
-Creación de usuarios y contraseñas para el broker MQTT
-
-```
-cd packages/mqtt-gateway
-mosquitto_passwd -c mosquitto/config/password_file smart-city-unal
-```
-
-Ingresar la contraseña `smart-city-unal` cuando se solicite.
-
-Luego iniciar el broker MQTT con la siguiente configuración:
-
-```
-npm run dc:up
-```
-
-Verificar los logs del broker para asegurarse que se ha iniciado correctamente:
-
-```
-npm run dc:logs
-```
-
-Generar certificados self-signed para TLS en el broker MQTT
-
-```
-cd packages/mqtt-gateway/certs
-openssl genpkey -algorithm RSA -out server.key
-openssl req -new -key server.key -out server.csr
-openssl x509 -req -in server.csr -signkey server.key -out server.crt -days 365
-openssl req -new -x509 -key server.key -out ca.crt -days 365
-```
-
-Medidas de seguridad adicionales para MQTT que están configuradas:
-
-- QoS 1: Se asegura que el mensaje sea entregado al menos una vez al suscriptor.
-- TLS: Se asegura que la comunicación entre el cliente y el broker sea segura (MQTT over TLS).
-- Autenticación: Se asegura que solo los usuarios autorizados puedan conectarse al broker.
-
-TODO:
-
-- Add lastHeartbeat to sensors and render in the frontend as ultima actualización
-- Revisar lat y long porque están quedando como 0
-- Servicio para mostrar las alertas que se han enviado. history de alertas
-- Replicar mostrar mensajes drawer de alert en sensores
-- Paginación resolver en sensors y alerts
-- Comunicación hacia el sensor? Post MVP
-- Desplegar frontend en algo
-- Desplegar backend probar
-- Data de temperatura y humedad esta quemada
-
-- Remove all console.logs
-- Enable circuit breaker
-
-Probar frontend y backend unidos (tanto apuntando a local como al desplegado)
-Implementar login
-
-IP usada para conectar mqtt desde el celu:
-ifconfig
-inet 192.168.1.5 netmask 0xffffff00
-
-URL vercel configuración:
-https://vercel.com/davids-projects-effc7146/smart-city-unal/settings
-
-db.getCollection("clients").insert({
-clientId: 'myClient',
-clientSecret: 'password',
-redirectUris: [],
-grants: ['password'],
-})
-
-db.getCollection("users").insert({
-"username" : "david",
-"password" : "$2a$10$4W30Hv0kb6TvdE0ikn4st.pkdTzwYAxqeBzbUaWH6Hoyjib95pxFW",
-"email" : "nano276@gmail.com",
-"bio" : "",
-"image" : null,
-})
-
-db.getCollection("clients").insert({
-clientId: 'gateway',
-clientSecret: 'password',
-redirectUris: [],
-grants: ['client_credentials'],
-})

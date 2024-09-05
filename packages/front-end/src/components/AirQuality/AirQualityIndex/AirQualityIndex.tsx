@@ -56,11 +56,11 @@ export const AirQualityIndex = () => {
           }}
         />
         <Typography variant="h6" mt={2}>
-          Valor Actual: {data?.pollutant.toFixed(2)}{' '}
+          Valor Actual: {data?.pollutant?.toFixed(2)}{' '}
           {pollutantData.get(selectedPollutant)?.units}
         </Typography>
         <Typography variant="body2">
-          Fecha de última actualización: {data?.createdAt.toString()}
+          Fecha de última actualización: {data?.createdAt?.toString()}
         </Typography>
         <Typography variant="body2" mt={1}>
           {pollutantData.get(selectedPollutant)?.secondaryText}
