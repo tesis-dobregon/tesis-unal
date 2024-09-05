@@ -16,8 +16,8 @@ async function authenticate(): Promise<void> {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         auth: {
-          username: process.env.CLIENT_ID ?? 'gateway', // your client id
-          password: process.env.CLIENT_SECRET ?? 'password', // your client secret
+          username: process.env.VITE_GATEWAY_CLIENT_ID ?? 'gateway', // your client id
+          password: process.env.VITE_GATEWAY_CLIENT_SECRET ?? 'password', // your client secret
         },
       }
     );

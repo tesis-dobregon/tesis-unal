@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import mqtt, { IClientOptions, MqttClient } from 'mqtt';
 
-const url = process.env.MQTT_BROKER_URL || 'mqtt://localhost:1883';
+const url = process.env.VITE_MQTT_BROKER_URL || 'mqtt://localhost:1883';
 
 console.log(
   'current path',
@@ -15,8 +15,8 @@ const options: IClientOptions = {
   protocolVersion: 5,
   keepalive: 60,
   rejectUnauthorized: false, // Set this to true if using a valid certificate authority
-  username: process.env.MQTT_USERNAME || 'smart-city-unal', // Add your MQTT username
-  password: process.env.MQTT_PASSWORD || 'securePassword', // Add your MQTT password
+  username: process.env.VITE_MQTT_USERNAME || 'smart-city-unal', // Add your MQTT username
+  password: process.env.VITE_MQTT_PASSWORD || 'securePassword', // Add your MQTT password
   ca: fs.readFileSync(
     path.join(__dirname, '../../../../packages/mqtt-gateway/certs/ca.crt')
   ),

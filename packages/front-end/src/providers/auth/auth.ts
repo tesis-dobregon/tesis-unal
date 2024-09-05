@@ -37,8 +37,8 @@ export const authProvider: AuthProvider = {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         auth: {
-          username: process.env.REACT_APP_CLIENT_ID ?? 'myClient',
-          password: process.env.REACT_APP_CLIENT_SECRET ?? 'password',
+          username: import.meta.env.VITE_CLIENT_ID ?? 'myClient',
+          password: import.meta.env.VITE_CLIENT_SECRET ?? 'password',
         },
       }
     );

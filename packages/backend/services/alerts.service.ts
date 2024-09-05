@@ -67,7 +67,7 @@ const AlertsService: ServiceSchema<AlertsSettings> = {
           if (alert.action === AlertAction.EMAIL) {
             this.broker.logger.info('Sending email to:', alert.metadata.email);
             // Send an email to the alert.metadata.email
-            if (process.env.MAIL_ENABLED === 'true') {
+            if (process.env.VITE_MAIL_ENABLED === 'true') {
               this.broker.call('mail.send', {
                 to: alert.metadata.email,
                 template: 'alerts',

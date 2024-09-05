@@ -14,14 +14,14 @@ const CENTER_POINT: GeoPoint = {
 };
 
 // Number of simulated sensors to generate
-const NUMBER_OF_SIMULATED_SENSORS = process.env.NUMBER_OF_SIMULATED_SENSORS
-  ? Number(process.env.NUMBER_OF_SIMULATED_SENSORS)
+const NUMBER_OF_SIMULATED_SENSORS = process.env.VITE_NUMBER_OF_SIMULATED_SENSORS
+  ? Number(process.env.VITE_NUMBER_OF_SIMULATED_SENSORS)
   : 4;
 
 // Frequency to publish simulated sensor data in milliseconds. Default is 15 seconds.
 const FREQUENCY_TO_PUBLISH_SIMULATED_DATA = process.env
-  .FREQUENCY_TO_PUBLISH_SIMULATED_DATA
-  ? Number(process.env.FREQUENCY_TO_PUBLISH_SIMULATED_DATA)
+  .VITE_FREQUENCY_TO_PUBLISH_SIMULATED_DATA
+  ? Number(process.env.VITE_FREQUENCY_TO_PUBLISH_SIMULATED_DATA)
   : 15000;
 
 // Define the folder path conta sensor station metadata files
@@ -75,6 +75,13 @@ function generateSimulatedSensorRecord(
  * @returns An object representing the simulated sensor data record.
  */
 function readSensorStationsFolderAndGenerateSimulatedRecord() {
+  console.log(
+    'Reading sensor stations folder and generating simulated records'
+  );
+  console.log('Config data:', {
+    NUMBER_OF_SIMULATED_SENSORS,
+    FREQUENCY_TO_PUBLISH_SIMULATED_DATA,
+  });
   // Read and process each metadata file in the folder
   fs.readdirSync(METADATA_FOLDER).forEach((file) => {
     const station = JSON.parse(

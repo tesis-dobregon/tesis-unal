@@ -37,7 +37,7 @@ const UserService: ServiceSchema<UsersSettings> = {
   settings: {
     defaultName: 'Moleculer',
     /** Secret for JWT */
-    JWT_SECRET: process.env.JWT_SECRET || 'jwt-unal-secret',
+    JWT_SECRET: process.env.VITE_JWT_SECRET || 'jwt-unal-secret',
 
     /** Public fields */
     fields: ['_id', 'username', 'email', 'bio', 'image'],

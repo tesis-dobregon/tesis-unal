@@ -70,7 +70,12 @@ Siga los pasos a continuación para desplegar la aplicación en un entorno de pr
    npm run frontend:build
    ```
 
-6. **Verificar el estado del frontend**: Puede ir a la dirección [https://smart-city-unal-3kgxc8jjx-davids-projects-effc7146.vercel.app/login?from=/](https://smart-city-unal-3kgxc8jjx-davids-projects-effc7146.vercel.app/login?from=/) en su navegador para verificar que el frontend esté funcionando correctamente.
+6. **Verificar el estado del frontend**: El comando anterior le proporcionará una URL para verificar el estado del despliegue del frontend en Vercel. Ejemplo:
+
+   ```bash
+    🔍  Inspect: https://vercel.com/davids-projects-effc7146/smart-city-unal/7xtrJ5U1TVjhiq53mjAcAoDWZ4sz [3s]
+    ✅  Production: https://smart-city-unal-a2w1k41gk-davids-projects-effc7146.vercel.app [3s]
+   ```
 
 ## Despliegue del gateway
 

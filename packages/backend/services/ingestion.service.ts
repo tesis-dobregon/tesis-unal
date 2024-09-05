@@ -141,7 +141,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
           customId: ctx.params.sensorId,
         });
         if (!sensor) {
-          throw new Errors.MoleculerClientError('Sensor not found!', 404, '', [
+          throw new Errors.MoleculerClientError('Sensor not found!', 422, '', [
             { field: 'sensorId', message: 'not found' },
           ]);
         }

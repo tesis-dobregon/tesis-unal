@@ -17,7 +17,7 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
   settings: {
     // Exposed port
     port: process.env.PORT != null ? Number(process.env.PORT) : 3000,
-    JWT_SECRET: process.env.JWT_SECRET || 'jwt-unal-secret',
+    JWT_SECRET: process.env.VITE_JWT_SECRET || 'jwt-unal-secret',
 
     // Exposed IP
     ip: '0.0.0.0',

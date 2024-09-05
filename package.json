@@ -1,6 +1,6 @@
 {
   "name": "smart-city-unal",
-  "version": "1.4.6",
+  "version": "1.4.8",
   "description": "Repositorio con el código para el proyecto de tesis.",
   "main": "index.js",
   "private": true,
@@ -13,7 +13,7 @@
     "frontend:serve": "nx serve front-end",
     "frontend:test": "nx test front-end",
     "frontend:build": "nx build front-end",
-    "frontend:deploy": "vercel",
+    "frontend:deploy": "vercel --prod",
     "backend:docker:build": "./deploy/backend/scripts/build.sh",
     "backend:dev": "nx run backend:dev",
     "backend:build": "nx build backend",

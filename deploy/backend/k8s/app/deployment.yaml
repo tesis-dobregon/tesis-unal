@@ -30,32 +30,6 @@ spec:
 
 ---
 #########################################################
-# Ingress for Moleculer API Gateway
-#########################################################
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ingress
-spec:
-  ingressClassName: nginx
-  tls:
-    - hosts:
-        - smart-city-unal.com
-      secretName: self-signed-tls
-  rules:
-    - host: smart-city-unal.com
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 3000
-
----
-#########################################################
 # API Gateway service
 #########################################################
 apiVersion: apps/v1

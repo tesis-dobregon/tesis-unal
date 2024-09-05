@@ -776,6 +776,18 @@ curl -X POST -u "myClient:password" -d "grant_type=password&username=david&passw
 curl -X POST -u "gateway:password" -d "grant_type=client_credentials" http://0.0.0.0:3000/oauth/token
 ```
 
+## Crear usuario administrador para el frontend
+
+```
+db.getCollection("users").insert({
+    "username" : "david",
+    "password" : "$2a$10$4W30Hv0kb6TvdE0ikn4st.pkdTzwYAxqeBzbUaWH6Hoyjib95pxFW",
+    "email" : "nano276@gmail.com",
+    "bio" : "",
+    "image" : null,
+})
+```
+
 ## Seguridad en broker MQTT
 
 La seguridad en el broker MQTT se logra mediante la creación de usuarios y contraseñas. Para ello se debe crear un archivo de contraseñas y luego iniciar el broker MQTT con la configuración adecuada.
@@ -832,14 +844,34 @@ TODO:
 - Remove all console.logs
 - Enable circuit breaker
 
-- Necesito:
-- Crear un MQTT broker posiblemente deployarlo en un contenedor no necesita ser kubernetes
-- Un subscriber que se conecte al broker y reciba los datos de los sensores
-- El subscriber NO necesariamente necesita ser un microservicio. Puede ser un script que se ejecute en un contenedor. Leer articulos de esto.
-
 Probar frontend y backend unidos (tanto apuntando a local como al desplegado)
 Implementar login
 
 IP usada para conectar mqtt desde el celu:
 ifconfig
 inet 192.168.1.5 netmask 0xffffff00
+
+URL vercel configuración:
+https://vercel.com/davids-projects-effc7146/smart-city-unal/settings
+
+db.getCollection("clients").insert({
+clientId: 'myClient',
+clientSecret: 'password',
+redirectUris: [],
+grants: ['password'],
+})
+
+db.getCollection("users").insert({
+"username" : "david",
+"password" : "$2a$10$4W30Hv0kb6TvdE0ikn4st.pkdTzwYAxqeBzbUaWH6Hoyjib95pxFW",
+"email" : "nano276@gmail.com",
+"bio" : "",
+"image" : null,
+})
+
+db.getCollection("clients").insert({
+clientId: 'gateway',
+clientSecret: 'password',
+redirectUris: [],
+grants: ['client_credentials'],
+})
