@@ -1,0 +1,91 @@
+@startuml
+
+package "Vercel" {
+  [Frontend Application]
+}
+
+package "Civo Cloud K8S Cluster" {
+    [API Gateway]
+    [Mongo DB]
+    [Message Broker]
+
+    [Users MS Pod]
+    [Users DB]
+    [Sensors MS Pod]
+    [Alerts MS Pod]
+    [Ingestion MS Pod]
+    [AQI MS Pod]
+    [Mail MS Pod]
+    [Load Balancer]
+    [Ingress Controller] 
+    [Service: Users MS]
+    [Service: Sensors MS]
+    [Service: Alerts MS]
+    [Service: Ingestion MS]
+    [Service: AQI MS]
+    [Service: Mail MS]
+}
+
+package "Edge/Fog Computing" {
+    [MQTT Gateway Container]
+}
+
+package "Edge Tier" {
+    [IoT Devices/Sensors]
+}
+
+cloud "Internet" {
+}
+
+'Microservices and database per service
+[Users MS Pod] --> [Users DB] : Store
+[Sensors MS Pod] --> [Mongo DB] : Store
+[Alerts MS Pod] --> [Mongo DB] : Store
+[Ingestion MS Pod] --> [Mongo DB] : Store
+[AQI MS Pod] --> [Mongo DB] : Store
+
+[Frontend Application] --> [API Gateway] : REST API HTTPS
+
+'Gateway communication
+[API Gateway] --> [Load Balancer] : Manage traffic
+[MQTT Gateway Container] --> [IoT Devices/Sensors]
+'Edge tier to cloud and fog
+[IoT Devices/Sensors] --> [MQTT Gateway Container] : Data
+
+'Load Balancer to Services
+[Load Balancer] --> [Ingress Controller] : Directs Traffic
+[Ingress Controller] --> [Service: Users MS] : Routes Traffic
+[Ingress Controller] --> [Service: Sensors MS] : Routes Traffic
+[Ingress Controller] --> [Service: Alerts MS] : Routes Traffic
+[Ingress Controller] --> [Service: Ingestion MS] : Routes Traffic
+[Ingress Controller] --> [Service: AQI MS] : Routes Traffic
+[Ingress Controller] --> [Service: Mail MS] : Routes Traffic
+
+'Services to Pods
+[Service: Users MS] --> [Users MS Pod]
+[Service: Sensors MS] --> [Sensors MS Pod]
+[Service: Alerts MS] --> [Alerts MS Pod]
+[Service: Ingestion MS] --> [Ingestion MS Pod]
+[Service: AQI MS] --> [AQI MS Pod]
+[Service: Mail MS] --> [Mail MS Pod]
+
+'Microservices communication
+[Ingestion MS Pod] --> [Message Broker]
+[Message Broker] --> [Sensors MS Pod]
+[AQI MS Pod] --> [Message Broker]
+[Message Broker] --> [Alerts MS Pod]
+[Alerts MS Pod] --> [Mail MS Pod]
+
+'Fog / Cloud communication
+[MQTT Gateway Container] --> [API Gateway] : Data
+
+'LAN Outgoing
+[MQTT Gateway Container] --> [LAN] : Outgoing Data
+[IoT Devices/Sensors] --> [LAN] : Outgoing Data
+
+'WAN Outgoing
+[MQTT Gateway Container] --> [WAN] : Outgoing Data
+
+[WAN] --> Internet : Outgoing Data
+
+@enduml

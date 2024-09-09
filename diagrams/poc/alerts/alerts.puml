@@ -1,0 +1,29 @@
+@startuml
+actor User as ApplicationUser
+participant APIGateway
+participant MailService
+participant AlertsMicroservice
+participant AQIMicroservice
+participant MailService
+participant MessageBroker
+database Database
+
+ApplicationUser -> APIGateway: Create/Update Alert for pollutant
+APIGateway -> AlertsMicroservice: Create/Update Alert for pollutant
+activate AlertsMicroservice
+AlertsMicroservice -> Database: Create/Update Alert for pollutant
+Database --> AlertsMicroservice: Return Alert
+AlertsMicroservice --> APIGateway: Return Alert
+deactivate AlertsMicroservice
+APIGateway --> ApplicationUser: Return Alert
+
+AQIMicroservice -> MessageBroker: AQI calculated event
+AlertsMicroservice -> MessageBroker: Subscribe to AQI Calculate event
+MessageBroker -> AlertsMicroservice: Publish AQI Data
+AlertsMicroservice -> Database: Get Thresholds
+Database -> AlertsMicroservice: Return Thresholds
+AlertsMicroservice -> AlertsMicroservice: Calculte if alerts should be triggered
+AlertsMicroservice -> MessageBroker: Trigger alarm
+MessageBroker -> MailService: Trigger alarm
+MailService -> ApplicationUser: Send email with alarm
+@enduml

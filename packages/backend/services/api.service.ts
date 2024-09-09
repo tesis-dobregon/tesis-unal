@@ -52,7 +52,7 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
         use: [],
 
         // Enable/disable parameter merging method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Disable-merging
-        mergeParams: true,
+        mergeParams: false,
 
         // Enable authentication. Implement the logic into `authenticate` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authentication
         authentication: true,
@@ -234,6 +234,12 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
       const {
         headers: { authorization },
       } = req;
+
+      // If the path starts with /api/~node~ we don't need to authenticate
+      console.log('chivi authenticate', req.parsedUrl);
+      if (req.parsedUrl.startsWith('/api/~node')) {
+        return;
+      }
 
       if (authorization) {
         if (!authorization.includes('Bearer')) {

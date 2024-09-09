@@ -1,26 +1,37 @@
 @startuml
 actor User as ApplicationUser
 participant APIGateway
-participant DevicesMicroservice
+participant SensorsMicroservice
+participant IngestionMicroservice
+participant MessageBroker
 database Database
+participant EdgeGateway
 queue MQTTBroker
 participant PhysicalDevice
 
 ApplicationUser -> APIGateway: Register Device Request
-APIGateway -> DevicesMicroservice: Register Device Request
-activate DevicesMicroservice
-DevicesMicroservice -> Database: Validate Request and Generate Device ID
-Database --> DevicesMicroservice: Device ID Generated or Validation Error
-DevicesMicroservice --> APIGateway: Success or Error Response
+APIGateway -> SensorsMicroservice: Register Device Request
+activate SensorsMicroservice
+SensorsMicroservice -> Database: Validate Request and Generate Device ID
+Database --> SensorsMicroservice: Device ID Generated or Validation Error
+SensorsMicroservice --> APIGateway: Success or Error Response
 APIGateway --> ApplicationUser: Success or Error Response
-deactivate DevicesMicroservice
-
-DevicesMicroservice -> MQTTBroker: Subscribe Device Registration Topic
-PhysicalDevice -> MQTTBroker: Publish Device Registration Topic
-MQTTBroker -> DevicesMicroservice: Publish Device Registration Data
-activate DevicesMicroservice
-DevicesMicroservice -> Database: Validate and Store Device Data
-Database --> DevicesMicroservice: Device Data Stored or Validation Error
-DevicesMicroservice --> MQTTBroker: Publish Device Registration Acknowledgement
-deactivate DevicesMicroservice
+deactivate SensorsMicroservice
+ 
+PhysicalDevice -> MQTTBroker: Publish Device Data Topic
+EdgeGateway -> MQTTBroker: Subscribe Device Data Topic
+EdgeGateway -> IngestionMicroservice: Publish Device Data Via HTTPS
+activate IngestionMicroservice
+IngestionMicroservice -> MessageBroker: Find Sensor Data
+activate SensorsMicroservice
+MessageBroker -> SensorsMicroservice: Find Sensor Data
+SensorsMicroservice -> Database: Get Sensor Data
+Database -> SensorsMicroservice: Returns Sensor Data (WAITING For Data)
+SensorsMicroservice -> MessageBroker:  Returns Sensor Data
+MessageBroker -> IngestionMicroservice:  Returns sensor Data
+IngestionMicroservice -> MessageBroker: Update Sensor from WAITING to Active
+deactivate IngestionMicroservice
+MessageBroker -> SensorsMicroservice: Update Sensor from WAITING to Active
+SensorsMicroservice -> Database: Update Sensor in Database
+deactivate SensorsMicroservice
 @enduml
