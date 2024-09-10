@@ -1,28 +1,35 @@
 @startuml
 actor User as ApplicationUser
 participant APIGateway
-participant DevicesMicroservice
+participant SensorsMicroservice
+participant IngestionMicroservice
+participant MessageBroker
 database Database
+participant EdgeGateway
 queue MQTTBroker
 participant PhysicalDevice
 
-ApplicationUser -> APIGateway: Query Data (DeviceId)
-APIGateway -> DevicesMicroservice: Query Data (DeviceId)
-activate DevicesMicroservice
-DevicesMicroservice -> Database: Search Device (DeviceId)
-Database --> DevicesMicroservice: Device Exists or Device Not Found
-DevicesMicroservice -> Database: Get Device Data (DeviceId)
-Database --> DevicesMicroservice: Return Device Data
-DevicesMicroservice --> APIGateway: Return Device Data
-deactivate DevicesMicroservice
-APIGateway --> ApplicationUser: Return Device Data
+ApplicationUser -> APIGateway: Query Data (SensorId)
+APIGateway -> IngestionMicroservice: Query Data (SensorId)
+activate IngestionMicroservice
+IngestionMicroservice -> Database: Get Sensor Data (SensorId)
+Database --> IngestionMicroservice: Return Sensor Data
+IngestionMicroservice --> APIGateway: Return Sensor Data
+deactivate IngestionMicroservice
+APIGateway --> ApplicationUser: Return Sensor Data
 
-DevicesMicroservice -> MQTTBroker: Subscribe Device Data Topic
-PhysicalDevice -> MQTTBroker: Publish Device Collected Data (DeviceId)
-MQTTBroker -> DevicesMicroservice: Publish Device Collected Data (DeviceId)
-activate DevicesMicroservice
-DevicesMicroservice -> Database: Store Device Data (DeviceId)
-Database --> DevicesMicroservice: Device Data Stored
-DevicesMicroservice --> MQTTBroker: Publish Device Data Acknowledgement
-deactivate DevicesMicroservice
+PhysicalDevice -> MQTTBroker: Publish Device Data Topic
+EdgeGateway -> MQTTBroker: Subscribe Device Data Topic
+EdgeGateway -> IngestionMicroservice: Publish Device Data Via HTTPS
+activate IngestionMicroservice
+IngestionMicroservice -> MessageBroker: Find Sensor Metadata
+activate SensorsMicroservice
+MessageBroker -> SensorsMicroservice: Find Sensor Metadata
+SensorsMicroservice -> Database: Get Sensor Metadata
+Database -> SensorsMicroservice: Returns Sensor Metadata
+SensorsMicroservice -> MessageBroker:  Returns Sensor Metadata
+MessageBroker -> IngestionMicroservice:  Returns sensor Metadata
+IngestionMicroservice -> Database: Insert sensor Data in DB
+deactivate IngestionMicroservice
+deactivate SensorsMicroservice
 @enduml

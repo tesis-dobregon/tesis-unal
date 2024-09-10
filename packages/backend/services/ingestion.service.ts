@@ -135,7 +135,6 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
             "sensorId": "AQ02"
           }
        */
-        // TODO: implement cache here
         // Check if the sensor exists
         const sensor: any = await this.broker.call('sensors.findByCustomId', {
           customId: ctx.params.sensorId,

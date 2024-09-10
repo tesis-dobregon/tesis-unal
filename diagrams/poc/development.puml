@@ -1,0 +1,59 @@
+@startuml
+
+package "Backend" {
+    [AlertsService] 
+    [APIService] 
+    [AQIService] 
+    [IngestionService] 
+    [MailService] 
+    [SensorsService] 
+    [UsersService]
+}
+
+package "Frontend" {
+    package "Pages" {
+        [AlertsPage]
+        [AqiPage]
+        [HomePage]
+        [LoginPage]
+        [NotFoundPage]
+        [SensorsPage]
+    }
+
+    package "Components" {
+        [HeaderComponent]
+        [LayoutsComponent]
+        [ModalComponent]
+        [TableComponent]
+    }
+}
+
+package "MQTT Gateway" {
+    [MQTTGateway]
+}
+
+package "Sensor Simulator" {
+    [SensorSimulator]
+}
+
+package "Shared Types" {
+    [TypesLibrary]
+}
+
+package "Shared MQTT" {
+    [MQTTLibrary]
+}
+
+' Relationships
+
+[Frontend] --> [Backend] : Consumes via REST/HTTPS
+[MQTTGateway] --> [Backend] : Consumes via REST/HTTPS
+[MQTTGateway] --> [MQTTLibrary] : Uses for MQTT connection
+[SensorSimulator] --> [MQTTLibrary] : Uses for MQTT connection
+[SensorSimulator] --> [MQTTGateway] : Publishes via MQTT
+[Backend] --> [TypesLibrary] : Uses shared types
+[Frontend] --> [TypesLibrary] : Uses shared types
+[MQTTGateway] --> [TypesLibrary] : Uses shared types
+[SensorSimulator] --> [TypesLibrary] : Uses shared types
+
+@enduml

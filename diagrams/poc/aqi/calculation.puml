@@ -1,0 +1,38 @@
+@startuml
+actor System
+actor User as ApplicationUser
+participant Cron
+participant APIGateway
+participant AQIMicroservice
+participant IngestionMicroservice
+participant MessageBroker
+database Database
+
+ApplicationUser -> APIGateway: Query AQI (pollutant)
+APIGateway -> AQIMicroservice: Query AQI (pollutant)
+activate AQIMicroservice
+AQIMicroservice -> Database: Get AQI (pollutant)
+Database --> AQIMicroservice: Return AQI for pollutant
+AQIMicroservice --> APIGateway: Return AQI for pollutant
+deactivate AQIMicroservice
+APIGateway --> ApplicationUser: Return AQI for pollutant
+
+loop Every 1 hour
+    System -> Cron : Start CronJob
+    activate Cron
+    activate AQIMicroservice
+    Cron -> AQIMicroservice : Recalculate AQI for all pollutants
+    AQIMicroservice -> MessageBroker: List Sensor Data
+    MessageBroker -> IngestionMicroservice: List Sensor Data
+    IngestionMicroservice -> Database: Query Sensor Data
+    Database -> IngestionMicroservice: Return Sensor Data
+    IngestionMicroservice -> MessageBroker: Return Sensor Data
+    MessageBroker -> AQIMicroservice: Return Sensor Data
+    AQIMicroservice -> AQIMicroservice: Recalculate AQI per pollutant
+    AQIMicroservice -> Database: Store AQI Data
+    AQIMicroservice --> Cron : Close process
+    deactivate AQIMicroservice
+    deactivate Cron
+    System --> System : Wait 1 hour
+end
+@enduml
