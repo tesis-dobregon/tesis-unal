@@ -51,6 +51,7 @@ export async function publishSensorData(
     await ensureAuthenticated();
 
     const ingestionDataUrl = buildIngestionUrl(sensorData.uid);
+    console.log('Ingestion data URL:', ingestionDataUrl);
     return await axios.post(
       ingestionDataUrl,
       {
