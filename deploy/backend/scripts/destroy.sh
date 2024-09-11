@@ -21,3 +21,6 @@ kubectl delete ingress --all
 
 # Delete secrets
 kubectl delete secrets --all
+
+# Delete observability
+kubectl delete namespace observability

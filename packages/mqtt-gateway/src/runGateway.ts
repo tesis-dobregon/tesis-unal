@@ -5,7 +5,7 @@ import {
   subscribeToTopic,
 } from '@smart-city-unal/shared-mqtt';
 import { trace, context, propagation } from '@opentelemetry/api';
-import { publishSensorData } from './services';
+import { ensureAuthenticated, publishSensorData } from './services';
 import { SensorDataWithContext } from '@smart-city-unal/shared-types';
 import { SMART_CITY_UNAL_URLS } from './services/constants';
 
@@ -20,13 +20,15 @@ const ERROR_MESSAGES = {
   FAILED_TO_RUN_GATEWAY: `Failed to run gateway after ${MAX_RETRIES} retries`,
 };
 
-export function runGateway() {
+export async function runGateway() {
   let retries = 0;
   try {
     console.log('Starting gateway...');
     if (retries > MAX_RETRIES) {
       throw new Error(ERROR_MESSAGES.FAILED_TO_RUN_GATEWAY);
     }
+
+    await ensureAuthenticated();
 
     subscribeToTopic(
       mqttServerClient,

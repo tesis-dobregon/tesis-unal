@@ -12,6 +12,8 @@ data:
   TRANSPORTER: nats://nats:4222
   CACHER: Memory
   MONGO_URI: mongodb://mongo
+  VITE_JAEGER_ENDPOINT: http://collector-jaeger.2d3b0c65-dbcb-4cb1-a285-f3727d746b1e.lb.civo.com
+  NODE_ENV: test
 
 ---
 #########################################################

@@ -1,1 +1,1 @@
-import 'src/lib/opentelemetry';
+import './lib/opentelemetry';

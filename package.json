@@ -1,6 +1,6 @@
 {
   "name": "smart-city-unal",
-  "version": "1.4.8",
+  "version": "1.5.3",
   "description": "Repositorio con el código para el proyecto de tesis.",
   "main": "index.js",
   "private": true,

@@ -34,9 +34,13 @@ async function authenticate(): Promise<void> {
 }
 
 // Helper to check if token is expired or not
-async function ensureAuthenticated(): Promise<void> {
+export async function ensureAuthenticated(): Promise<void> {
+  console.log('Checking if authenticated...');
   if (!authToken || !tokenExpirationTime || Date.now() >= tokenExpirationTime) {
+    console.log('Token is expired or not present. Going to authenticate...');
     await authenticate();
+  } else {
+    console.log('Token is still valid');
   }
 }
 

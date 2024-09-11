@@ -15,6 +15,11 @@ import { SensorStatus } from '@smart-city-unal/shared-types';
 
 const tracer = trace.getTracer('ingestion-service');
 
+export type ContextMetadata = {
+  traceparent: string;
+  userAgent: string;
+};
+
 export type SensorCollectedData = {
   _id: string;
   createdAt: Date;
@@ -114,9 +119,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
           },
         },
       },
-      async handler(ctx: Context<ActionCreateParams>) {
-        this.broker.logger.info('Headers', ctx.meta);
-        this.broker.logger.info('Processing sensor data', ctx.params);
+      async handler(ctx: Context<ActionCreateParams, ContextMetadata>) {
         /**
        * Example data:
           {
@@ -145,7 +148,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
 
         // Extract the trace context from the headers
         const traceCtx = propagation.extract(context.active(), {
-          traceparent: (ctx.meta as any).traceparent,
+          traceparent: ctx.meta.traceparent,
         });
         const span = tracer.startSpan(
           'Ingestion Microservice Sensor Data',
@@ -159,30 +162,37 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
 
         context.with(trace.setSpan(context.active(), span), async () => {
           try {
-            // Simulación de escritura en MongoDB
-            await new Promise((resolve) => setTimeout(resolve, 100));
-
             // Check if the sensor exists
             let sensor: any = await this.broker.call('sensors.findByCustomId', {
               customId: ctx.params.sensorId,
             });
             if (!sensor) {
-              this.broker.logger.info('sensor not found', ctx.params.sensorId);
-              // Create sensor so we can run the load tests with no errors
-              sensor = await this.broker.call('sensors.create', {
-                customId: ctx.params.sensorId,
-                name: ctx.params.data.name,
-                description: ctx.params.data.description,
-                lat: ctx.params.data.lat,
-                lon: ctx.params.data.lon,
-                metadata: ctx.params.data.metadata,
-                status: SensorStatus.ACTIVE,
-              });
+              // For load tests we allow to create the sensor when it does not exist
+              if (process.env.NODE_ENV === 'test') {
+                this.broker.logger.info(
+                  'sensor not found',
+                  ctx.params.sensorId
+                );
+                // Create sensor so we can run the load tests with no errors
+                sensor = await this.broker.call('sensors.create', {
+                  customId: ctx.params.sensorId,
+                  name: ctx.params.data.name,
+                  description: ctx.params.data.description,
+                  lat: ctx.params.data.lat,
+                  lon: ctx.params.data.lon,
+                  metadata: ctx.params.data.metadata,
+                  status: SensorStatus.ACTIVE,
+                });
 
-              this.broker.logger.info('sensor created', sensor);
-              // throw new Errors.MoleculerClientError('Sensor not found!', 422, '', [
-              //   { field: 'sensorId', message: 'not found' },
-              // ]);
+                this.broker.logger.info('sensor created', sensor);
+              } else {
+                throw new Errors.MoleculerClientError(
+                  'Sensor not found!',
+                  422,
+                  '',
+                  [{ field: 'sensorId', message: 'not found' }]
+                );
+              }
             }
 
             if (sensor.status === SensorStatus.WAITING) {

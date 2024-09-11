@@ -42,6 +42,12 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
       maxAge: 3600,
     },
 
+    // rateLimit: {
+    //   window: 10 * 1000,
+    //   limit: 30,
+    //   headers: true,
+    // },
+
     routes: [
       {
         path: '/api',
@@ -92,7 +98,7 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
         ): void {
           // Set the request headers to the context meta
           ctx.meta.userAgent = req.headers['user-agent'];
-          ctx.meta.traceParent = req.headers['traceparent'];
+          ctx.meta.traceparent = req.headers['traceparent'];
         },
 
         /**
@@ -238,7 +244,6 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
       } = req;
 
       // If the path starts with /api/~node~ we don't need to authenticate
-      console.log('chivi authenticate', req.parsedUrl);
       if (req.parsedUrl.startsWith('/api/~node')) {
         return;
       }
@@ -261,7 +266,10 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
               null
             );
           }
-          req.$ctx.meta = { user: token };
+          req.$ctx.meta = {
+            ...ctx.meta,
+            user: token,
+          };
         } catch (err) {
           throw new ApiGateway.Errors.UnAuthorizedError(
             ApiGateway.Errors.ERR_INVALID_TOKEN,

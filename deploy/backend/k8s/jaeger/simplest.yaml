@@ -1,0 +1,63 @@
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: simplest
+  namespace: observability
+spec:
+  strategy: allInOne
+  allInOne:
+    image: jaegertracing/all-in-one:latest
+    options:
+      log-level: debug
+  storage:
+    type: memory
+    options:
+      memory:
+        max-traces: 100000
+  ingress:
+    enabled: false
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-simplest
+  namespace: observability
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    # DNS de k8s-smart-city-unal-ingress-nginx-ingress-nginx-controller con 'civo k8s show k8s-smart-city-unal'
+    - host: demo-jaeger.2d3b0c65-dbcb-4cb1-a285-f3727d746b1e.lb.civo.com
+      http:
+        paths:
+          # Path for Jaeger UI on port 16686
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: simplest-query
+                port:
+                  number: 16686
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simplest-collector-ingress
+  namespace: observability
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    # DNS de k8s-smart-city-unal-ingress-nginx-ingress-nginx-controller con 'civo k8s show k8s-smart-city-unal'
+    - host: collector-jaeger.2d3b0c65-dbcb-4cb1-a285-f3727d746b1e.lb.civo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: simplest-collector
+                port:
+                  number: 14268
