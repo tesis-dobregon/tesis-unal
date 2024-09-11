@@ -42,7 +42,8 @@ async function ensureAuthenticated(): Promise<void> {
 
 // Helper to publish sensor data with authentication
 export async function publishSensorData(
-  sensorData: SensorData
+  sensorData: SensorData,
+  headers: Record<string, string> = {}
 ): Promise<AxiosResponse> {
   try {
     console.log('Going to publish sensor data', sensorData);
@@ -59,6 +60,7 @@ export async function publishSensorData(
       },
       {
         headers: {
+          ...headers,
           'Content-Type': 'application/json',
           Authorization: `Bearer ${authToken}`, // Add the Bearer token
         },

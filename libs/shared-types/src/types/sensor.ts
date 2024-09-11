@@ -106,3 +106,8 @@ export type AirQualityStandardSensorData = {
 };
 
 export type SensorData = SensorBaseData & Partial<AirQualityStandardSensorData>;
+
+export type SensorDataWithContext = {
+  sensorData: SensorData;
+  headers: Record<string, string>;
+};

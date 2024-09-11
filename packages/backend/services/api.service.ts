@@ -52,7 +52,8 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
         use: [],
 
         // Enable/disable parameter merging method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Disable-merging
-        mergeParams: false,
+        // DO NOT CHANGE THIS VALUE
+        mergeParams: true,
 
         // Enable authentication. Implement the logic into `authenticate` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authentication
         authentication: true,
@@ -82,16 +83,17 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 
         /**
          * Before call hook. You can check the request.
-         *
+         */
         onBeforeCall(
-          ctx: Context<unknown, Meta>,
-          route: Route,
+          ctx: Context<unknown, any>,
+          _route: Route,
           req: IncomingRequest,
-          res: GatewayResponse,
+          _res: GatewayResponse
         ): void {
-          // Set request headers to context meta
-          ctx.meta.userAgent = req.headers["user-agent"];
-        }, */
+          // Set the request headers to the context meta
+          ctx.meta.userAgent = req.headers['user-agent'];
+          ctx.meta.traceParent = req.headers['traceparent'];
+        },
 
         /**
          * After call hook. You can modify the data.

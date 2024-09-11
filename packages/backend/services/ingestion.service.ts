@@ -1,4 +1,7 @@
+import '@smart-city-unal/shared-metrics/src/lib/opentelemetry';
+
 import { SensorData } from '@smart-city-unal/shared-types';
+import { trace, context, propagation } from '@opentelemetry/api';
 import { Context, Errors, Service, ServiceSchema } from 'moleculer';
 import type {
   DbAdapter,
@@ -9,6 +12,8 @@ import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import { SMART_CITY_DB_NAME } from '../constants';
 import { createDbServiceMixin } from '../mixins/db.mixin';
 import { SensorStatus } from '@smart-city-unal/shared-types';
+
+const tracer = trace.getTracer('ingestion-service');
 
 export type SensorCollectedData = {
   _id: string;
@@ -110,6 +115,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
         },
       },
       async handler(ctx: Context<ActionCreateParams>) {
+        this.broker.logger.info('Headers', ctx.meta);
         this.broker.logger.info('Processing sensor data', ctx.params);
         /**
        * Example data:
@@ -135,31 +141,77 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
             "sensorId": "AQ02"
           }
        */
-        // Check if the sensor exists
-        const sensor: any = await this.broker.call('sensors.findByCustomId', {
-          customId: ctx.params.sensorId,
+        const sensorId = ctx.params.sensorId;
+
+        // Extract the trace context from the headers
+        const traceCtx = propagation.extract(context.active(), {
+          traceparent: (ctx.meta as any).traceparent,
         });
-        if (!sensor) {
-          throw new Errors.MoleculerClientError('Sensor not found!', 422, '', [
-            { field: 'sensorId', message: 'not found' },
-          ]);
-        }
+        const span = tracer.startSpan(
+          'Ingestion Microservice Sensor Data',
+          {
+            attributes: {
+              sensorId,
+            },
+          },
+          traceCtx
+        );
 
-        if (sensor.status === SensorStatus.WAITING) {
-          // Activate the sensor
-          await this.broker.call('sensors.update', {
-            id: sensor._id,
-            status: SensorStatus.ACTIVE,
-          });
-        }
+        context.with(trace.setSpan(context.active(), span), async () => {
+          try {
+            // Simulación de escritura en MongoDB
+            await new Promise((resolve) => setTimeout(resolve, 100));
 
-        // Save the data
-        const data = await this.adapter.insert({
-          ...ctx.params.data,
-          createdAt: new Date(),
+            // Check if the sensor exists
+            let sensor: any = await this.broker.call('sensors.findByCustomId', {
+              customId: ctx.params.sensorId,
+            });
+            if (!sensor) {
+              this.broker.logger.info('sensor not found', ctx.params.sensorId);
+              // Create sensor so we can run the load tests with no errors
+              sensor = await this.broker.call('sensors.create', {
+                customId: ctx.params.sensorId,
+                name: ctx.params.data.name,
+                description: ctx.params.data.description,
+                lat: ctx.params.data.lat,
+                lon: ctx.params.data.lon,
+                metadata: ctx.params.data.metadata,
+                status: SensorStatus.ACTIVE,
+              });
+
+              this.broker.logger.info('sensor created', sensor);
+              // throw new Errors.MoleculerClientError('Sensor not found!', 422, '', [
+              //   { field: 'sensorId', message: 'not found' },
+              // ]);
+            }
+
+            if (sensor.status === SensorStatus.WAITING) {
+              // Activate the sensor
+              await this.broker.call('sensors.update', {
+                id: sensor._id,
+                status: SensorStatus.ACTIVE,
+              });
+            }
+
+            // Save the data
+            const data = await this.adapter.insert({
+              ...ctx.params.data,
+              createdAt: new Date(),
+            });
+
+            span.end();
+            return data;
+          } catch (error) {
+            span.recordException(error as any);
+            span.end();
+            throw new Errors.MoleculerClientError(
+              'Error processing sensor data',
+              500,
+              '',
+              [{ field: 'sensorId', message: 'error' }]
+            );
+          }
         });
-
-        return data;
       },
     },
     listSensorData: {

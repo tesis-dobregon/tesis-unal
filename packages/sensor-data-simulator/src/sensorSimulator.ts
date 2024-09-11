@@ -1,10 +1,19 @@
+import '@smart-city-unal/shared-metrics/src/lib/opentelemetry';
+
 import fs from 'fs';
 import path from 'path';
 import { round } from 'mathjs';
 import { generateRandomNumber, generateRandomPoint } from './util';
 import { GeoPoint } from './types';
 import { mqttServerClient, publishToTopic } from '@smart-city-unal/shared-mqtt';
-import { SensorData, SensorMetadata } from '@smart-city-unal/shared-types';
+import {
+  SensorData,
+  SensorDataWithContext,
+  SensorMetadata,
+} from '@smart-city-unal/shared-types';
+import { trace, context, propagation } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('sensor-data-simulator');
 
 const RADIUS = 3000; // 3 km
 const CENTER_POINT: GeoPoint = {
@@ -90,13 +99,29 @@ function readSensorStationsFolderAndGenerateSimulatedRecord() {
 
     for (let i = 0; i < NUMBER_OF_SIMULATED_SENSORS; i++) {
       const sensorRecord = generateSimulatedSensorRecord(station, i);
-      console.log('Simulated sensor record:', sensorRecord);
-      // TODO: define qos. IF the message is not acknowledge what I should do?
-      publishToTopic(
-        mqttServerClient,
-        `sensor/${sensorRecord?.metadata?.type}/data`,
-        JSON.stringify(sensorRecord)
-      );
+      const span = tracer.startSpan('Produce sensor data', {
+        attributes: {
+          sensorId: sensorRecord.uid,
+        },
+      });
+      context.with(trace.setSpan(context.active(), span), () => {
+        const headers = {};
+        propagation.inject(context.active(), headers);
+
+        const payload: SensorDataWithContext = {
+          sensorData: sensorRecord,
+          headers,
+        };
+
+        publishToTopic(
+          mqttServerClient,
+          `sensor/${sensorRecord?.metadata?.type}/data`,
+          JSON.stringify(payload),
+          () => {
+            span.end();
+          }
+        );
+      });
     }
   });
 }
