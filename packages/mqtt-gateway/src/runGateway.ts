@@ -49,6 +49,7 @@ export async function runGateway() {
           'Process Sensor Data in Gateway',
           {
             attributes: {
+              batchId: parsedMessage.sensorData.metadata?.batchId,
               sensorId: parsedMessage.sensorData.uid,
             },
           },

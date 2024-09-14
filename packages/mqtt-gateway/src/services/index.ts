@@ -66,12 +66,24 @@ export async function publishSensorData(
         headers: {
           ...headers,
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`, // Add the Bearer token
+          Authorization: `Bearer ${authToken}`,
         },
       }
     );
-  } catch (error) {
-    console.error({ error }, 'Failed to publish sensor data');
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      const formattedError = {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        url: error.config?.url,
+        method: error.config?.method,
+        data: error.response?.data,
+      };
+      console.error('Error publishing sensor data', formattedError);
+    } else {
+      console.error('Unexpected error:', { message: error.message });
+    }
     throw error;
   }
 }

@@ -1,6 +1,6 @@
 import '@smart-city-unal/shared-metrics/src/lib/opentelemetry';
 
-import { SensorData } from '@smart-city-unal/shared-types';
+import { generateRandomPoint, SensorData } from '@smart-city-unal/shared-types';
 import { trace, context, propagation } from '@opentelemetry/api';
 import { Context, Errors, Service, ServiceSchema } from 'moleculer';
 import type {
@@ -92,6 +92,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
     create: false,
     insert: false,
     recordSensorData: {
+      cache: false,
       rest: 'POST /:sensorId/data',
       params: {
         sensorId: 'string',
@@ -108,6 +109,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
               type: 'object',
               props: {
                 type: 'string',
+                batchId: { type: 'string', optional: true },
               },
             },
             co: { type: 'number', optional: true },
@@ -155,6 +157,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
           {
             attributes: {
               sensorId,
+              batchId: ctx.params.data.metadata?.batchId,
             },
           },
           traceCtx
@@ -170,18 +173,33 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
               // For load tests we allow to create the sensor when it does not exist
               if (process.env.NODE_ENV === 'test') {
                 this.broker.logger.info(
-                  'sensor not found',
+                  'sensor not found, creating sensorId for tests',
                   ctx.params.sensorId
+                );
+                const { lat, lon } = generateRandomPoint(
+                  {
+                    // Duitama center point
+                    lat: 5.827528376419425,
+                    lon: -73.03398797041362,
+                  },
+                  3000
                 );
                 // Create sensor so we can run the load tests with no errors
                 sensor = await this.broker.call('sensors.create', {
                   customId: ctx.params.sensorId,
+                  type: 'air_quality_standard',
+                  measurementFrequency: 15000,
+                  location: {
+                    lat,
+                    lon,
+                  },
                   name: ctx.params.data.name,
                   description: ctx.params.data.description,
                   lat: ctx.params.data.lat,
                   lon: ctx.params.data.lon,
                   metadata: ctx.params.data.metadata,
                   status: SensorStatus.ACTIVE,
+                  createdAt: new Date(),
                 });
 
                 this.broker.logger.info('sensor created', sensor);
@@ -195,8 +213,8 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
               }
             }
 
-            if (sensor.status === SensorStatus.WAITING) {
-              // Activate the sensor
+            if (sensor.status !== SensorStatus.ACTIVE) {
+              // Activate the sensor in case it is not active
               await this.broker.call('sensors.update', {
                 id: sensor._id,
                 status: SensorStatus.ACTIVE,
@@ -225,6 +243,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
       },
     },
     listSensorData: {
+      cache: false,
       rest: 'GET /',
       params: {
         // Filter by sensorId

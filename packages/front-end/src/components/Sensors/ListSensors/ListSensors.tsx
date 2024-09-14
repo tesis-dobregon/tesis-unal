@@ -119,7 +119,7 @@ export const ListSensorsComponent: React.FunctionComponent<
       accesor: 'createdAt',
       showName: true,
       renderAction: (data: SensorEntity) => {
-        return <Typography>{data.createdAt.toString()}</Typography>;
+        return <Typography>{data.createdAt?.toString()}</Typography>;
       },
     },
   ];
