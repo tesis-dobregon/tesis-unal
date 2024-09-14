@@ -1,5 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/EDIT';
+import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
