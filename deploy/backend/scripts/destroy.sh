@@ -11,7 +11,7 @@ kubectl delete services --all
 kubectl delete configmaps --all
 
 # Delete all persistent volume claims
-kubectl delete pvc --all
+# kubectl delete pvc --all
 
 # Verify that all resources are deleted
 kubectl get all
@@ -21,3 +21,6 @@ kubectl delete ingress --all
 
 # Delete secrets
 kubectl delete secrets --all
+
+# Delete observability
+kubectl delete namespace observability

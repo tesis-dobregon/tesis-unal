@@ -1,4 +1,4 @@
-import { GeoPoint } from '../types';
+import { GeoPoint } from './types';
 
 /**
  * Generates number of random geolocation points given a center and a radius.

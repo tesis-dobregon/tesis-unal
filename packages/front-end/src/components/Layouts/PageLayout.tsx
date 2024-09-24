@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Header } from '../Header/Header';
 import { Container } from '@mui/material';
+import { Footer } from '../Footer/Footer';
 
 const sxMap = {
   container: {
@@ -21,6 +22,7 @@ export const PageLayout = () => {
       <Container maxWidth="xl" sx={sxMap.container}>
         <Outlet />
       </Container>
+      <Footer />
     </>
   );
 };

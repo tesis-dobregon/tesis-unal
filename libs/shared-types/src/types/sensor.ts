@@ -52,6 +52,7 @@ export interface SensorEntity {
 }
 
 export type SensorMetadata = {
+  batchId?: string;
   type: string;
 };
 
@@ -106,3 +107,9 @@ export type AirQualityStandardSensorData = {
 };
 
 export type SensorData = SensorBaseData & Partial<AirQualityStandardSensorData>;
+
+export type SensorDataWithContext = {
+  sensorData: SensorData;
+  headers: Record<string, string>;
+  batchId?: string;
+};

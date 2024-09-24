@@ -4,11 +4,6 @@ import mqtt, { IClientOptions, MqttClient } from 'mqtt';
 
 const url = process.env.VITE_MQTT_BROKER_URL || 'mqtt://localhost:1883';
 
-console.log(
-  'current path',
-  path.join(__dirname, '../../../../packages/mqtt-gateway/certs/ca.crt')
-);
-
 const options: IClientOptions = {
   port: 8883,
   protocol: 'mqtts',

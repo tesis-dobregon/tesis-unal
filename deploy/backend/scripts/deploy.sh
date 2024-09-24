@@ -27,3 +27,8 @@ kubectl apply -f ./deploy/backend/k8s/app/certificate.yaml
 
 # Apply ingress
 kubectl apply -f ./deploy/backend/k8s/app/ingress.yaml
+
+# Observability
+# helm install jaeger-operator jaegertracing/jaeger-operator --namespace observability --create-namespace
+# helm repo update
+kubectl apply -f ./deploy/backend/k8s/jaeger/simplest.yaml

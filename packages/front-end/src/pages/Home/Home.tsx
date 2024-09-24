@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Button, Grid, Link, Typography } from '@mui/material';
 import { AirQualityTable, AirQualityIndex } from '../../components/AirQuality';
 import { ListAlertsComponent, ListSensorsComponent } from '../../components';
 import { useHome } from './useHome';
@@ -21,6 +21,14 @@ const sxMap = {
     justifyContent: 'center',
     width: '100%',
     marginTop: 2,
+  },
+  tableNote: {
+    marginTop: 1,
+    fontSize: '0.75rem',
+  },
+  tableNoteLink: {
+    color: 'black',
+    textDecoration: 'none',
   },
 };
 
@@ -54,6 +62,15 @@ const Home = () => {
       <Grid item xs={12} sm={6}>
         <Tile>
           <AirQualityTable />
+          <Typography sx={sxMap.tableNote} noWrap color="textPrimary">
+            Tabla de calidad del aire del IDEAM. Consultar{' '}
+            <Link
+              sx={sxMap.tableNoteLink}
+              href="http://www.ideam.gov.co/documents/24155/125494/35-HM+%C3%8Dndice+calidad+aire+3+FI.pdf/6c0c641a-0c9a-430d-9c37-93d3069c595b"
+            >
+              aquí.
+            </Link>
+          </Typography>
         </Tile>
       </Grid>
       <Grid item xs={12} sm={6}>

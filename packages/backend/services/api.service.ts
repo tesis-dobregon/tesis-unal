@@ -42,6 +42,12 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
       maxAge: 3600,
     },
 
+    // rateLimit: {
+    //   window: 10 * 1000,
+    //   limit: 30,
+    //   headers: true,
+    // },
+
     routes: [
       {
         path: '/api',
@@ -52,7 +58,8 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
         use: [],
 
         // Enable/disable parameter merging method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Disable-merging
-        mergeParams: false,
+        // DO NOT CHANGE THIS VALUE
+        mergeParams: true,
 
         // Enable authentication. Implement the logic into `authenticate` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authentication
         authentication: true,
@@ -82,16 +89,17 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
 
         /**
          * Before call hook. You can check the request.
-         *
+         */
         onBeforeCall(
-          ctx: Context<unknown, Meta>,
-          route: Route,
+          ctx: Context<unknown, any>,
+          _route: Route,
           req: IncomingRequest,
-          res: GatewayResponse,
+          _res: GatewayResponse
         ): void {
-          // Set request headers to context meta
-          ctx.meta.userAgent = req.headers["user-agent"];
-        }, */
+          // Set the request headers to the context meta
+          ctx.meta.userAgent = req.headers['user-agent'];
+          ctx.meta.traceparent = req.headers['traceparent'];
+        },
 
         /**
          * After call hook. You can modify the data.
@@ -236,7 +244,6 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
       } = req;
 
       // If the path starts with /api/~node~ we don't need to authenticate
-      console.log('chivi authenticate', req.parsedUrl);
       if (req.parsedUrl.startsWith('/api/~node')) {
         return;
       }
@@ -259,7 +266,10 @@ const ApiService: ServiceSchema<ApiSettingsSchema> = {
               null
             );
           }
-          req.$ctx.meta = { user: token };
+          req.$ctx.meta = {
+            ...ctx.meta,
+            user: token,
+          };
         } catch (err) {
           throw new ApiGateway.Errors.UnAuthorizedError(
             ApiGateway.Errors.ERR_INVALID_TOKEN,

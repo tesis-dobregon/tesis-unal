@@ -37,15 +37,22 @@ export function subscribeToTopic(
 export function publishToTopic(
   client: MqttClient,
   topic: string,
-  message: string | Buffer
+  message: string | Buffer,
+  onPublish?: (err?: Error) => void
 ): void {
   client.publish(topic, message, { qos: 1 }, (err) => {
     if (err) {
       console.error(`Failed to publish message to topic ${topic}:`, err);
+      if (onPublish) {
+        onPublish(err);
+      }
     } else {
       console.log(
         `Successfully published message to topic ${topic} with QoS 1`
       );
+      if (onPublish) {
+        onPublish();
+      }
     }
   });
 }

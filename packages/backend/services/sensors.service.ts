@@ -105,7 +105,7 @@ const SensorsService: ServiceSchema<SensorSettings> & {
     list: {
       cache: false,
     },
-    create: false,
+    create: process.env.NODE_ENV === 'test' ? true : false,
     register: {
       rest: 'POST /',
       params: {
@@ -165,7 +165,8 @@ const SensorsService: ServiceSchema<SensorSettings> & {
           customId: ctx.params.customId,
         });
 
-        if (!sensor) {
+        // Do not throw an error if the sensor is not found for load tests
+        if (!sensor && process.env.NODE_ENV !== 'test') {
           throw new Errors.MoleculerClientError('Sensor not found', 404, '', [
             { field: 'customId', message: 'not found' },
           ]);

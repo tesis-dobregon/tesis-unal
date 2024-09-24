@@ -9,6 +9,18 @@ import {
   useActionData,
 } from 'react-router-dom';
 import { authProvider } from '../../providers';
+import { Footer } from '../../components';
+import LogoNoBackground from '../../assets/logo-no-background.svg';
+
+const sxMap = {
+  imageContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    display: 'flex',
+    my: 1,
+    marginBottom: 5,
+  },
+};
 
 const LoginPage: React.FC<unknown> = () => {
   const location = useLocation();
@@ -29,22 +41,20 @@ const LoginPage: React.FC<unknown> = () => {
         alignItems="center"
         style={{ height: '100vh' }}
       >
-        <Grid
-          item
-          xs={12}
-          sm={8}
-          md={6}
-          lg={4}
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Typography variant="h4" gutterBottom align="center">
-            Smart City UNAL
-          </Typography>
-        </Grid>
         <Grid item xs={12} sm={8} md={6} lg={4}>
+          <Box sx={sxMap.imageContainer}>
+            <Box
+              component="img"
+              sx={{
+                maxHeight: 180,
+              }}
+              alt="AngeoSc Logo"
+              src={LogoNoBackground}
+            />
+          </Box>
+
           <Box>
-            <Typography variant="h5" gutterBottom align="center">
+            <Typography variant="h6" gutterBottom align="center">
               Ingresa tu usuario y contraseña
             </Typography>
             <Form method="post" replace>
@@ -101,6 +111,7 @@ const LoginPage: React.FC<unknown> = () => {
           </Box>
         </Grid>
       </Grid>
+      <Footer />
     </Box>
   );
 };

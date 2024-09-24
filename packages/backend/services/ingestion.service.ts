@@ -1,4 +1,7 @@
-import { SensorData } from '@smart-city-unal/shared-types';
+import '@smart-city-unal/shared-metrics/src/lib/opentelemetry';
+
+import { generateRandomPoint, SensorData } from '@smart-city-unal/shared-types';
+import { trace, context, propagation } from '@opentelemetry/api';
 import { Context, Errors, Service, ServiceSchema } from 'moleculer';
 import type {
   DbAdapter,
@@ -9,6 +12,13 @@ import type MongoDbAdapter from 'moleculer-db-adapter-mongo';
 import { SMART_CITY_DB_NAME } from '../constants';
 import { createDbServiceMixin } from '../mixins/db.mixin';
 import { SensorStatus } from '@smart-city-unal/shared-types';
+
+const tracer = trace.getTracer('ingestion-service');
+
+export type ContextMetadata = {
+  traceparent: string;
+  userAgent: string;
+};
 
 export type SensorCollectedData = {
   _id: string;
@@ -82,6 +92,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
     create: false,
     insert: false,
     recordSensorData: {
+      cache: false,
       rest: 'POST /:sensorId/data',
       params: {
         sensorId: 'string',
@@ -98,6 +109,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
               type: 'object',
               props: {
                 type: 'string',
+                batchId: { type: 'string', optional: true },
               },
             },
             co: { type: 'number', optional: true },
@@ -109,8 +121,7 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
           },
         },
       },
-      async handler(ctx: Context<ActionCreateParams>) {
-        this.broker.logger.info('Processing sensor data', ctx.params);
+      async handler(ctx: Context<ActionCreateParams, ContextMetadata>) {
         /**
        * Example data:
           {
@@ -135,34 +146,104 @@ const IngestionService: ServiceSchema<SensorCollectedDataSettings> = {
             "sensorId": "AQ02"
           }
        */
-        // Check if the sensor exists
-        const sensor: any = await this.broker.call('sensors.findByCustomId', {
-          customId: ctx.params.sensorId,
+        const sensorId = ctx.params.sensorId;
+
+        // Extract the trace context from the headers
+        const traceCtx = propagation.extract(context.active(), {
+          traceparent: ctx.meta.traceparent,
         });
-        if (!sensor) {
-          throw new Errors.MoleculerClientError('Sensor not found!', 422, '', [
-            { field: 'sensorId', message: 'not found' },
-          ]);
-        }
+        const span = tracer.startSpan(
+          'Ingestion Microservice Sensor Data',
+          {
+            attributes: {
+              sensorId,
+              batchId: ctx.params.data.metadata?.batchId,
+            },
+          },
+          traceCtx
+        );
 
-        if (sensor.status === SensorStatus.WAITING) {
-          // Activate the sensor
-          await this.broker.call('sensors.update', {
-            id: sensor._id,
-            status: SensorStatus.ACTIVE,
-          });
-        }
+        context.with(trace.setSpan(context.active(), span), async () => {
+          try {
+            // Check if the sensor exists
+            let sensor: any = await this.broker.call('sensors.findByCustomId', {
+              customId: ctx.params.sensorId,
+            });
+            if (!sensor) {
+              // For load tests we allow to create the sensor when it does not exist
+              if (process.env.NODE_ENV === 'test') {
+                this.broker.logger.info(
+                  'sensor not found, creating sensorId for tests',
+                  ctx.params.sensorId
+                );
+                const { lat, lon } = generateRandomPoint(
+                  {
+                    // Duitama center point
+                    lat: 5.827528376419425,
+                    lon: -73.03398797041362,
+                  },
+                  3000
+                );
+                // Create sensor so we can run the load tests with no errors
+                sensor = await this.broker.call('sensors.create', {
+                  customId: ctx.params.sensorId,
+                  type: 'air_quality_standard',
+                  measurementFrequency: 15000,
+                  location: {
+                    lat,
+                    lon,
+                  },
+                  name: ctx.params.data.name,
+                  description: ctx.params.data.description,
+                  lat: ctx.params.data.lat,
+                  lon: ctx.params.data.lon,
+                  metadata: ctx.params.data.metadata,
+                  status: SensorStatus.ACTIVE,
+                  createdAt: new Date(),
+                });
 
-        // Save the data
-        const data = await this.adapter.insert({
-          ...ctx.params.data,
-          createdAt: new Date(),
+                this.broker.logger.info('sensor created', sensor);
+              } else {
+                throw new Errors.MoleculerClientError(
+                  'Sensor not found!',
+                  422,
+                  '',
+                  [{ field: 'sensorId', message: 'not found' }]
+                );
+              }
+            }
+
+            if (sensor.status !== SensorStatus.ACTIVE) {
+              // Activate the sensor in case it is not active
+              await this.broker.call('sensors.update', {
+                id: sensor._id,
+                status: SensorStatus.ACTIVE,
+              });
+            }
+
+            // Save the data
+            const data = await this.adapter.insert({
+              ...ctx.params.data,
+              createdAt: new Date(),
+            });
+
+            span.end();
+            return data;
+          } catch (error) {
+            span.recordException(error as any);
+            span.end();
+            throw new Errors.MoleculerClientError(
+              'Error processing sensor data',
+              500,
+              '',
+              [{ field: 'sensorId', message: 'error' }]
+            );
+          }
         });
-
-        return data;
       },
     },
     listSensorData: {
+      cache: false,
       rest: 'GET /',
       params: {
         // Filter by sensorId
