@@ -14,14 +14,28 @@ import {
   Menu,
   MenuItem,
   Stack,
-  SvgIcon,
   Toolbar,
   Tooltip,
 } from '@mui/material';
-import Logo from '../../assets/logo-header.svg?react';
-import { Link, useFetcher } from 'react-router-dom';
+import { Link, useFetcher, useLocation } from 'react-router-dom';
+import LogoNoBackground from '../../assets/logo-no-background.svg';
+
+const sxMap = {
+  imageContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    display: 'flex',
+    my: 1,
+    alignItems: 'center',
+  },
+  listItem: {
+    height: 80,
+  },
+};
 
 export const Header = () => {
+  const location = useLocation();
+  console.log('location', location.pathname);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const fetcher = useFetcher();
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -30,6 +44,14 @@ export const Header = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const routes = [
+    { name: 'Home', path: '/' },
+    { name: 'Calidad del Aire', path: '/calidad-aire' },
+    { name: 'Sensores', path: '/sensores' },
+    { name: 'Alertas', path: '/alertas' },
+  ];
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -40,38 +62,38 @@ export const Header = () => {
           }}
         >
           <Stack direction="row" spacing={8}>
-            <SvgIcon
-              sx={{
-                width: '50px',
-                margin: 0,
-                position: 'absolute',
-                top: '50%',
-                transform: 'translateY(-50%)',
-              }}
-            >
-              <Logo />
-            </SvgIcon>
+            <Box sx={sxMap.imageContainer}>
+              <Box
+                component="img"
+                sx={{
+                  maxHeight: 80,
+                }}
+                alt="Universidad Nacional Logo"
+                src={LogoNoBackground}
+              />
+            </Box>
+
             <List component={Stack} direction="row">
-              <ListItem>
-                <ListItemButton component={Link} to="/">
-                  <ListItemText>Home</ListItemText>
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component={Link} to="/calidad-aire">
-                  <ListItemText>Calidad del Aire</ListItemText>
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component={Link} to="/sensores">
-                  <ListItemText>Sensores</ListItemText>
-                </ListItemButton>
-              </ListItem>
-              <ListItem>
-                <ListItemButton component={Link} to="/alertas">
-                  <ListItemText>Alertas</ListItemText>
-                </ListItemButton>
-              </ListItem>
+              {routes.map((route) => (
+                <ListItem key={route.name}>
+                  <ListItemButton
+                    component={Link}
+                    to={route.path}
+                    sx={sxMap.listItem}
+                  >
+                    <ListItemText
+                      sx={{
+                        borderBottom:
+                          location.pathname === route.path
+                            ? '2px solid black'
+                            : 'none',
+                      }}
+                    >
+                      {route.name}
+                    </ListItemText>
+                  </ListItemButton>
+                </ListItem>
+              ))}
             </List>
           </Stack>
 

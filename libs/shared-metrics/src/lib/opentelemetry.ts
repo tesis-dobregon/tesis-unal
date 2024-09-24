@@ -7,6 +7,8 @@ import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-base';
 
+const endpoint = `${process.env.VITE_JAEGER_ENDPOINT}/api/traces`;
+
 // Initialize the OpenTelemetry provider
 const provider = new NodeTracerProvider({
   resource: new Resource({
@@ -17,7 +19,7 @@ const provider = new NodeTracerProvider({
 });
 
 const jaegerExporter = new JaegerExporter({
-  endpoint: `${process.env.VITE_JAEGER_ENDPOINT}/api/traces`,
+  endpoint,
 });
 
 // Add the Jaeger exporter to the provider
@@ -31,4 +33,7 @@ registerInstrumentations({
   instrumentations: [new HttpInstrumentation()],
 });
 
-console.log('OpenTelemetry tracer provider initialized');
+console.log(
+  'OpenTelemetry tracer provider initialized with endpoint:',
+  endpoint
+);

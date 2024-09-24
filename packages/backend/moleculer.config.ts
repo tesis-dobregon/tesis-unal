@@ -1,4 +1,4 @@
-import type { BrokerOptions, MetricRegistry, ServiceBroker } from 'moleculer';
+import type { BrokerOptions, MetricRegistry } from 'moleculer';
 import { Errors } from 'moleculer';
 
 /**
